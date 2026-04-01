@@ -1,4 +1,4 @@
-# Requirements: Beat Visuals — AI Backdrop Generator
+# Requirements: Beat Visuals -- AI Backdrop Generator
 
 **Defined:** 2026-04-01
 **Core Value:** A recruiter visits the site, sees a generated video backdrop synced to music, understands the idea, clicks GitHub, and sees clean code showcasing librosa + RAG + LLM integration + programmatic animation.
@@ -34,7 +34,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **VFX-01**: 3D tunnel with perspective, twisting, BPM flashes
 - [ ] **VFX-02**: Julia Set fractal morphing and zooming
 - [ ] **VFX-03**: Particle system with gravity, connections, BPM explosions
-- [ ] **VFX-04**: Plasma waves — multi-layered slow waves
+- [ ] **VFX-04**: Plasma waves -- multi-layered slow waves
 
 ### Rendering
 
@@ -97,40 +97,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INP-01 | TBD | Pending |
-| INP-02 | TBD | Pending |
-| INP-03 | TBD | Pending |
-| INP-04 | TBD | Pending |
-| AUD-01 | TBD | Pending |
-| AUD-02 | TBD | Pending |
-| AUD-03 | TBD | Pending |
-| AUD-04 | TBD | Pending |
-| RAG-01 | TBD | Pending |
-| RAG-02 | TBD | Pending |
-| LLM-01 | TBD | Pending |
-| LLM-02 | TBD | Pending |
-| LLM-03 | TBD | Pending |
-| VFX-01 | TBD | Pending |
-| VFX-02 | TBD | Pending |
-| VFX-03 | TBD | Pending |
-| VFX-04 | TBD | Pending |
-| RND-01 | TBD | Pending |
-| RND-02 | TBD | Pending |
-| RND-03 | TBD | Pending |
-| RND-04 | TBD | Pending |
-| FE-01 | TBD | Pending |
-| FE-02 | TBD | Pending |
-| FE-03 | TBD | Pending |
-| FE-04 | TBD | Pending |
-| DEP-01 | TBD | Pending |
-| DEP-02 | TBD | Pending |
-| DEP-03 | TBD | Pending |
+| INP-01 | Phase 1: Rendering Engine | Pending |
+| INP-02 | Phase 1: Rendering Engine | Pending |
+| INP-03 | Phase 2: Audio Analysis & RAG | Pending |
+| INP-04 | Phase 4: LLM Style Blending | Pending |
+| AUD-01 | Phase 2: Audio Analysis & RAG | Pending |
+| AUD-02 | Phase 2: Audio Analysis & RAG | Pending |
+| AUD-03 | Phase 2: Audio Analysis & RAG | Pending |
+| AUD-04 | Phase 2: Audio Analysis & RAG | Pending |
+| RAG-01 | Phase 2: Audio Analysis & RAG | Pending |
+| RAG-02 | Phase 2: Audio Analysis & RAG | Pending |
+| LLM-01 | Phase 4: LLM Style Blending | Pending |
+| LLM-02 | Phase 4: LLM Style Blending | Pending |
+| LLM-03 | Phase 4: LLM Style Blending | Pending |
+| VFX-01 | Phase 1: Rendering Engine | Pending |
+| VFX-02 | Phase 1: Rendering Engine | Pending |
+| VFX-03 | Phase 1: Rendering Engine | Pending |
+| VFX-04 | Phase 1: Rendering Engine | Pending |
+| RND-01 | Phase 1: Rendering Engine | Pending |
+| RND-02 | Phase 1: Rendering Engine | Pending |
+| RND-03 | Phase 1: Rendering Engine | Pending |
+| RND-04 | Phase 1: Rendering Engine | Pending |
+| FE-01 | Phase 3: Frontend Application | Pending |
+| FE-02 | Phase 3: Frontend Application | Pending |
+| FE-03 | Phase 3: Frontend Application | Pending |
+| FE-04 | Phase 3: Frontend Application | Pending |
+| DEP-01 | Phase 5: Deployment & Production | Pending |
+| DEP-02 | Phase 5: Deployment & Production | Pending |
+| DEP-03 | Phase 5: Deployment & Production | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 ⚠️
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-01*
-*Last updated: 2026-04-01 after initial definition*
+*Last updated: 2026-04-01 after roadmap revision (phases 2 and 3 swapped)*
