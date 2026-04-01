@@ -1,0 +1,136 @@
+# Requirements: Beat Visuals — AI Backdrop Generator
+
+**Defined:** 2026-04-01
+**Core Value:** A recruiter visits the site, sees a generated video backdrop synced to music, understands the idea, clicks GitHub, and sees clean code showcasing librosa + RAG + LLM integration + programmatic animation.
+
+## v1 Requirements
+
+Requirements for initial release. Each maps to roadmap phases.
+
+### Input
+
+- [ ] **INP-01**: User can enter a text prompt describing desired visual style
+- [ ] **INP-02**: User can manually enter BPM (60-200 range)
+- [ ] **INP-03**: User can upload a short audio clip (30-60s) for analysis
+- [ ] **INP-04**: User can set style blend ratio (e.g. "70% techno + 30% ambient")
+
+### Audio Analysis
+
+- [ ] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
+- [ ] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
+- [ ] **AUD-03**: BPM visualization chart displayed on results page
+- [ ] **AUD-04**: User can override detected BPM (fix octave errors)
+
+### AI Pipeline
+
+- [ ] **RAG-01**: ChromaDB knowledge base stores genre-style documents (colors, shapes, movement)
+- [ ] **RAG-02**: RAG retrieves relevant style docs based on prompt + genre
+- [ ] **LLM-01**: LLM creatively blends parameters from retrieved docs (not fixed selection)
+- [ ] **LLM-02**: LLM incorporates mood vector from audio analysis into parameter blending
+- [ ] **LLM-03**: LLM outputs structured JSON parameters validated by Pydantic schema
+
+### Visual Effects
+
+- [ ] **VFX-01**: 3D tunnel with perspective, twisting, BPM flashes
+- [ ] **VFX-02**: Julia Set fractal morphing and zooming
+- [ ] **VFX-03**: Particle system with gravity, connections, BPM explosions
+- [ ] **VFX-04**: Plasma waves — multi-layered slow waves
+
+### Rendering
+
+- [ ] **RND-01**: Renders seamless-loop mp4 (last frame connects to first frame)
+- [ ] **RND-02**: Output at 1080p 30fps via H.264 + yuv420p (ffmpeg)
+- [ ] **RND-03**: Async render queue with progress reporting via SSE
+- [ ] **RND-04**: Render runs in separate process (ProcessPoolExecutor)
+
+### Frontend
+
+- [ ] **FE-01**: Gallery landing page with pre-generated examples and "Try it yourself" CTA
+- [ ] **FE-02**: Generate form: text prompt, BPM input, audio upload, style blend controls
+- [ ] **FE-03**: Results page: video player, BPM chart, download button
+- [ ] **FE-04**: Progress indicator during render (SSE-driven)
+
+### Deployment
+
+- [ ] **DEP-01**: Frontend deployed to Vercel
+- [ ] **DEP-02**: Backend deployed to Railway/Render ($0-5/month)
+- [ ] **DEP-03**: ChromaDB seeded from repo files on startup
+
+## v2 Requirements
+
+Deferred to future release. Tracked but not in current roadmap.
+
+### Visual Effects
+
+- **VFX-05**: Perspective grid with horizon and pulsation
+- **VFX-06**: Glitch + scanlines (industrial style)
+- **VFX-07**: Effect layering / compositing (combine effects)
+
+### Advanced Input
+
+- **INP-05**: Image-to-style via Vision API (upload reference image)
+- **INP-06**: Tempo map support (variable BPM within a track)
+
+### Frontend
+
+- **FE-05**: Live WebGL gallery on landing page
+- **FE-06**: Resolution options (720p, 1080p, 4K)
+
+## Out of Scope
+
+Explicitly excluded. Documented to prevent scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| Real-time rendering / live VJ mode | Requires GPU, fundamentally different architecture, budget constraint ($0-5/mo) |
+| AI image generation (Stable Diffusion) | GPU-intensive, expensive to host, competes with Runway/Pika |
+| User accounts / authentication | Unnecessary for portfolio demo |
+| Full-track analysis (3-5 min songs) | Render time scales linearly, storage/bandwidth costs |
+| Custom effect editor / shader playground | Massive scope increase, ShaderToy exists |
+| Mobile app | Web-first, responsive design sufficient for viewing |
+| Social features (sharing, likes, community) | Moderation burden, storage costs, beyond portfolio scope |
+| Frequency-band reactivity (bass/mid/treble) | UI complexity, mood vector covers dynamic intensity |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| INP-01 | TBD | Pending |
+| INP-02 | TBD | Pending |
+| INP-03 | TBD | Pending |
+| INP-04 | TBD | Pending |
+| AUD-01 | TBD | Pending |
+| AUD-02 | TBD | Pending |
+| AUD-03 | TBD | Pending |
+| AUD-04 | TBD | Pending |
+| RAG-01 | TBD | Pending |
+| RAG-02 | TBD | Pending |
+| LLM-01 | TBD | Pending |
+| LLM-02 | TBD | Pending |
+| LLM-03 | TBD | Pending |
+| VFX-01 | TBD | Pending |
+| VFX-02 | TBD | Pending |
+| VFX-03 | TBD | Pending |
+| VFX-04 | TBD | Pending |
+| RND-01 | TBD | Pending |
+| RND-02 | TBD | Pending |
+| RND-03 | TBD | Pending |
+| RND-04 | TBD | Pending |
+| FE-01 | TBD | Pending |
+| FE-02 | TBD | Pending |
+| FE-03 | TBD | Pending |
+| FE-04 | TBD | Pending |
+| DEP-01 | TBD | Pending |
+| DEP-02 | TBD | Pending |
+| DEP-03 | TBD | Pending |
+
+**Coverage:**
+- v1 requirements: 28 total
+- Mapped to phases: 0
+- Unmapped: 28 ⚠️
+
+---
+*Requirements defined: 2026-04-01*
+*Last updated: 2026-04-01 after initial definition*
