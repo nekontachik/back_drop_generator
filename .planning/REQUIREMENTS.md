@@ -9,8 +9,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Input
 
-- [ ] **INP-01**: User can enter a text prompt describing desired visual style
-- [ ] **INP-02**: User can manually enter BPM (60-200 range)
+- [x] **INP-01**: User can enter a text prompt describing desired visual style
+- [x] **INP-02**: User can manually enter BPM (60-200 range)
 - [ ] **INP-03**: User can upload a short audio clip (30-60s) for analysis
 - [ ] **INP-04**: User can set style blend ratio (e.g. "70% techno + 30% ambient")
 
@@ -38,8 +38,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Rendering
 
-- [ ] **RND-01**: Renders seamless-loop mp4 (last frame connects to first frame)
-- [ ] **RND-02**: Output at 1080p 30fps via H.264 + yuv420p (ffmpeg)
+- [x] **RND-01**: Renders seamless-loop mp4 (last frame connects to first frame)
+- [x] **RND-02**: Output at 1080p 30fps via H.264 + yuv420p (ffmpeg)
 - [ ] **RND-03**: Async render queue with progress reporting via SSE
 - [ ] **RND-04**: Render runs in separate process (ProcessPoolExecutor)
 
@@ -97,8 +97,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INP-01 | Phase 1: Rendering Engine | Pending |
-| INP-02 | Phase 1: Rendering Engine | Pending |
+| INP-01 | Phase 1: Rendering Engine | Complete |
+| INP-02 | Phase 1: Rendering Engine | Complete |
 | INP-03 | Phase 2: Audio Analysis & RAG | Pending |
 | INP-04 | Phase 4: LLM Style Blending | Pending |
 | AUD-01 | Phase 2: Audio Analysis & RAG | Pending |
@@ -114,8 +114,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VFX-02 | Phase 1: Rendering Engine | Pending |
 | VFX-03 | Phase 1: Rendering Engine | Pending |
 | VFX-04 | Phase 1: Rendering Engine | Pending |
-| RND-01 | Phase 1: Rendering Engine | Pending |
-| RND-02 | Phase 1: Rendering Engine | Pending |
+| RND-01 | Phase 1: Rendering Engine | Complete |
+| RND-02 | Phase 1: Rendering Engine | Complete |
 | RND-03 | Phase 1: Rendering Engine | Pending |
 | RND-04 | Phase 1: Rendering Engine | Pending |
 | FE-01 | Phase 3: Frontend Application | Pending |
