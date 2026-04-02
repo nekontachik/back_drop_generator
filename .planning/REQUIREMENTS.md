@@ -40,8 +40,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **RND-01**: Renders seamless-loop mp4 (last frame connects to first frame)
 - [x] **RND-02**: Output at 1080p 30fps via H.264 + yuv420p (ffmpeg)
-- [ ] **RND-03**: Async render queue with progress reporting via SSE
-- [ ] **RND-04**: Render runs in separate process (ProcessPoolExecutor)
+- [x] **RND-03**: Async render queue with progress reporting via SSE
+- [x] **RND-04**: Render runs in separate process (ProcessPoolExecutor)
 
 ### Frontend
 
@@ -116,8 +116,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VFX-04 | Phase 1: Rendering Engine | Complete |
 | RND-01 | Phase 1: Rendering Engine | Complete |
 | RND-02 | Phase 1: Rendering Engine | Complete |
-| RND-03 | Phase 1: Rendering Engine | Pending |
-| RND-04 | Phase 1: Rendering Engine | Pending |
+| RND-03 | Phase 1: Rendering Engine | Complete |
+| RND-04 | Phase 1: Rendering Engine | Complete |
 | FE-01 | Phase 3: Frontend Application | Pending |
 | FE-02 | Phase 3: Frontend Application | Pending |
 | FE-03 | Phase 3: Frontend Application | Pending |
