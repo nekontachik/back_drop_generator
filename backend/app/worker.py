@@ -2,7 +2,7 @@
 
 Submits render jobs to a ProcessPoolExecutor so that CPU-heavy
 rendering does not block the FastAPI event loop (D-14, RND-04).
-Uses multiprocessing.Value for cross-process progress reporting.
+Uses multiprocessing.Manager for cross-process progress reporting.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ import asyncio
 import logging
 import multiprocessing
 from concurrent.futures import ProcessPoolExecutor
+from multiprocessing.managers import DictProxy
 from pathlib import Path
 
 from app.models.params import RenderParams
@@ -18,11 +19,12 @@ from app.models.params import RenderParams
 logger = logging.getLogger(__name__)
 
 _executor = ProcessPoolExecutor(max_workers=1)
-_progress_values: dict[str, multiprocessing.Value] = {}
+_manager = multiprocessing.Manager()
+_progress_dict: DictProxy = _manager.dict()
 
 
 def _render_in_process(
-    params_dict: dict, output_path: str, progress_value: multiprocessing.Value
+    params_dict: dict, output_path: str, progress_dict: DictProxy, job_id: str
 ) -> str:
     """Execute render in a child process.
 
@@ -32,7 +34,8 @@ def _render_in_process(
     Args:
         params_dict: Serialized RenderParams (via model_dump).
         output_path: Destination path for the mp4.
-        progress_value: Shared multiprocessing.Value for progress [0.0, 1.0].
+        progress_dict: Manager-backed shared dict for progress reporting.
+        job_id: Job identifier used as key in progress_dict.
 
     Returns:
         The output_path string.
@@ -43,7 +46,7 @@ def _render_in_process(
     params = _RenderParams(**params_dict)
 
     def progress_callback(value: float) -> None:
-        progress_value.value = value
+        progress_dict[job_id] = value
 
     render_video(params, output_path, progress_callback)
     return output_path
@@ -52,16 +55,16 @@ def _render_in_process(
 def submit_render(job_id: str, params: RenderParams, output_dir: Path) -> None:
     """Submit a render job to the process pool.
 
-    Creates a shared progress counter, submits the render function to
-    the executor, and sets up a done callback to update job status.
+    Stores a progress entry in the shared Manager dict, submits the
+    render function to the executor, and sets up a done callback to
+    update job status.
 
     Args:
         job_id: Unique job identifier.
         params: Render parameters.
         output_dir: Directory for output mp4 files.
     """
-    progress = multiprocessing.Value("d", 0.0)
-    _progress_values[job_id] = progress
+    _progress_dict[job_id] = 0.0
     output_path = str(output_dir / f"{job_id}.mp4")
 
     loop = asyncio.get_running_loop()
@@ -70,7 +73,8 @@ def submit_render(job_id: str, params: RenderParams, output_dir: Path) -> None:
         _render_in_process,
         params.model_dump(),
         output_path,
-        progress,
+        _progress_dict,
+        job_id,
     )
 
     def _on_done(fut: asyncio.Future) -> None:
@@ -106,12 +110,9 @@ def get_progress(job_id: str) -> float:
     Returns:
         Progress value between 0.0 and 1.0, or 0.0 if job not tracked.
     """
-    pv = _progress_values.get(job_id)
-    if pv is not None:
-        return pv.value
-    return 0.0
+    return _progress_dict.get(job_id, 0.0)
 
 
 def cleanup_progress(job_id: str) -> None:
     """Remove progress tracking for a completed/failed job."""
-    _progress_values.pop(job_id, None)
+    _progress_dict.pop(job_id, None)
