@@ -47,11 +47,12 @@ Plans:
   3. User can override the detected BPM if the automatic detection is wrong
   4. RAG retrieval returns relevant genre-style documents (colors, shapes, movement) when given a text prompt
   5. ChromaDB knowledge base contains genre-style documents and is queryable via the API
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Audio analysis service: librosa BPM detection, mood extraction, visualization data
+- [ ] 02-02-PLAN.md -- RAG knowledge base: genre YAML documents, ChromaDB seeder, retrieval service
+- [ ] 02-03-PLAN.md -- API integration: audio upload on POST /generate, GET /styles endpoint, test migration
 
 ### Phase 3: Frontend Application
 **Goal**: Users interact with the backdrop generator through a polished web interface -- browsing a gallery, submitting generation requests, watching progress, and downloading results
@@ -107,7 +108,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Rendering Engine | 0/3 | Planning complete | - |
-| 2. Audio Analysis & RAG | 0/2 | Not started | - |
+| 2. Audio Analysis & RAG | 0/3 | Planning complete | - |
 | 3. Frontend Application | 0/2 | Not started | - |
 | 4. LLM Style Blending | 0/2 | Not started | - |
 | 5. Deployment & Production | 0/2 | Not started | - |
