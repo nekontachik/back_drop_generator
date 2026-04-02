@@ -49,23 +49,23 @@ class PlasmaEffect(BaseEffect):
         layer_count = params.get("layer_count", 4)
         wave_freq = params.get("wave_freq", 3.0)
 
-        # BPM: modulate wave frequency
-        effective_freq = wave_freq * (1.0 + beat_intensity * 0.5)
-
         # Coordinate grid normalized to [-1, 1]
         y_coords, x_coords = np.mgrid[-1:1:complex(0, height), -1:1:complex(0, width)]
 
-        # Sum multiple sin/cos layers
+        # Sum multiple sin/cos layers (wave_freq is constant for seamless continuity)
+        # Temporal frequency must be integer multiple of 2*pi*t for seamless loops
+        # Round speed to nearest integer >= 1 to ensure full cycle completion
+        temporal_freq = max(1, round(speed * 2))
         plasma_sum = np.zeros((height, width), dtype=np.float64)
         for i in range(layer_count):
             layer_idx = i + 1
             plasma_sum += np.sin(
-                effective_freq * x_coords * layer_idx
-                + two_pi_t * speed * layer_idx
+                wave_freq * x_coords * layer_idx
+                + two_pi_t * temporal_freq
             )
             plasma_sum += np.cos(
-                effective_freq * y_coords * layer_idx
-                + two_pi_t * speed * 0.7 * layer_idx
+                wave_freq * y_coords * layer_idx
+                + two_pi_t * temporal_freq
             )
 
         # Normalize to [0, 1]
@@ -75,6 +75,8 @@ class PlasmaEffect(BaseEffect):
         normalized = np.clip(normalized, 0.0, 1.0)
 
         # Color: lerp between primary and accent based on plasma value
+        # BPM: gentle brightness flash toward accent (moderated for seamless continuity)
+        flash_strength = beat_intensity * intensity * 0.25
         frame = np.zeros((height, width, 3), dtype=np.float64)
         for c in range(3):
             # Primary-accent gradient
@@ -82,6 +84,8 @@ class PlasmaEffect(BaseEffect):
             # Blend with background at low intensity regions
             low_region = 1.0 - normalized  # inverted: 1 where plasma is low
             base = color_mix * (1.0 - low_region * (1.0 - intensity)) + bg[c] * low_region * (1.0 - intensity)
+            # Apply BPM flash
+            base = base + (accent[c] - base) * flash_strength
             frame[:, :, c] = base
 
         return np.clip(frame, 0, 255).astype(np.uint8)

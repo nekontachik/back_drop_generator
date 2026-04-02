@@ -87,10 +87,11 @@ class FractalEffect(BaseEffect):
 
         # Color: lerp between bg and primary based on escape
         frame = np.zeros((height, width, 3), dtype=np.float64)
+        flash_strength = beat_intensity * intensity * 0.3  # moderate flash for seamless continuity
         for ch in range(3):
             base_color = bg[ch] + (primary[ch] - bg[ch]) * normalized
             # BPM flash: boost brightness toward accent
-            flash = base_color + (accent[ch] - base_color) * beat_intensity * intensity
+            flash = base_color + (accent[ch] - base_color) * flash_strength
             frame[:, :, ch] = flash
 
         return np.clip(frame, 0, 255).astype(np.uint8)
