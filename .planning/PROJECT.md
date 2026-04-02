@@ -12,19 +12,18 @@ A recruiter visits the site, sees a generated video backdrop synced to music, un
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ User can enter a text prompt describing desired visual style — Phase 1
+- ✓ User can manually enter BPM as alternative to audio upload — Phase 1
+- ✓ Python renders a seamless-loop mp4 video synchronized to beats (1080p, 30fps) — Phase 1
+- ✓ Multiple visual effects: 3D tunnel, Julia fractal, particle system, plasma waves — Phase 1
+- ✓ FastAPI backend with async rendering queue and progress tracking — Phase 1
 
 ### Active
 
-- [ ] User can enter a text prompt describing desired visual style
 - [ ] User can optionally upload a short audio clip (30-60s) for BPM analysis
-- [ ] User can manually enter BPM as alternative to audio upload
 - [ ] librosa analyzes audio: tempo, beat timestamps, tempo map
 - [ ] RAG layer retrieves style documents from knowledge base (genre to colors, shapes, movement)
 - [ ] LLM creatively blends parameters from retrieved style docs (not just fixed selection)
-- [ ] Python renders a seamless-loop mp4 video synchronized to beats (1080p, 30fps)
-- [ ] Multiple visual effects: 3D tunnel, Julia fractal, particle system, perspective grid, plasma waves, glitch/scanlines
-- [ ] FastAPI backend with async rendering queue and progress tracking
 - [ ] Next.js frontend with gallery of pre-generated examples and "Try it yourself" CTA
 - [ ] Video player, BPM visualization chart, download button on results page
 - [ ] Deployed: Vercel (frontend) + Railway/Render (backend)
@@ -89,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-01 after initialization*
+*Last updated: 2026-04-02 after Phase 1 completion*
