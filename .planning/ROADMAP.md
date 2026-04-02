@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md -- Project scaffold, Pydantic schemas, loop math, encoder, base effect, prompt mapper
-- [ ] 01-02-PLAN.md -- 4 visual effects (tunnel, fractal, particles, plasma) and render pipeline
+- [x] 01-02-PLAN.md -- 4 visual effects (tunnel, fractal, particles, plasma) and render pipeline
 - [ ] 01-03-PLAN.md -- FastAPI API, job manager, ProcessPoolExecutor worker, SSE streaming, cleanup
 
 ### Phase 2: Audio Analysis & RAG Knowledge Base

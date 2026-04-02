@@ -31,10 +31,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Visual Effects
 
-- [ ] **VFX-01**: 3D tunnel with perspective, twisting, BPM flashes
-- [ ] **VFX-02**: Julia Set fractal morphing and zooming
-- [ ] **VFX-03**: Particle system with gravity, connections, BPM explosions
-- [ ] **VFX-04**: Plasma waves -- multi-layered slow waves
+- [x] **VFX-01**: 3D tunnel with perspective, twisting, BPM flashes
+- [x] **VFX-02**: Julia Set fractal morphing and zooming
+- [x] **VFX-03**: Particle system with gravity, connections, BPM explosions
+- [x] **VFX-04**: Plasma waves -- multi-layered slow waves
 
 ### Rendering
 
@@ -110,10 +110,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LLM-01 | Phase 4: LLM Style Blending | Pending |
 | LLM-02 | Phase 4: LLM Style Blending | Pending |
 | LLM-03 | Phase 4: LLM Style Blending | Pending |
-| VFX-01 | Phase 1: Rendering Engine | Pending |
-| VFX-02 | Phase 1: Rendering Engine | Pending |
-| VFX-03 | Phase 1: Rendering Engine | Pending |
-| VFX-04 | Phase 1: Rendering Engine | Pending |
+| VFX-01 | Phase 1: Rendering Engine | Complete |
+| VFX-02 | Phase 1: Rendering Engine | Complete |
+| VFX-03 | Phase 1: Rendering Engine | Complete |
+| VFX-04 | Phase 1: Rendering Engine | Complete |
 | RND-01 | Phase 1: Rendering Engine | Complete |
 | RND-02 | Phase 1: Rendering Engine | Complete |
 | RND-03 | Phase 1: Rendering Engine | Pending |
