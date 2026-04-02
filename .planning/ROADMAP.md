@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. All 4 effects (tunnel, fractal, particles, plasma) produce visually distinct output synchronized to the provided BPM
   4. Health endpoint responds within 1 second while a render is actively running (proves ProcessPoolExecutor isolation)
   5. SSE endpoint streams progress updates from pending through complete for an active render job
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md -- Project scaffold, Pydantic schemas, loop math, encoder, base effect, prompt mapper
+- [ ] 01-02-PLAN.md -- 4 visual effects (tunnel, fractal, particles, plasma) and render pipeline
+- [ ] 01-03-PLAN.md -- FastAPI API, job manager, ProcessPoolExecutor worker, SSE streaming, cleanup
 
 ### Phase 2: Audio Analysis & RAG Knowledge Base
 **Goal**: Users can upload audio clips for automatic BPM detection and mood analysis, and the system retrieves genre-matched style parameters from a knowledge base
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Rendering Engine | 0/3 | Not started | - |
+| 1. Rendering Engine | 0/3 | Planning complete | - |
 | 2. Audio Analysis & RAG | 0/2 | Not started | - |
 | 3. Frontend Application | 0/2 | Not started | - |
 | 4. LLM Style Blending | 0/2 | Not started | - |
