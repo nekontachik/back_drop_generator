@@ -47,8 +47,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **FE-01**: Gallery landing page with pre-generated examples and "Try it yourself" CTA
 - [x] **FE-02**: Generate form: text prompt, BPM input, audio upload, style blend controls
-- [ ] **FE-03**: Results page: video player, BPM chart, download button
-- [ ] **FE-04**: Progress indicator during render (SSE-driven)
+- [x] **FE-03**: Results page: video player, BPM chart, download button
+- [x] **FE-04**: Progress indicator during render (SSE-driven)
 
 ### Deployment
 
@@ -120,8 +120,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RND-04 | Phase 1: Rendering Engine | Complete |
 | FE-01 | Phase 3: Frontend Application | Complete |
 | FE-02 | Phase 3: Frontend Application | Complete |
-| FE-03 | Phase 3: Frontend Application | Pending |
-| FE-04 | Phase 3: Frontend Application | Pending |
+| FE-03 | Phase 3: Frontend Application | Complete |
+| FE-04 | Phase 3: Frontend Application | Complete |
 | DEP-01 | Phase 5: Deployment & Production | Pending |
 | DEP-02 | Phase 5: Deployment & Production | Pending |
 | DEP-03 | Phase 5: Deployment & Production | Pending |
