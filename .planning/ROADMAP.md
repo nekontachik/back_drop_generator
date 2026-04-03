@@ -63,11 +63,11 @@ Plans:
   2. User can fill out a generate form (text prompt, BPM, audio upload field, style blend controls) and submit it to the backend
   3. Results page shows a video player with the rendered output, a BPM visualization chart, and a download button that delivers the MP4
   4. Progress indicator updates in real-time during rendering, driven by SSE from the backend
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md -- Next.js scaffold, dark theme, API client, types, landing page with hero video and carousel
+- [x] 03-01-PLAN.md -- Next.js scaffold, dark theme, API client, types, landing page with hero video and carousel
 - [ ] 03-02-PLAN.md -- Generate form with prompt, BPM, audio upload, blend controls, and live style preview
 - [ ] 03-03-PLAN.md -- Results page with SSE progress bar, video player, BPM chart, and download
 
@@ -110,6 +110,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Rendering Engine | 0/3 | Planning complete | - |
 | 2. Audio Analysis & RAG | 0/3 | Planning complete | - |
-| 3. Frontend Application | 0/3 | Planning complete | - |
+| 3. Frontend Application | 1/3 | In Progress|  |
 | 4. LLM Style Blending | 0/2 | Not started | - |
 | 5. Deployment & Production | 0/2 | Not started | - |
