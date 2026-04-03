@@ -1,0 +1,21 @@
+id: "house-deep"
+genre: "house"
+subgenre: "deep"
+description: >
+  Deep house: subdued, hypnotic grooves with muted chords and rolling
+  sub-bass that you feel more than hear. Visuals are understated and
+  immersive -- dark navy backgrounds with soft blue and muted coral accents.
+  Soft waves drift slowly, floating orbs hover and pulse gently, and
+  everything moves with a slow, swaying cadence. Late-night lounge vibes,
+  eyes half-closed on the dance floor.
+colors:
+  - "#0a0a1a"
+  - "#4466ff"
+  - "#ff8866"
+shapes:
+  - "soft_waves"
+  - "floating_orbs"
+movement: "slow_sway"
+intensity: 0.4
+speed: 0.3
+effect_preference: "particles"

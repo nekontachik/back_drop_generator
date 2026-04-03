@@ -1,0 +1,22 @@
+id: "industrial-core"
+genre: "industrial"
+subgenre: ""
+description: >
+  Industrial: harsh, abrasive textures with pounding metallic percussion,
+  distorted noise bursts, and relentless mechanical rhythms. Visuals are
+  raw and aggressive -- pitch-black backgrounds torn apart by red-orange
+  and amber flashes. Harsh lines fracture the frame, broken grids glitch
+  and stutter, and visual artifacts corrupt the image in sync with impacts.
+  Derelict factory floor, sparks flying from grinding metal, controlled chaos.
+colors:
+  - "#0a0a0a"
+  - "#ff2200"
+  - "#ffaa00"
+shapes:
+  - "harsh_lines"
+  - "broken_grid"
+  - "glitch"
+movement: "jerky_pulse"
+intensity: 0.85
+speed: 0.75
+effect_preference: "tunnel"

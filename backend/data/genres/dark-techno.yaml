@@ -1,0 +1,21 @@
+id: "techno-dark"
+genre: "techno"
+subgenre: "dark"
+description: >
+  Dark techno: oppressive, claustrophobic atmospheres with menacing low-end
+  drones and distorted percussive hits. Visuals are almost entirely black
+  with violent neon stabs cutting through the void. Strobing lines flash in
+  sync with kick drums, tunnels collapse inward with aggressive speed, and
+  geometry fragments into shards on impacts. Industrial decay aesthetic,
+  abandoned factory at midnight.
+colors:
+  - "#050505"
+  - "#00cc44"
+  - "#ff0033"
+shapes:
+  - "tunnel"
+  - "strobing_lines"
+movement: "aggressive_pulse"
+intensity: 0.9
+speed: 0.8
+effect_preference: "tunnel"

@@ -1,0 +1,23 @@
+id: "dnb-core"
+genre: "drum-and-bass"
+subgenre: ""
+description: >
+  Drum and bass: breakneck tempos with chopped breakbeats, heavy sub-bass
+  wobbles, and rapid-fire snare rolls that demand constant motion. Visuals
+  are kinetic and explosive -- dark navy backgrounds with hot orange and
+  electric teal particles that scatter and reform at high speed. Fast trails
+  streak across the frame, particle bursts explode on snare hits, and
+  everything moves with restless, frenetic energy. Underground club with
+  bass shaking the walls, bodies in perpetual motion.
+colors:
+  - "#0a0a14"
+  - "#ff4400"
+  - "#00ffaa"
+shapes:
+  - "particles"
+  - "fast_trails"
+  - "explosions"
+movement: "rapid_scatter"
+intensity: 0.85
+speed: 0.9
+effect_preference: "particles"

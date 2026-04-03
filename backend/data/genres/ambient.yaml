@@ -1,0 +1,23 @@
+id: "ambient-core"
+genre: "ambient"
+subgenre: ""
+description: >
+  Ambient: ethereal, floating soundscapes with long reverb tails and
+  evolving textures that dissolve into space. Visuals are vast and
+  contemplative -- deep midnight blue backgrounds with soft cyan and
+  ice-blue particles drifting like distant stars. Nebula formations
+  glow faintly, particle clouds drift with glacial patience, and soft
+  light blooms fade in and out. Meditative stillness, gazing at the
+  night sky from a mountaintop.
+colors:
+  - "#0a0a2e"
+  - "#4488ff"
+  - "#88ccff"
+shapes:
+  - "particles"
+  - "nebula"
+  - "soft_glow"
+movement: "slow_drift"
+intensity: 0.3
+speed: 0.2
+effect_preference: "particles"

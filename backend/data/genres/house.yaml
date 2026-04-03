@@ -1,0 +1,22 @@
+id: "house-core"
+genre: "house"
+subgenre: ""
+description: >
+  House music: groovy, soulful rhythms with warm basslines and uplifting
+  chord progressions. Visuals radiate warmth -- deep purple backgrounds
+  with orange and gold accents that pulse like sunset light. Waves undulate
+  in smooth cycles, circles expand and contract with the groove, and warm
+  geometric patterns bounce with funky syncopation. Dance floor joy,
+  Saturday night at a rooftop party.
+colors:
+  - "#1a0a2e"
+  - "#ff6600"
+  - "#ffcc00"
+shapes:
+  - "waves"
+  - "circles"
+  - "warm_geometry"
+movement: "groovy_bounce"
+intensity: 0.6
+speed: 0.5
+effect_preference: "plasma"

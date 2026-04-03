@@ -1,0 +1,21 @@
+id: "techno-melodic"
+genre: "techno"
+subgenre: "melodic"
+description: >
+  Melodic techno: emotive arpeggios and lush pads layered over driving
+  four-on-the-floor beats. Visuals blend deep indigo backgrounds with warm
+  amber and electric violet accents. Flowing arcs sweep across the frame in
+  graceful curves, soft geometry breathes with the melody, and transitions
+  feel fluid rather than jarring. Afterhours sunrise on a festival stage,
+  euphoric yet grounded.
+colors:
+  - "#0a0a1e"
+  - "#6644ff"
+  - "#ff8844"
+shapes:
+  - "flowing_arcs"
+  - "soft_geometry"
+movement: "steady_flow"
+intensity: 0.6
+speed: 0.5
+effect_preference: "plasma"

@@ -1,0 +1,22 @@
+id: "ambient-dark"
+genre: "ambient"
+subgenre: "dark"
+description: >
+  Dark ambient: ominous, brooding drones that creep through cavernous
+  reverb spaces with unsettling low-frequency rumbles. Visuals are nearly
+  black -- deep charcoal backgrounds with barely visible steel-blue and
+  slate-gray accents. Fog rolls slowly across the frame, distant lights
+  flicker at the edge of perception, and everything moves with glacial
+  inevitability. Abandoned cathedral at midnight, footsteps echoing
+  in empty corridors.
+colors:
+  - "#050508"
+  - "#223355"
+  - "#445566"
+shapes:
+  - "fog"
+  - "distant_lights"
+movement: "glacial_drift"
+intensity: 0.2
+speed: 0.1
+effect_preference: "particles"

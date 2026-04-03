@@ -1,0 +1,22 @@
+id: "techno-core"
+genre: "techno"
+subgenre: ""
+description: >
+  Techno: dark, industrial, mechanical rhythms pounding through concrete
+  warehouse spaces. Deep bass-driven patterns with sharp geometric visuals
+  -- monochrome foundations sliced by neon accent flashes. Tunnel perspectives
+  converge to vanishing points, grid lines pulse on every kick, and strobing
+  geometry intensifies on beat drops. Relentless forward motion, Berlin
+  warehouse at 3am energy.
+colors:
+  - "#0a0a0a"
+  - "#00ff88"
+  - "#ff0066"
+shapes:
+  - "tunnel"
+  - "grid"
+  - "sharp_geometry"
+movement: "fast_forward"
+intensity: 0.8
+speed: 0.7
+effect_preference: "tunnel"

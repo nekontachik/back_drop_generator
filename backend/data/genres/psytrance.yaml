@@ -1,0 +1,23 @@
+id: "psytrance-core"
+genre: "psytrance"
+subgenre: ""
+description: >
+  Psytrance: psychedelic, mind-bending soundscapes with rapid-fire basslines,
+  acid squelches, and intricate layered rhythms that spiral into infinity.
+  Visuals are maximally saturated -- deep violet backgrounds exploding with
+  magenta and cyan fractals that recursively zoom and morph. Spirals rotate
+  hypnotically, kaleidoscope patterns tessellate in impossible geometries,
+  and everything pulses with frenetic energy. Open-air festival under a full
+  moon, consciousness expanding outward.
+colors:
+  - "#0a002e"
+  - "#ff00ff"
+  - "#00ffff"
+shapes:
+  - "fractals"
+  - "spirals"
+  - "kaleidoscope"
+movement: "spiraling_zoom"
+intensity: 0.9
+speed: 0.8
+effect_preference: "fractal"
