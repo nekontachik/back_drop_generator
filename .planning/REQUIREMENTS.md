@@ -23,8 +23,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### AI Pipeline
 
-- [ ] **RAG-01**: ChromaDB knowledge base stores genre-style documents (colors, shapes, movement)
-- [ ] **RAG-02**: RAG retrieves relevant style docs based on prompt + genre
+- [x] **RAG-01**: ChromaDB knowledge base stores genre-style documents (colors, shapes, movement)
+- [x] **RAG-02**: RAG retrieves relevant style docs based on prompt + genre
 - [ ] **LLM-01**: LLM creatively blends parameters from retrieved docs (not fixed selection)
 - [ ] **LLM-02**: LLM incorporates mood vector from audio analysis into parameter blending
 - [ ] **LLM-03**: LLM outputs structured JSON parameters validated by Pydantic schema
@@ -105,8 +105,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-02 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-03 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-04 | Phase 2: Audio Analysis & RAG | Complete |
-| RAG-01 | Phase 2: Audio Analysis & RAG | Pending |
-| RAG-02 | Phase 2: Audio Analysis & RAG | Pending |
+| RAG-01 | Phase 2: Audio Analysis & RAG | Complete |
+| RAG-02 | Phase 2: Audio Analysis & RAG | Complete |
 | LLM-01 | Phase 4: LLM Style Blending | Pending |
 | LLM-02 | Phase 4: LLM Style Blending | Pending |
 | LLM-03 | Phase 4: LLM Style Blending | Pending |
