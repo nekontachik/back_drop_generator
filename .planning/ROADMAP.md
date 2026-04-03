@@ -80,11 +80,11 @@ Plans:
   2. LLM produces creative parameter combinations that differ meaningfully from the raw retrieved style documents (not just passthrough)
   3. LLM output is structured JSON validated by Pydantic schema -- invalid outputs fall back to genre defaults without crashing
   4. Audio mood vector (spectral centroid, energy, chroma) visibly influences the generated visual parameters
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md -- LLM blender service: Anthropic SDK, prompt template, structured JSON output, retry + fallback logic
+- [ ] 04-02-PLAN.md -- Pipeline wiring: blend fields in API, LLM replaces prompt_mapper, frontend sends blend data
 
 ### Phase 5: Deployment & Production
 **Goal**: The complete application is live on the internet -- frontend on Vercel, backend on Railway -- and a recruiter can visit the URL, browse the gallery, generate a backdrop, and download it
@@ -111,5 +111,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Rendering Engine | 0/3 | Planning complete | - |
 | 2. Audio Analysis & RAG | 0/3 | Planning complete | - |
 | 3. Frontend Application | 3/3 | Complete   | 2026-04-03 |
-| 4. LLM Style Blending | 0/2 | Not started | - |
+| 4. LLM Style Blending | 0/2 | Planning complete | - |
 | 5. Deployment & Production | 0/2 | Not started | - |
