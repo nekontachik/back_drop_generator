@@ -22,10 +22,10 @@ A recruiter visits the site, sees a generated video backdrop synced to music, un
 - ✓ RAG layer retrieves style documents from knowledge base (genre to colors, shapes, movement) — Phase 2
 - ✓ Next.js frontend with gallery of pre-generated examples and "Try it yourself" CTA — Phase 3
 - ✓ Video player, BPM visualization chart, download button on results page — Phase 3
+- ✓ LLM creatively blends parameters from retrieved style docs (not just fixed selection) — Phase 4
 
 ### Active
 
-- [ ] LLM creatively blends parameters from retrieved style docs (not just fixed selection)
 - [ ] Deployed: Vercel (frontend) + Railway/Render (backend)
 
 ### Out of Scope
