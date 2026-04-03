@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     default_width: int = 1920
     default_height: int = 1080
     default_fps: int = 30
+    anthropic_api_key: str | None = None
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
