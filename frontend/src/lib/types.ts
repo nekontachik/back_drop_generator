@@ -46,6 +46,8 @@ export interface GenerateResponse {
   job_id: string;
   audio_analysis: AudioAnalysis | null;
   matched_styles: StyleMatch[] | null;
+  creative_description: string | null;  // LLM's visual description
+  blend_source: string | null;  // "llm" or "fallback"
 }
 
 export interface JobStatusResponse {

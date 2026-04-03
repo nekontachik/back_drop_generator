@@ -39,10 +39,14 @@ export function GenerateForm({ onPromptChange }: GenerateFormProps) {
     const formData = new FormData();
     formData.append("prompt", prompt);
     formData.append("bpm", String(bpm));
+    formData.append("blend_genre_a", genreA);
+    formData.append("blend_genre_b", genreB);
+    formData.append("blend_ratio", String(blendRatio));
     if (audioFile) formData.append("audio", audioFile);
 
     try {
       const res = await submitGenerate(formData);
+      sessionStorage.setItem(`generate-${res.job_id}`, JSON.stringify(res));
       if (res.audio_analysis) setDetectedBpm(res.audio_analysis.bpm);
       router.push(`/results/${res.job_id}`);
     } catch (err) {
