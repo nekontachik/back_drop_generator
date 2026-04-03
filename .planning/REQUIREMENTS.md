@@ -25,9 +25,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **RAG-01**: ChromaDB knowledge base stores genre-style documents (colors, shapes, movement)
 - [x] **RAG-02**: RAG retrieves relevant style docs based on prompt + genre
-- [ ] **LLM-01**: LLM creatively blends parameters from retrieved docs (not fixed selection)
-- [ ] **LLM-02**: LLM incorporates mood vector from audio analysis into parameter blending
-- [ ] **LLM-03**: LLM outputs structured JSON parameters validated by Pydantic schema
+- [x] **LLM-01**: LLM creatively blends parameters from retrieved docs (not fixed selection)
+- [x] **LLM-02**: LLM incorporates mood vector from audio analysis into parameter blending
+- [x] **LLM-03**: LLM outputs structured JSON parameters validated by Pydantic schema
 
 ### Visual Effects
 
@@ -107,9 +107,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-04 | Phase 2: Audio Analysis & RAG | Complete |
 | RAG-01 | Phase 2: Audio Analysis & RAG | Complete |
 | RAG-02 | Phase 2: Audio Analysis & RAG | Complete |
-| LLM-01 | Phase 4: LLM Style Blending | Pending |
-| LLM-02 | Phase 4: LLM Style Blending | Pending |
-| LLM-03 | Phase 4: LLM Style Blending | Pending |
+| LLM-01 | Phase 4: LLM Style Blending | Complete |
+| LLM-02 | Phase 4: LLM Style Blending | Complete |
+| LLM-03 | Phase 4: LLM Style Blending | Complete |
 | VFX-01 | Phase 1: Rendering Engine | Complete |
 | VFX-02 | Phase 1: Rendering Engine | Complete |
 | VFX-03 | Phase 1: Rendering Engine | Complete |
