@@ -50,7 +50,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Audio analysis service: librosa BPM detection, mood extraction, visualization data
+- [x] 02-01-PLAN.md -- Audio analysis service: librosa BPM detection, mood extraction, visualization data
 - [ ] 02-02-PLAN.md -- RAG knowledge base: genre YAML documents, ChromaDB seeder, retrieval service
 - [ ] 02-03-PLAN.md -- API integration: audio upload on POST /generate, GET /styles endpoint, test migration
 

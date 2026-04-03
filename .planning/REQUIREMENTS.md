@@ -11,15 +11,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **INP-01**: User can enter a text prompt describing desired visual style
 - [x] **INP-02**: User can manually enter BPM (60-200 range)
-- [ ] **INP-03**: User can upload a short audio clip (30-60s) for analysis
+- [x] **INP-03**: User can upload a short audio clip (30-60s) for analysis
 - [ ] **INP-04**: User can set style blend ratio (e.g. "70% techno + 30% ambient")
 
 ### Audio Analysis
 
-- [ ] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
-- [ ] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
-- [ ] **AUD-03**: BPM visualization chart displayed on results page
-- [ ] **AUD-04**: User can override detected BPM (fix octave errors)
+- [x] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
+- [x] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
+- [x] **AUD-03**: BPM visualization chart displayed on results page
+- [x] **AUD-04**: User can override detected BPM (fix octave errors)
 
 ### AI Pipeline
 
@@ -99,12 +99,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | INP-01 | Phase 1: Rendering Engine | Complete |
 | INP-02 | Phase 1: Rendering Engine | Complete |
-| INP-03 | Phase 2: Audio Analysis & RAG | Pending |
+| INP-03 | Phase 2: Audio Analysis & RAG | Complete |
 | INP-04 | Phase 4: LLM Style Blending | Pending |
-| AUD-01 | Phase 2: Audio Analysis & RAG | Pending |
-| AUD-02 | Phase 2: Audio Analysis & RAG | Pending |
-| AUD-03 | Phase 2: Audio Analysis & RAG | Pending |
-| AUD-04 | Phase 2: Audio Analysis & RAG | Pending |
+| AUD-01 | Phase 2: Audio Analysis & RAG | Complete |
+| AUD-02 | Phase 2: Audio Analysis & RAG | Complete |
+| AUD-03 | Phase 2: Audio Analysis & RAG | Complete |
+| AUD-04 | Phase 2: Audio Analysis & RAG | Complete |
 | RAG-01 | Phase 2: Audio Analysis & RAG | Pending |
 | RAG-02 | Phase 2: Audio Analysis & RAG | Pending |
 | LLM-01 | Phase 4: LLM Style Blending | Pending |
