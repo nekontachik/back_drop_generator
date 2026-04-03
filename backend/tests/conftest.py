@@ -63,3 +63,18 @@ def chroma_collection(tmp_path):
     from app.services.genre_seeder import init_genre_collection
 
     return init_genre_collection(str(tmp_path / "chroma"))
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _seed_chroma_for_tests(tmp_path_factory):
+    """Seed ChromaDB collection at session start so API tests can query styles.
+
+    Uses autouse + session scope so the collection is available for all tests
+    that import the FastAPI app (which registers the styles router).
+    """
+    from app.services.genre_seeder import init_genre_collection
+    from app.services.rag_retriever import set_collection
+
+    chroma_dir = tmp_path_factory.mktemp("chroma_session")
+    collection = init_genre_collection(str(chroma_dir))
+    set_collection(collection)
