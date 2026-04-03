@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+from unittest.mock import AsyncMock, patch
 
 import httpx
 import pytest
@@ -12,6 +13,8 @@ import pytest_asyncio
 from httpx import ASGITransport
 
 from app.main import app
+from app.models.params import RenderParams
+from app.services.llm_blender import BlendResult
 
 
 @pytest_asyncio.fixture
@@ -317,3 +320,59 @@ async def test_styles_endpoint_custom_count(client: httpx.AsyncClient):
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
+
+
+# ---------------------------------------------------------------------------
+# LLM blend integration
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_generate_with_blend_fields(client: httpx.AsyncClient):
+    """POST /generate with blend fields returns creative_description and blend_source (LLM-01, LLM-02)."""
+    mock_result = BlendResult(
+        params=RenderParams(bpm=120, width=480, height=270),
+        creative_description="A test visual with neon tunnels",
+        source="fallback",
+    )
+
+    with patch("app.api.generate.blend_style", new_callable=AsyncMock, return_value=mock_result):
+        resp = await client.post(
+            "/generate",
+            data={
+                "prompt": "dark techno warehouse",
+                "bpm": "120",
+                "width": "480",
+                "height": "270",
+                "blend_genre_a": "Techno",
+                "blend_genre_b": "Ambient",
+                "blend_ratio": "70",
+            },
+        )
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "job_id" in data
+    assert data["creative_description"] == "A test visual with neon tunnels"
+    assert data["blend_source"] == "fallback"
+
+
+@pytest.mark.asyncio
+async def test_generate_blend_source_present_without_blend_fields(client: httpx.AsyncClient):
+    """POST /generate without explicit blend fields still returns blend_source (LLM-03)."""
+    mock_result = BlendResult(
+        params=RenderParams(bpm=120, width=480, height=270),
+        creative_description="Generated using style matching (LLM unavailable)",
+        source="fallback",
+    )
+
+    with patch("app.api.generate.blend_style", new_callable=AsyncMock, return_value=mock_result):
+        resp = await client.post(
+            "/generate",
+            data={"prompt": "ambient dreamy", "bpm": "120", "width": "480", "height": "270"},
+        )
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "blend_source" in data
+    assert data["blend_source"] == "fallback"

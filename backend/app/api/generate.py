@@ -15,7 +15,7 @@ from app.models.audio import AudioAnalysis
 from app.models.job import JobStatus
 from app.services.audio_analyzer import analyze_audio, validate_audio
 from app.services.job_manager import create_job, get_job, update_job
-from app.services.prompt_mapper import map_prompt_to_params
+from app.services.llm_blender import blend_style
 from app.services.rag_retriever import get_collection, query_styles
 from app.worker import get_progress, submit_render
 
@@ -32,6 +32,9 @@ async def generate(
     width: int = Form(1920),
     height: int = Form(1080),
     seed: int | None = Form(None),
+    blend_genre_a: str | None = Form(None),
+    blend_genre_b: str | None = Form(None),
+    blend_ratio: int = Form(70),
     audio: UploadFile | None = File(None),
 ) -> GenerateResponse:
     """Accept a prompt and optional audio file, start rendering, return job_id.
@@ -84,13 +87,24 @@ async def generate(
     except RuntimeError:
         logger.warning("ChromaDB not initialized, skipping RAG retrieval")
 
-    render_params = map_prompt_to_params(
-        prompt,
-        effective_bpm,
-        width,
-        height,
-        seed,
+    # Build blend genres tuple if both provided
+    blend_genres = None
+    if blend_genre_a and blend_genre_b:
+        blend_genres = (blend_genre_a, blend_genre_b)
+
+    # LLM blend (or deterministic fallback) replaces prompt_mapper
+    blend_result = await blend_style(
+        prompt=prompt,
+        genre_docs=matched_styles or [],
+        mood=audio_analysis.mood if audio_analysis else None,
+        blend_genres=blend_genres,
+        blend_ratio=blend_ratio,
+        bpm=effective_bpm,
+        width=width,
+        height=height,
+        seed=seed,
     )
+    render_params = blend_result.params
 
     job = create_job(render_params)
 
@@ -105,6 +119,8 @@ async def generate(
         job_id=job.job_id,
         audio_analysis=audio_analysis,
         matched_styles=matched_styles,
+        creative_description=blend_result.creative_description,
+        blend_source=blend_result.source,
     )
 
 
