@@ -9,6 +9,8 @@ interface CarouselItem {
   src: string;
   prompt: string;
   genre: string;
+  effect?: string;
+  bpm?: number;
 }
 
 interface CarouselProps {
