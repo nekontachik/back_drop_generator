@@ -53,8 +53,8 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Deployment
 
 - [ ] **DEP-01**: Frontend deployed to Vercel
-- [ ] **DEP-02**: Backend deployed to Railway/Render ($0-5/month)
-- [ ] **DEP-03**: ChromaDB seeded from repo files on startup
+- [x] **DEP-02**: Backend deployed to Railway/Render ($0-5/month)
+- [x] **DEP-03**: ChromaDB seeded from repo files on startup
 
 ## v2 Requirements
 
@@ -123,8 +123,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FE-03 | Phase 3: Frontend Application | Complete |
 | FE-04 | Phase 3: Frontend Application | Complete |
 | DEP-01 | Phase 5: Deployment & Production | Pending |
-| DEP-02 | Phase 5: Deployment & Production | Pending |
-| DEP-03 | Phase 5: Deployment & Production | Pending |
+| DEP-02 | Phase 5: Deployment & Production | Complete |
+| DEP-03 | Phase 5: Deployment & Production | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total

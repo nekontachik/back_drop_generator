@@ -94,10 +94,10 @@ Plans:
   1. Frontend loads at a public Vercel URL and the gallery displays pre-generated examples
   2. Backend responds at a public Railway URL and handles generate requests from the Vercel frontend (CORS configured correctly)
   3. ChromaDB knowledge base seeds itself automatically from repo files on backend startup -- no manual setup required
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 05-01-PLAN.md -- Backend Docker build, dependency fixes, CORS production config, .env.example
+- [x] 05-01-PLAN.md -- Backend Docker build, dependency fixes, CORS production config, .env.example
 - [ ] 05-02-PLAN.md -- Frontend Vercel config, gallery generation script, gallery metadata with effect/BPM
 
 ## Progress
@@ -112,4 +112,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Audio Analysis & RAG | 0/3 | Planning complete | - |
 | 3. Frontend Application | 3/3 | Complete   | 2026-04-03 |
 | 4. LLM Style Blending | 2/2 | Complete   | 2026-04-03 |
-| 5. Deployment & Production | 0/2 | Planning complete | - |
+| 5. Deployment & Production | 1/2 | In Progress|  |
