@@ -26,7 +26,7 @@ A recruiter visits the site, sees a generated video backdrop synced to music, un
 
 ### Active
 
-- [ ] Deployed: Vercel (frontend) + Railway/Render (backend)
+- ✓ Deployed: Vercel (frontend) + Railway/Render (backend) — Phase 5
 
 ### Out of Scope
 
@@ -88,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-03 after Phase 2 completion — Audio Analysis & RAG Knowledge Base delivered (librosa BPM detection, mood extraction, ChromaDB genre knowledge base, API integration)*
+*Last updated: 2026-04-04 after Phase 5 completion — Deployment & Production (Dockerfile, CORS config, gallery generation script, Vercel/Railway deployment prep). All v1.0 milestone phases complete.*
