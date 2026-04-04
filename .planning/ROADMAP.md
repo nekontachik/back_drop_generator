@@ -98,7 +98,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md -- Backend Docker build, dependency fixes, CORS production config, .env.example
-- [ ] 05-02-PLAN.md -- Frontend Vercel config, gallery generation script, gallery metadata with effect/BPM
+- [x] 05-02-PLAN.md -- Frontend Vercel config, gallery generation script, gallery metadata with effect/BPM
 
 ## Progress
 
