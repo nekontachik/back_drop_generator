@@ -17,6 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Frontend Application** - Next.js app with gallery, generate form, results page, and SSE progress (completed 2026-04-03)
 - [x] **Phase 4: LLM Style Blending** - Full AI pipeline from prompt to validated render parameters via RAG + LLM (completed 2026-04-03)
 - [ ] **Phase 5: Deployment & Production** - Frontend on Vercel, backend on Railway, ChromaDB self-seeding on startup
+- [ ] **Phase 6: Fix Integration Bugs & Data Contracts** - sessionStorage key fix, data contract fixes, bpm_override wiring, hex parsing guard
 
 ## Phase Details
 
@@ -100,6 +101,22 @@ Plans:
 - [x] 05-01-PLAN.md -- Backend Docker build, dependency fixes, CORS production config, .env.example
 - [x] 05-02-PLAN.md -- Frontend Vercel config, gallery generation script, gallery metadata with effect/BPM
 
+### Phase 6: Fix Integration Bugs & Data Contracts
+**Goal**: Close all integration gaps found in the v1.0 milestone audit -- fix sessionStorage key mismatch, data contract mismatches, missing form fields, and hex parsing crash so all 5 partial requirements become fully satisfied
+**Depends on**: Phase 2, Phase 3
+**Requirements**: AUD-03, AUD-04, RAG-02, FE-02, FE-03
+**Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md
+**Success Criteria** (what must be TRUE):
+  1. Results page displays BPM chart with detected beats after generating with audio upload
+  2. BPM override chips send bpm_override field to backend and override detected BPM
+  3. Style preview cards show color swatches as colored rectangles and shape tags as readable words
+  4. Results page renders creative_description from LLM output
+  5. Hex color parsing handles empty strings without crashing (BUG-3 test failures fixed)
+**Plans:** 0 plans
+
+Plans:
+(none yet)
+
 ## Progress
 
 **Execution Order:**
@@ -113,3 +130,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 3. Frontend Application | 3/3 | Complete   | 2026-04-03 |
 | 4. LLM Style Blending | 2/2 | Complete   | 2026-04-03 |
 | 5. Deployment & Production | 1/2 | In Progress|  |
+| 6. Fix Integration Bugs | 0/0 | Planning | - |
