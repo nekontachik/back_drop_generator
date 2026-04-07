@@ -66,6 +66,11 @@ def query_styles(
         # Ensure numeric fields are proper floats
         metadata["intensity"] = float(metadata.get("intensity", 0.5))
         metadata["speed"] = float(metadata.get("speed", 0.5))
+        # Split comma-joined strings into arrays for frontend consumption
+        colors_raw = metadata.get("colors", "")
+        metadata["colors"] = [c.strip() for c in colors_raw.split(",") if c.strip()] if colors_raw else []
+        shapes_raw = metadata.get("shapes", "")
+        metadata["shapes"] = [s.strip() for s in shapes_raw.split(",") if s.strip()] if shapes_raw else []
 
         styles.append(
             {
