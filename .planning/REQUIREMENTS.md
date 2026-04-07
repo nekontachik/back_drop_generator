@@ -19,7 +19,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
 - [x] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
 - [x] **AUD-03**: BPM visualization chart displayed on results page
-- [ ] **AUD-04**: User can override detected BPM (fix octave errors)
+- [x] **AUD-04**: User can override detected BPM (fix octave errors)
 
 ### AI Pipeline
 
@@ -47,7 +47,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **FE-01**: Gallery landing page with pre-generated examples and "Try it yourself" CTA
 - [x] **FE-02**: Generate form: text prompt, BPM input, audio upload, style blend controls
-- [ ] **FE-03**: Results page: video player, BPM chart, download button
+- [x] **FE-03**: Results page: video player, BPM chart, download button
 - [x] **FE-04**: Progress indicator during render (SSE-driven)
 
 ### Deployment
@@ -104,7 +104,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-01 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-02 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-03 | Phase 6: Fix Integration Bugs | Complete |
-| AUD-04 | Phase 6: Fix Integration Bugs | Pending |
+| AUD-04 | Phase 6: Fix Integration Bugs | Complete |
 | RAG-01 | Phase 2: Audio Analysis & RAG | Complete |
 | RAG-02 | Phase 6: Fix Integration Bugs | Complete |
 | LLM-01 | Phase 4: LLM Style Blending | Complete |
@@ -120,7 +120,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RND-04 | Phase 1: Rendering Engine | Complete |
 | FE-01 | Phase 3: Frontend Application | Complete |
 | FE-02 | Phase 6: Fix Integration Bugs | Complete |
-| FE-03 | Phase 6: Fix Integration Bugs | Pending |
+| FE-03 | Phase 6: Fix Integration Bugs | Complete |
 | FE-04 | Phase 3: Frontend Application | Complete |
 | DEP-01 | Phase 5: Deployment & Production | Complete |
 | DEP-02 | Phase 5: Deployment & Production | Complete |
