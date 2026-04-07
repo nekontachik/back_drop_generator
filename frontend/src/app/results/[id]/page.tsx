@@ -20,6 +20,7 @@ export default function ResultsPage() {
   const [error, setError] = useState<string | null>(null);
   const [audioAnalysis, setAudioAnalysis] = useState<AudioAnalysis | null>(null);
   const [matchedStyles, setMatchedStyles] = useState<StyleMatch[] | null>(null);
+  const [creativeDescription, setCreativeDescription] = useState<string | null>(null);
 
   // Load generation response data stored by generate form before redirect.
   // If missing (e.g., user navigated directly), audio analysis and styles
@@ -31,6 +32,7 @@ export default function ResultsPage() {
         const data: GenerateResponse = JSON.parse(stored);
         setAudioAnalysis(data.audio_analysis);
         setMatchedStyles(data.matched_styles);
+        setCreativeDescription(data.creative_description ?? null);
       } catch {
         // Ignore parse errors — graceful degradation
       }
@@ -116,6 +118,7 @@ export default function ResultsPage() {
             jobId={jobId}
             audioAnalysis={audioAnalysis}
             matchedStyles={matchedStyles}
+            creativeDescription={creativeDescription}
           />
         </div>
       )}

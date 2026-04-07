@@ -12,11 +12,26 @@ interface ResultSidebarProps {
   jobId: string;
   audioAnalysis: AudioAnalysis | null;
   matchedStyles: StyleMatch[] | null;
+  creativeDescription: string | null;
 }
 
-export function ResultSidebar({ jobId, audioAnalysis, matchedStyles }: ResultSidebarProps) {
+export function ResultSidebar({ jobId, audioAnalysis, matchedStyles, creativeDescription }: ResultSidebarProps) {
   return (
     <div className="flex flex-col gap-4">
+      {/* Creative Description */}
+      {creativeDescription && (
+        <Card>
+          <CardHeader>
+            <p className="text-sm font-semibold text-white/80">AI Vision</p>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-white/70 leading-relaxed italic">
+              {creativeDescription}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* BPM Chart */}
       {audioAnalysis && (
         <BpmChart visualization={audioAnalysis.visualization} />
