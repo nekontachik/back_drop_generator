@@ -39,7 +39,7 @@ export function GenerateForm({ onPromptChange }: GenerateFormProps) {
     const formData = new FormData();
     formData.append("prompt", prompt);
     formData.append("bpm", String(bpm));
-    if (audioFile && detectedBpm) {
+    if (audioFile) {
       formData.append("bpm_override", String(bpm));
     }
     formData.append("blend_genre_a", genreA);
