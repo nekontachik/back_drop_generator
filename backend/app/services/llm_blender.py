@@ -94,16 +94,15 @@ def _build_prompt(
     # Build genre docs section
     docs_section = ""
     for i, doc in enumerate(genre_docs, 1):
-        meta = doc.get("metadata", {})
         docs_section += f"\nGenre Document {i}:\n"
-        docs_section += f"  Genre: {meta.get('genre', 'unknown')}\n"
-        docs_section += f"  Description: {doc.get('document', '')}\n"
-        colors = meta.get("colors", [])
+        docs_section += f"  Genre: {doc.get('genre', 'unknown')}\n"
+        docs_section += f"  Description: {doc.get('description', '')}\n"
+        colors = doc.get("colors", [])
         if colors:
             docs_section += f"  Colors: {', '.join(colors)}\n"
-        docs_section += f"  Intensity: {meta.get('intensity', 0.5)}\n"
-        docs_section += f"  Speed: {meta.get('speed', 0.5)}\n"
-        docs_section += f"  Effect preference: {meta.get('effect_preference', 'tunnel')}\n"
+        docs_section += f"  Intensity: {doc.get('intensity', 0.5)}\n"
+        docs_section += f"  Speed: {doc.get('speed', 0.5)}\n"
+        docs_section += f"  Effect preference: {doc.get('effect_preference', 'tunnel')}\n"
 
     # Blend instruction
     if blend_genres and len(blend_genres) == 2:
@@ -373,16 +372,16 @@ def _deterministic_fallback(
 
     # Override colors/intensity/speed from top genre doc when available
     if genre_docs:
-        top_meta = genre_docs[0].get("metadata", {})
-        colors = top_meta.get("colors", [])
+        top_doc = genre_docs[0]
+        colors = top_doc.get("colors", [])
         if len(colors) >= 3:
             params = params.model_copy(
                 update={
                     "bg_color": colors[0],
                     "primary_color": colors[1],
                     "accent_color": colors[2],
-                    "intensity": float(top_meta.get("intensity", params.intensity)),
-                    "speed": float(top_meta.get("speed", params.speed)),
+                    "intensity": float(top_doc.get("intensity", params.intensity)),
+                    "speed": float(top_doc.get("speed", params.speed)),
                 }
             )
         elif len(colors) == 2:

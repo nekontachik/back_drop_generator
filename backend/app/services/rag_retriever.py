@@ -50,9 +50,14 @@ def query_styles(
         n_results: Maximum number of results to return.
 
     Returns:
-        List of dicts, each with keys: ``id``, ``document``,
-        ``metadata``, ``distance``.  Sorted by ascending distance
-        (most relevant first).
+        List of flat dicts matching the frontend StyleMatch interface, each
+        with keys: ``id``, ``genre``, ``description``, ``colors``, ``shapes``,
+        ``movement``, ``intensity``, ``speed``, ``effect_preference``,
+        ``distance``.  Sorted by ascending distance (most relevant first).
+
+        - ``colors`` and ``shapes`` are lists of strings (split from
+          comma-joined ChromaDB metadata).
+        - ``intensity`` and ``speed`` are floats.
     """
     results = collection.query(
         query_texts=[prompt],
@@ -62,21 +67,21 @@ def query_styles(
 
     styles: list[dict] = []
     for i in range(len(results["ids"][0])):
-        metadata = dict(results["metadatas"][0][i])
-        # Ensure numeric fields are proper floats
-        metadata["intensity"] = float(metadata.get("intensity", 0.5))
-        metadata["speed"] = float(metadata.get("speed", 0.5))
-        # Split comma-joined strings into arrays for frontend consumption
+        metadata = results["metadatas"][0][i]
         colors_raw = metadata.get("colors", "")
-        metadata["colors"] = [c.strip() for c in colors_raw.split(",") if c.strip()] if colors_raw else []
         shapes_raw = metadata.get("shapes", "")
-        metadata["shapes"] = [s.strip() for s in shapes_raw.split(",") if s.strip()] if shapes_raw else []
 
         styles.append(
             {
                 "id": results["ids"][0][i],
-                "document": results["documents"][0][i],
-                "metadata": metadata,
+                "description": results["documents"][0][i],
+                "genre": metadata.get("genre", "unknown"),
+                "colors": [c.strip() for c in colors_raw.split(",") if c.strip()] if colors_raw else [],
+                "shapes": [s.strip() for s in shapes_raw.split(",") if s.strip()] if shapes_raw else [],
+                "movement": metadata.get("movement", ""),
+                "intensity": float(metadata.get("intensity", 0.5)),
+                "speed": float(metadata.get("speed", 0.5)),
+                "effect_preference": metadata.get("effect_preference", ""),
                 "distance": results["distances"][0][i],
             }
         )

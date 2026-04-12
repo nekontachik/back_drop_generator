@@ -21,13 +21,15 @@ class TestQueryStyles:
         from app.services.rag_retriever import query_styles
 
         results = query_styles(chroma_collection, "dark techno warehouse", n_results=3)
+        required_keys = {"id", "description", "genre", "colors", "shapes", "movement", "intensity", "speed", "distance"}
         for result in results:
-            assert "id" in result
-            assert "document" in result
-            assert "metadata" in result
-            assert "distance" in result
+            for key in required_keys:
+                assert key in result, f"Missing flat key: {key}"
+            # Old nested structure must not be present
+            assert "document" not in result, "Old 'document' key must be removed"
+            assert "metadata" not in result, "Old 'metadata' key must be removed"
 
-    def test_result_metadata_has_required_fields(self, chroma_collection):
+    def test_result_has_style_fields(self, chroma_collection):
         from app.services.rag_retriever import query_styles
 
         results = query_styles(chroma_collection, "dark techno warehouse", n_results=3)
@@ -41,15 +43,14 @@ class TestQueryStyles:
             "effect_preference",
         }
         for result in results:
-            meta = result["metadata"]
             for key in required_keys:
-                assert key in meta, f"Missing metadata key: {key}"
+                assert key in result, f"Missing style field at root level: {key}"
 
     def test_techno_query_returns_techno_first(self, chroma_collection):
         from app.services.rag_retriever import query_styles
 
         results = query_styles(chroma_collection, "techno", n_results=3)
-        assert results[0]["metadata"]["genre"] == "techno"
+        assert results[0]["genre"] == "techno"
 
     def test_ambient_query_returns_ambient_first(self, chroma_collection):
         from app.services.rag_retriever import query_styles
@@ -57,7 +58,7 @@ class TestQueryStyles:
         results = query_styles(
             chroma_collection, "dreamy ambient floating", n_results=3
         )
-        assert results[0]["metadata"]["genre"] == "ambient"
+        assert results[0]["genre"] == "ambient"
 
     def test_n_results_limits_output(self, chroma_collection):
         from app.services.rag_retriever import query_styles
@@ -69,9 +70,19 @@ class TestQueryStyles:
         from app.services.rag_retriever import query_styles
 
         results = query_styles(chroma_collection, "techno", n_results=1)
-        meta = results[0]["metadata"]
-        assert isinstance(meta["intensity"], float)
-        assert isinstance(meta["speed"], float)
+        assert isinstance(results[0]["intensity"], float)
+        assert isinstance(results[0]["speed"], float)
+
+    def test_colors_and_shapes_are_lists(self, chroma_collection):
+        from app.services.rag_retriever import query_styles
+
+        results = query_styles(chroma_collection, "techno", n_results=1)
+        assert isinstance(results[0]["colors"], list), "colors must be a list"
+        assert isinstance(results[0]["shapes"], list), "shapes must be a list"
+        # Each element must be a string (not comma-joined)
+        for color in results[0]["colors"]:
+            assert isinstance(color, str)
+            assert "," not in color, f"color element should not contain comma: {color}"
 
 
 class TestUpsertIdempotency:
