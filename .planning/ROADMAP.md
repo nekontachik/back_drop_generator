@@ -128,10 +128,10 @@ Plans:
   1. Style preview cards show genre name, color swatches as colored rectangles, and shape tags as readable words
   2. Results sidebar matched styles section shows styled cards with genre, colors, and shapes
   3. bpm_override FormData field is sent to backend when audio file is attached, regardless of detectedBpm state
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-(none yet)
+- [ ] 07-01-PLAN.md — Flatten query_styles() return dict, update LLM blender consumers, fix bpm_override guard
 
 ## Progress
 
@@ -147,4 +147,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 4. LLM Style Blending | 2/2 | Complete   | 2026-04-03 |
 | 5. Deployment & Production | 1/2 | In Progress|  |
 | 6. Fix Integration Bugs | 2/2 | Complete   | 2026-04-07 |
-| 7. Fix Data Contract & BPM Override | 0/0 | Planning | - |
+| 7. Fix Data Contract & BPM Override | 0/1 | Planning complete | - |
