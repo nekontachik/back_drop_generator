@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: LLM Style Blending** - Full AI pipeline from prompt to validated render parameters via RAG + LLM (completed 2026-04-03)
 - [ ] **Phase 5: Deployment & Production** - Frontend on Vercel, backend on Railway, ChromaDB self-seeding on startup
 - [x] **Phase 6: Fix Integration Bugs & Data Contracts** - sessionStorage key fix, data contract fixes, bpm_override wiring, hex parsing guard (completed 2026-04-07)
+- [ ] **Phase 7: Fix Data Contract & BPM Override** - flatten query_styles return dict, fix bpm_override submit guard
 
 ## Phase Details
 
@@ -118,6 +119,20 @@ Plans:
 - [x] 06-01-PLAN.md -- Backend fixes: hex color parsing guard (BUG-3), colors/shapes comma-string to array (BUG-2)
 - [x] 06-02-PLAN.md -- Frontend fixes: sessionStorage key (BUG-1), bpm_override wiring (AUD-04), creative_description display
 
+### Phase 7: Fix Data Contract & BPM Override
+**Goal**: Flatten query_styles() return dict so frontend StyleMatch receives data at root level, and fix bpm_override guard so override is sent on first submit — closing the last 3 unsatisfied requirements
+**Depends on**: Phase 6
+**Requirements**: RAG-02, FE-02, AUD-04
+**Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md (2026-04-12)
+**Success Criteria** (what must be TRUE):
+  1. Style preview cards show genre name, color swatches as colored rectangles, and shape tags as readable words
+  2. Results sidebar matched styles section shows styled cards with genre, colors, and shapes
+  3. bpm_override FormData field is sent to backend when audio file is attached, regardless of detectedBpm state
+**Plans:** 0 plans
+
+Plans:
+(none yet)
+
 ## Progress
 
 **Execution Order:**
@@ -132,3 +147,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 4. LLM Style Blending | 2/2 | Complete   | 2026-04-03 |
 | 5. Deployment & Production | 1/2 | In Progress|  |
 | 6. Fix Integration Bugs | 2/2 | Complete   | 2026-04-07 |
+| 7. Fix Data Contract & BPM Override | 0/0 | Planning | - |

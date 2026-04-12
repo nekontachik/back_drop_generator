@@ -19,12 +19,12 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
 - [x] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
 - [x] **AUD-03**: BPM visualization chart displayed on results page
-- [x] **AUD-04**: User can override detected BPM (fix octave errors)
+- [ ] **AUD-04**: User can override detected BPM (fix octave errors)
 
 ### AI Pipeline
 
 - [x] **RAG-01**: ChromaDB knowledge base stores genre-style documents (colors, shapes, movement)
-- [x] **RAG-02**: RAG retrieves relevant style docs based on prompt + genre
+- [ ] **RAG-02**: RAG retrieves relevant style docs based on prompt + genre
 - [x] **LLM-01**: LLM creatively blends parameters from retrieved docs (not fixed selection)
 - [x] **LLM-02**: LLM incorporates mood vector from audio analysis into parameter blending
 - [x] **LLM-03**: LLM outputs structured JSON parameters validated by Pydantic schema
@@ -46,7 +46,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Frontend
 
 - [x] **FE-01**: Gallery landing page with pre-generated examples and "Try it yourself" CTA
-- [x] **FE-02**: Generate form: text prompt, BPM input, audio upload, style blend controls
+- [ ] **FE-02**: Generate form: text prompt, BPM input, audio upload, style blend controls
 - [x] **FE-03**: Results page: video player, BPM chart, download button
 - [x] **FE-04**: Progress indicator during render (SSE-driven)
 
@@ -104,9 +104,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-01 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-02 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-03 | Phase 6: Fix Integration Bugs | Complete |
-| AUD-04 | Phase 6: Fix Integration Bugs | Complete |
+| AUD-04 | Phase 7: Fix Data Contract & BPM Override | Pending |
 | RAG-01 | Phase 2: Audio Analysis & RAG | Complete |
-| RAG-02 | Phase 6: Fix Integration Bugs | Complete |
+| RAG-02 | Phase 7: Fix Data Contract & BPM Override | Pending |
 | LLM-01 | Phase 4: LLM Style Blending | Complete |
 | LLM-02 | Phase 4: LLM Style Blending | Complete |
 | LLM-03 | Phase 4: LLM Style Blending | Complete |
@@ -119,7 +119,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RND-03 | Phase 1: Rendering Engine | Complete |
 | RND-04 | Phase 1: Rendering Engine | Complete |
 | FE-01 | Phase 3: Frontend Application | Complete |
-| FE-02 | Phase 6: Fix Integration Bugs | Complete |
+| FE-02 | Phase 7: Fix Data Contract & BPM Override | Pending |
 | FE-03 | Phase 6: Fix Integration Bugs | Complete |
 | FE-04 | Phase 3: Frontend Application | Complete |
 | DEP-01 | Phase 5: Deployment & Production | Complete |
@@ -130,8 +130,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1 requirements: 28 total
 - Mapped to phases: 28
 - Unmapped: 0
-- Satisfied: 23
-- Pending (gap closure): 5 (AUD-03, AUD-04, RAG-02, FE-02, FE-03)
+- Satisfied: 25
+- Pending (gap closure): 3 (AUD-04, RAG-02, FE-02)
 
 ---
 *Requirements defined: 2026-04-01*
