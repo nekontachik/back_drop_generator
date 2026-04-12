@@ -308,9 +308,10 @@ async def test_styles_endpoint(client: httpx.AsyncClient):
     assert isinstance(data, list)
     assert len(data) == 3  # default n_results
     assert "id" in data[0]
-    assert "document" in data[0]
-    assert "metadata" in data[0]
-    assert "genre" in data[0]["metadata"]
+    assert "description" in data[0]
+    assert "genre" in data[0]
+    assert "colors" in data[0]
+    assert "shapes" in data[0]
 
 
 @pytest.mark.asyncio
