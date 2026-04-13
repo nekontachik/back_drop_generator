@@ -23,6 +23,7 @@ export function GenerateForm({ onPromptChange }: GenerateFormProps) {
   const [genreA, setGenreA] = useState("Techno");
   const [genreB, setGenreB] = useState("Ambient");
   const [blendRatio, setBlendRatio] = useState(70);
+  const [bpmTouched, setBpmTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +40,7 @@ export function GenerateForm({ onPromptChange }: GenerateFormProps) {
     const formData = new FormData();
     formData.append("prompt", prompt);
     formData.append("bpm", String(bpm));
-    if (audioFile) {
+    if (audioFile && bpmTouched) {
       formData.append("bpm_override", String(bpm));
     }
     formData.append("blend_genre_a", genreA);
@@ -87,13 +88,16 @@ export function GenerateForm({ onPromptChange }: GenerateFormProps) {
           file={audioFile}
           onFileChange={(f) => {
             setAudioFile(f);
-            if (!f) setDetectedBpm(null);
+            if (!f) {
+              setDetectedBpm(null);
+              setBpmTouched(false);
+            }
           }}
         />
       </div>
 
       {/* BPM */}
-      <BpmInput value={bpm} onChange={setBpm} detectedBpm={detectedBpm} />
+      <BpmInput value={bpm} onChange={(v: number) => { setBpm(v); setBpmTouched(true); }} detectedBpm={detectedBpm} />
 
       {/* Blend control */}
       <BlendControl

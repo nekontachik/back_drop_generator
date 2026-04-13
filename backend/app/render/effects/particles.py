@@ -16,6 +16,8 @@ from app.render.effects.base import BaseEffect
 def _hex_to_rgb(hex_color: str) -> np.ndarray:
     """Convert '#RRGGBB' hex string to float RGB array."""
     h = hex_color.lstrip("#")
+    if not h:
+        return np.array([0.0, 0.0, 0.0], dtype=np.float64)
     return np.array([int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)], dtype=np.float64)
 
 
