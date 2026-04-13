@@ -39,6 +39,7 @@ export interface StyleMatch {
   movement: string;
   intensity: number;
   speed: number;
+  effect_preference: string;
   distance: number;
 }
 
