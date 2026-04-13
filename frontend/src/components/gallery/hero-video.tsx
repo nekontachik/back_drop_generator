@@ -16,29 +16,30 @@ interface HeroVideoProps {
 export function HeroVideo({ src, posterSrc }: HeroVideoProps) {
   return (
     <section className="relative h-[70vh] overflow-hidden bg-surface">
-      {/* Video or gradient fallback */}
-      {src ? (
+      {/* Gradient always visible — base layer */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.15) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(236,72,153,0.1) 0%, transparent 60%), #0a0a0a",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Video — hidden on mobile to save data and avoid iOS autoplay issues */}
+      {src && (
         <video
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover hidden sm:block"
           autoPlay
           muted
           loop
           playsInline
+          preload="none"
           poster={posterSrc}
           aria-hidden="true"
         >
           <source src={src} type="video/mp4" />
         </video>
-      ) : (
-        /* Gradient fallback when video is not yet available */
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.15) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(236,72,153,0.1) 0%, transparent 60%), #0a0a0a",
-          }}
-          aria-hidden="true"
-        />
       )}
 
       {/* Bottom gradient overlay for CTA legibility */}

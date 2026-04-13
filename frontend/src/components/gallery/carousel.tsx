@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface CarouselItem {
@@ -79,7 +79,7 @@ export function Carousel({ items }: CarouselProps) {
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   aria-label={item.prompt}
