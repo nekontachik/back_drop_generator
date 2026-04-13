@@ -2,7 +2,7 @@
  * API client functions for all backend endpoints.
  * Base URL is configured via NEXT_PUBLIC_API_URL environment variable.
  */
-import type { GenerateResponse, JobStatusResponse, StyleMatch } from "./types";
+import type { GenerateResponse, StyleMatch } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -19,15 +19,6 @@ export async function submitGenerate(formData: FormData): Promise<GenerateRespon
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || res.statusText);
   }
-  return res.json();
-}
-
-/**
- * Get the current status of a render job.
- */
-export async function getJobStatus(jobId: string): Promise<JobStatusResponse> {
-  const res = await fetch(`${API_URL}/jobs/${jobId}`);
-  if (!res.ok) throw new Error("Job not found");
   return res.json();
 }
 
