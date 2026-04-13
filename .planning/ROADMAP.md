@@ -146,7 +146,7 @@ Plans:
   3. All 4 effects handle empty/malformed hex color strings without crashing (return black fallback)
   4. Dockerfile CMD uses $PORT env var (Railway dynamic port) with fallback to 8000
   5. Dead code removed: getJobStatus (frontend), GenerateRequest (backend)
-**Plans:** 0/1 plans
+**Plans:** 1 plan
 
 Plans:
 - [ ] 08-01-PLAN.md — Fix bpm_override guard, hex color guards in 3 effects, Dockerfile PORT, dead code cleanup
