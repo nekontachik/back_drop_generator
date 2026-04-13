@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     chroma_persist_dir: Path = Path("data/chroma")
     render_ttl_seconds: int = 3600
     max_workers: int = 1
-    default_width: int = 1920
-    default_height: int = 1080
+    default_width: int = 1280
+    default_height: int = 720
     default_fps: int = 30
     anthropic_api_key: str | None = None
 
