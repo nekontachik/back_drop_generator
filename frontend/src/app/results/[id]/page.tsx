@@ -77,7 +77,7 @@ export default function ResultsPage() {
               Generating Your Backdrop...
             </h1>
             <p className="text-white/50 text-sm">
-              This takes 1–3 minutes. Grab a coffee.
+              AI is blending your style parameters. Almost there.
             </p>
           </div>
           <div className="w-full max-w-xl">

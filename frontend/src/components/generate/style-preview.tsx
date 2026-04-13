@@ -8,6 +8,8 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 interface StylePreviewProps {
   prompt: string;
+  genreA?: string;
+  genreB?: string;
 }
 
 function SkeletonCard() {
@@ -16,19 +18,22 @@ function SkeletonCard() {
   );
 }
 
-export function StylePreview({ prompt }: StylePreviewProps) {
+export function StylePreview({ prompt, genreA, genreB }: StylePreviewProps) {
   const [styles, setStyles] = useState<StyleMatch[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Build enriched query: prompt + genre context so RAG reflects current settings
+  const query = [prompt, genreA, genreB].filter(Boolean).join(" ").trim();
+
   useEffect(() => {
-    if (!prompt || prompt.length < 3) {
+    if (!query || query.length < 3) {
       setStyles([]);
       return;
     }
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
-        const results = await getStyles(prompt);
+        const results = await getStyles(query);
         setStyles(results);
       } catch {
         setStyles([]);
@@ -37,7 +42,7 @@ export function StylePreview({ prompt }: StylePreviewProps) {
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [prompt]);
+  }, [query]);
 
   return (
     <div className="space-y-4">

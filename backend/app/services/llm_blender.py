@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 VALID_EFFECTS = ["tunnel", "fractal", "particles", "plasma"]
 
 # Model to use — OpenRouter uses "anthropic/claude-3-5-haiku" format
-_OPENROUTER_MODEL = "anthropic/claude-3-5-haiku"
+_OPENROUTER_MODEL = "anthropic/claude-3.5-haiku"
 _ANTHROPIC_MODEL = "claude-3-5-haiku-latest"
 _MAX_TOKENS = 1024
 _TEMPERATURE = 0.8

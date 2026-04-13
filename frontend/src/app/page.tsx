@@ -63,9 +63,7 @@ export default function GalleryPage() {
     <main className="min-h-screen">
       {/* Hero video section with CTA overlay */}
       <HeroVideo
-        // Hero video will show gradient fallback until pre-generated examples are added
-        src={undefined}
-        posterSrc={undefined}
+        src="/examples/particles-edm.mp4"
       />
 
       {/* Example carousel */}

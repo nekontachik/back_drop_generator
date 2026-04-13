@@ -2,19 +2,19 @@
 
 ## UI / Frontend
 
-- [ ] **Fullscreen preview on click not working** — clicking a gallery card does nothing; need to add a modal with fullscreen video player
-- [ ] **No page transition animation** — sharp/instant transition between Gallery and Generate pages; needs smooth fade or slide
+- [x] **Fullscreen preview on click not working** — fixed: fullscreen modal with video+controls+info, ESC to close, body scroll lock
+- [x] **No page transition animation** — fixed: fade + subtle slide-up on route change via PageTransition wrapper
+- [x] **Progress bar doesn't fill during generation** — fixed: fake/estimated progress with status labels and smooth animation
+- [x] **Generate page has no background** — fixed: animated radial gradient (amber/indigo/pink)
+- [x] **HeroVideo src={undefined}** — fixed: set to `/examples/particles-edm.mp4`, hidden on mobile with gradient fallback
 - [ ] **Matched Styles loads too slowly with no spinner** — RAG retrieval takes time but there's no loading indicator on the Generate page
-- [ ] **Progress bar doesn't fill during generation** — bar stays empty; needs fake/estimated progress (e.g. 30% after 1min, 60% after 2min, 90% at 3min)
-- [ ] **Generate page has no background** — page looks empty, only a centered form with no visual context; needs background video loop or animated gradient
-- [ ] **HeroVideo src={undefined}** — hero section on Gallery shows gradient fallback only, no video playing in background
 - [ ] **blend_source not displayed** — API returns `blend_source` ("llm" or "fallback") but UI never shows it
 - [ ] **MoodVector labels not rendered** — computed by backend but never displayed to user
 - [ ] **BPM chips UX unreachable** — redirect after first submit breaks the BPM chip flow
 
 ## Performance / Mobile
 
-- [ ] **Large video files** — `fractal-ambient.mp4` is 20MB, `fractal-classical.mp4` is 14MB; need to compress with ffmpeg (`-crf 28 -preset slow`) to ~3-5MB each
+- [ ] **Large video files** — `fractal-ambient.mp4` is 20MB, `fractal-classical.mp4` is 14MB; see `COMPRESS_VIDEOS_PROMPT.md` for Claude Code instructions to compress with ffmpeg (`-crf 28 -preset slow`) to ~3-5MB each
 - [ ] **Matched Styles on mobile** — appears below the form; consider collapsing it into an accordion on small screens for better UX
 
 ## Backend / Infrastructure
