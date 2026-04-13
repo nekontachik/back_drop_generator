@@ -163,7 +163,7 @@ Plans:
 **Plans:** 0/1 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Generate gallery mp4s, add effect_preference to StyleMatch, verify Vercel deployment
+- [x] 09-01-PLAN.md — Generate gallery mp4s, add effect_preference to StyleMatch, verify Vercel deployment
 
 ## Progress
 
