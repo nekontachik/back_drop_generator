@@ -29,8 +29,8 @@ async def generate(
     prompt: str = Form(...),
     bpm: int = Form(120),
     bpm_override: int | None = Form(None),
-    width: int = Form(1920),
-    height: int = Form(1080),
+    width: int = Form(None),
+    height: int = Form(None),
     seed: int | None = Form(None),
     blend_genre_a: str | None = Form(None),
     blend_genre_b: str | None = Form(None),
@@ -46,6 +46,12 @@ async def generate(
     The endpoint uses multipart/form-data to support file upload alongside
     form fields. All parameters are Form() fields; audio is an optional File().
     """
+    # Use config defaults if not provided
+    if width is None:
+        width = settings.default_width
+    if height is None:
+        height = settings.default_height
+
     audio_analysis: AudioAnalysis | None = None
 
     # Handle optional audio upload

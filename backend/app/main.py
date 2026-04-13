@@ -58,12 +58,12 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS: configurable origins from settings (defaults to localhost:3000)
-# Set CORS_ORIGINS='["https://your-app.vercel.app"]' env var in production
+# CORS: allow all origins for portfolio/demo deployment
+# SSE streams require allow_origins=["*"] to work correctly across all browsers
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
