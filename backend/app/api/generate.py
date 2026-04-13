@@ -23,6 +23,27 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+# Maps genre name (lowercase) → example video filename served from frontend /examples/
+_DEMO_GENRE_MAP: dict[str, str] = {
+    "techno": "tunnel-techno.mp4",
+    "ambient": "fractal-ambient.mp4",
+    "edm": "particles-edm.mp4",
+    "jazz": "plasma-jazz.mp4",
+    "synthwave": "tunnel-synthwave.mp4",
+    "classical": "fractal-classical.mp4",
+}
+_DEMO_DEFAULT = "particles-edm.mp4"
+
+
+def _pick_demo_video(matched_styles: list[dict] | None) -> str:
+    """Pick the best matching demo video based on RAG results."""
+    if matched_styles:
+        for style in matched_styles:
+            genre = style.get("genre", "").lower()
+            if genre in _DEMO_GENRE_MAP:
+                return _DEMO_GENRE_MAP[genre]
+    return _DEMO_DEFAULT
+
 
 @router.post("/generate", response_model=GenerateResponse)
 async def generate(
@@ -114,12 +135,22 @@ async def generate(
 
     job = create_job(render_params)
 
-    # Ensure render directory exists
-    settings.render_dir.mkdir(parents=True, exist_ok=True)
-
-    # Submit to worker and mark as rendering
-    submit_render(job.job_id, render_params, settings.render_dir)
-    update_job(job.job_id, status=JobStatus.RENDERING)
+    if settings.demo_mode:
+        # Demo mode: skip rendering, return a pre-generated example video instantly
+        video_filename = _pick_demo_video(matched_styles)
+        demo_url = f"{settings.frontend_url}/examples/{video_filename}"
+        update_job(
+            job.job_id,
+            status=JobStatus.COMPLETE,
+            progress=1.0,
+            output_path=demo_url,
+        )
+        logger.info("Demo mode: job %s resolved to %s", job.job_id, demo_url)
+    else:
+        # Real rendering mode
+        settings.render_dir.mkdir(parents=True, exist_ok=True)
+        submit_render(job.job_id, render_params, settings.render_dir)
+        update_job(job.job_id, status=JobStatus.RENDERING)
 
     return GenerateResponse(
         job_id=job.job_id,

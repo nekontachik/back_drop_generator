@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 from app.models.job import JobStatus
 from app.services.job_manager import get_job
@@ -28,7 +28,14 @@ async def download(job_id: str) -> FileResponse:
             status_code=404, detail=f"Job not complete (status: {job.status.value})"
         )
 
-    if job.output_path is None or not Path(job.output_path).exists():
+    if job.output_path is None:
+        raise HTTPException(status_code=404, detail="Output file not found")
+
+    # Demo mode: output_path is a full URL — redirect to it
+    if job.output_path.startswith("https://"):
+        return RedirectResponse(url=job.output_path)
+
+    if not Path(job.output_path).exists():
         raise HTTPException(status_code=404, detail="Output file not found")
 
     return FileResponse(

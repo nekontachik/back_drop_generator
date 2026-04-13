@@ -10,8 +10,6 @@ from __future__ import annotations
 import json
 import logging
 
-import anthropic
-
 from app.config import settings
 from app.models.audio import MoodVector
 from app.models.params import RenderParams
@@ -22,8 +20,9 @@ logger = logging.getLogger(__name__)
 # Valid effect names from EFFECT_REGISTRY
 VALID_EFFECTS = ["tunnel", "fractal", "particles", "plasma"]
 
-# Claude model to use for blending (D-01)
-_MODEL = "claude-3-5-haiku-latest"
+# Model to use — OpenRouter uses "anthropic/claude-3-5-haiku" format
+_OPENROUTER_MODEL = "anthropic/claude-3-5-haiku"
+_ANTHROPIC_MODEL = "claude-3-5-haiku-latest"
 _MAX_TOKENS = 1024
 _TEMPERATURE = 0.8
 _TIMEOUT = 30.0
@@ -194,9 +193,10 @@ async def blend_style(
     """
     logger.info("LLM blend requested for prompt: %s", prompt[:50])
 
-    # Deterministic fallback when no API key (D-10)
-    if not settings.anthropic_api_key:
-        logger.info("Using deterministic fallback (no ANTHROPIC_API_KEY)")
+    # Determine which API key to use (OpenRouter takes priority)
+    api_key = settings.openrouter_api_key or settings.anthropic_api_key
+    if not api_key:
+        logger.info("Using deterministic fallback (no API key configured)")
         return _deterministic_fallback(
             prompt=prompt,
             genre_docs=genre_docs,
@@ -215,54 +215,45 @@ async def blend_style(
         bpm=bpm,
     )
 
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-    messages = [{"role": "user", "content": user_prompt}]
-
-    # Attempt 1
+    # Use OpenAI-compatible client (works for both OpenRouter and Anthropic via openai SDK)
     try:
-        response = client.messages.create(
-            model=_MODEL,
+        from openai import OpenAI
+
+        if settings.openrouter_api_key:
+            client = OpenAI(
+                api_key=settings.openrouter_api_key,
+                base_url="https://openrouter.ai/api/v1",
+                timeout=_TIMEOUT,
+            )
+            model = _OPENROUTER_MODEL
+        else:
+            # Direct Anthropic via openai-compatible endpoint
+            client = OpenAI(
+                api_key=settings.anthropic_api_key,
+                base_url="https://api.anthropic.com/v1",
+                timeout=_TIMEOUT,
+            )
+            model = _ANTHROPIC_MODEL
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+
+        response = client.chat.completions.create(
+            model=model,
             max_tokens=_MAX_TOKENS,
             temperature=_TEMPERATURE,
-            system=system_prompt,
             messages=messages,
-            timeout=_TIMEOUT,
         )
-        result = _parse_response(response, bpm=bpm, width=width, height=height, seed=seed)
+        result = _parse_openai_response(response, bpm=bpm, width=width, height=height, seed=seed)
         if result is not None:
             logger.info("LLM blend successful, effect=%s", result.params.effect_name)
             return result
 
-        # First attempt produced invalid JSON — retry with stricter prompt
-        logger.warning("LLM returned invalid JSON, retrying")
-        retry_messages = messages + [
-            {"role": "assistant", "content": response.content[0].text},
-            {
-                "role": "user",
-                "content": (
-                    "Your previous response was invalid JSON. "
-                    "Output ONLY a JSON object, no markdown, no explanation."
-                ),
-            },
-        ]
-        retry_response = client.messages.create(
-            model=_MODEL,
-            max_tokens=_MAX_TOKENS,
-            temperature=_TEMPERATURE,
-            system=system_prompt,
-            messages=retry_messages,
-            timeout=_TIMEOUT,
-        )
-        retry_result = _parse_response(
-            retry_response, bpm=bpm, width=width, height=height, seed=seed
-        )
-        if retry_result is not None:
-            logger.info("LLM retry succeeded, effect=%s", retry_result.params.effect_name)
-            return retry_result
+        logger.error("LLM blend failed, falling back", exc_info=False)
 
-        logger.error("LLM blend failed after retry, falling back", exc_info=False)
-
-    except (anthropic.APIError, anthropic.APITimeoutError, Exception) as exc:
+    except Exception as exc:
         logger.error("LLM API error: %s, falling back", exc)
 
     # All paths failed — deterministic fallback
@@ -281,7 +272,7 @@ async def blend_style(
 # ---------------------------------------------------------------------------
 
 
-def _parse_response(
+def _parse_openai_response(
     response,
     *,
     bpm: int,
@@ -289,14 +280,9 @@ def _parse_response(
     height: int,
     seed: int | None,
 ) -> BlendResult | None:
-    """Parse an anthropic Message into a BlendResult.
-
-    Returns None if the response text is not valid JSON or fails schema
-    validation, so the caller can decide to retry.
-    """
+    """Parse an OpenAI-compatible chat completion into a BlendResult."""
     try:
-        text = response.content[0].text.strip()
-        # Strip markdown code fences if present
+        text = response.choices[0].message.content.strip()
         if text.startswith("```"):
             lines = text.split("\n")
             text = "\n".join(
