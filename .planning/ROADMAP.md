@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Deployment & Production** - Frontend on Vercel, backend on Railway, ChromaDB self-seeding on startup
 - [x] **Phase 6: Fix Integration Bugs & Data Contracts** - sessionStorage key fix, data contract fixes, bpm_override wiring, hex parsing guard (completed 2026-04-07)
 - [x] **Phase 7: Fix Data Contract & BPM Override** - flatten query_styles return dict, fix bpm_override submit guard (completed 2026-04-12)
-- [ ] **Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port** - fix bpm_override logic, hex color guards, Dockerfile PORT, dead code cleanup
+- [x] **Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port** - fix bpm_override logic, hex color guards, Dockerfile PORT, dead code cleanup (completed 2026-04-13)
 - [ ] **Phase 9: Gallery Assets & Deployment Verification** - generate gallery mp4s, effect_preference contract, verify Vercel deployment
 
 ## Phase Details
@@ -146,10 +146,10 @@ Plans:
   3. All 4 effects handle empty/malformed hex color strings without crashing (return black fallback)
   4. Dockerfile CMD uses $PORT env var (Railway dynamic port) with fallback to 8000
   5. Dead code removed: getJobStatus (frontend), GenerateRequest (backend)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 08-01-PLAN.md — Fix bpm_override guard, hex color guards in 3 effects, Dockerfile PORT, dead code cleanup
+- [x] 08-01-PLAN.md — Fix bpm_override guard, hex color guards in 3 effects, Dockerfile PORT, dead code cleanup
 
 ### Phase 9: Gallery Assets & Deployment Verification
 **Goal**: Generate gallery example mp4 files so the landing page carousel works, add effect_preference to TypeScript StyleMatch interface, and verify Vercel frontend deployment is live
@@ -180,5 +180,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 5. Deployment & Production | 1/2 | In Progress|  |
 | 6. Fix Integration Bugs | 2/2 | Complete   | 2026-04-07 |
 | 7. Fix Data Contract & BPM Override | 1/1 | Complete   | 2026-04-12 |
-| 8. Fix BPM Override, Hex Guards & Dockerfile Port | 0/1 | Planning   | - |
+| 8. Fix BPM Override, Hex Guards & Dockerfile Port | 1/1 | Complete   | 2026-04-13 |
 | 9. Gallery Assets & Deployment Verification | 0/1 | Planning   | - |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: verifying
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-04-12T07:28:50.471Z"
-last_activity: 2026-04-12
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-04-13T05:07:21.653Z"
+last_activity: 2026-04-13
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 16
-  completed_plans: 16
+  total_phases: 9
+  completed_phases: 8
+  total_plans: 17
+  completed_plans: 17
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** A recruiter visits the site, sees a generated video backdrop synced to music, understands the idea, clicks GitHub, and sees clean code showcasing librosa + RAG + LLM integration + programmatic animation.
-**Current focus:** Phase 07 — fix-data-contract-bpm-override
+**Current focus:** Phase 08 — fix-bpm-override-hex-guards-dockerfile-port
 
 ## Current Position
 
-Phase: 07
-Plan: Not started
+Phase: 08 (fix-bpm-override-hex-guards-dockerfile-port) — EXECUTING
+Plan: 1 of 1
 Status: Phase complete — ready for verification
-Last activity: 2026-04-12
+Last activity: 2026-04-13
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06-fix-integration-bugs P01 | 15 | 2 tasks | 2 files |
 | Phase 06-fix-integration-bugs P02 | 16 | 2 tasks | 3 files |
 | Phase 07 P01 | 34min | 2 tasks | 5 files |
+| Phase 08 P01 | 12 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,9 @@ Recent decisions affecting current work:
 - [Phase 06-fix-integration-bugs]: AI Vision card placed before BPM chart for visual prominence — LLM output is primary, audio analysis is secondary
 - [Phase 07]: Flatten at retrieval boundary (query_styles return) not storage — no ChromaDB migration required
 - [Phase 07]: bpm_override sent whenever audioFile present — backend librosa-detected BPM takes precedence when user hasn't changed slider
+- [Phase 08]: bpmTouched state initialized false, set true only on BpmInput onChange — prevents bpm_override being sent on first audio submit
+- [Phase 08]: Shell-form Dockerfile CMD required for ${PORT:-8000} shell variable expansion; exec-form array does not expand variables
+- [Phase 08]: bpmTouched reset to false when audio file removed — keeps form state consistent across upload/remove cycles
 
 ### Pending Todos
 
@@ -126,6 +130,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T07:15:54.387Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-04-13T05:07:21.644Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None

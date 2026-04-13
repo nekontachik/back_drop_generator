@@ -19,7 +19,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
 - [x] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
 - [x] **AUD-03**: BPM visualization chart displayed on results page
-- [ ] **AUD-04**: User can override detected BPM (fix octave errors)
+- [x] **AUD-04**: User can override detected BPM (fix octave errors)
 
 ### AI Pipeline
 
@@ -104,7 +104,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-01 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-02 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-03 | Phase 6: Fix Integration Bugs | Complete |
-| AUD-04 | Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port | Pending |
+| AUD-04 | Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port | Complete |
 | RAG-01 | Phase 2: Audio Analysis & RAG | Complete |
 | RAG-02 | Phase 7: Fix Data Contract & BPM Override | Complete |
 | LLM-01 | Phase 4: LLM Style Blending | Complete |
@@ -123,7 +123,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FE-03 | Phase 6: Fix Integration Bugs | Complete |
 | FE-04 | Phase 3: Frontend Application | Complete |
 | DEP-01 | Phase 9: Gallery Assets & Deployment Verification | Pending |
-| DEP-02 | Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port | Pending |
+| DEP-02 | Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port | Complete |
 | DEP-03 | Phase 5: Deployment & Production | Complete |
 
 **Coverage:**
