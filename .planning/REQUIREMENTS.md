@@ -19,7 +19,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **AUD-01**: librosa extracts tempo and beat timestamps from uploaded audio
 - [x] **AUD-02**: librosa extracts spectral centroid, chroma, RMS energy, onset strength as mood vector
 - [x] **AUD-03**: BPM visualization chart displayed on results page
-- [x] **AUD-04**: User can override detected BPM (fix octave errors)
+- [ ] **AUD-04**: User can override detected BPM (fix octave errors)
 
 ### AI Pipeline
 
@@ -45,14 +45,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Frontend
 
-- [x] **FE-01**: Gallery landing page with pre-generated examples and "Try it yourself" CTA
+- [ ] **FE-01**: Gallery landing page with pre-generated examples and "Try it yourself" CTA
 - [x] **FE-02**: Generate form: text prompt, BPM input, audio upload, style blend controls
 - [x] **FE-03**: Results page: video player, BPM chart, download button
 - [x] **FE-04**: Progress indicator during render (SSE-driven)
 
 ### Deployment
 
-- [x] **DEP-01**: Frontend deployed to Vercel
+- [ ] **DEP-01**: Frontend deployed to Vercel
 - [x] **DEP-02**: Backend deployed to Railway/Render ($0-5/month)
 - [x] **DEP-03**: ChromaDB seeded from repo files on startup
 
@@ -104,7 +104,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-01 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-02 | Phase 2: Audio Analysis & RAG | Complete |
 | AUD-03 | Phase 6: Fix Integration Bugs | Complete |
-| AUD-04 | Phase 7: Fix Data Contract & BPM Override | Complete |
+| AUD-04 | Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port | Pending |
 | RAG-01 | Phase 2: Audio Analysis & RAG | Complete |
 | RAG-02 | Phase 7: Fix Data Contract & BPM Override | Complete |
 | LLM-01 | Phase 4: LLM Style Blending | Complete |
@@ -118,12 +118,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RND-02 | Phase 1: Rendering Engine | Complete |
 | RND-03 | Phase 1: Rendering Engine | Complete |
 | RND-04 | Phase 1: Rendering Engine | Complete |
-| FE-01 | Phase 3: Frontend Application | Complete |
+| FE-01 | Phase 9: Gallery Assets & Deployment Verification | Pending |
 | FE-02 | Phase 7: Fix Data Contract & BPM Override | Complete |
 | FE-03 | Phase 6: Fix Integration Bugs | Complete |
 | FE-04 | Phase 3: Frontend Application | Complete |
-| DEP-01 | Phase 5: Deployment & Production | Complete |
-| DEP-02 | Phase 5: Deployment & Production | Complete |
+| DEP-01 | Phase 9: Gallery Assets & Deployment Verification | Pending |
+| DEP-02 | Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port | Pending |
 | DEP-03 | Phase 5: Deployment & Production | Complete |
 
 **Coverage:**
@@ -131,7 +131,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 28
 - Unmapped: 0
 - Satisfied: 25
-- Pending (gap closure): 3 (AUD-04, RAG-02, FE-02)
+- Pending (gap closure): 5 (AUD-04, FE-01, DEP-01, DEP-02)
 
 ---
 *Requirements defined: 2026-04-01*

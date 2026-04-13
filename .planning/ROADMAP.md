@@ -19,6 +19,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Deployment & Production** - Frontend on Vercel, backend on Railway, ChromaDB self-seeding on startup
 - [x] **Phase 6: Fix Integration Bugs & Data Contracts** - sessionStorage key fix, data contract fixes, bpm_override wiring, hex parsing guard (completed 2026-04-07)
 - [x] **Phase 7: Fix Data Contract & BPM Override** - flatten query_styles return dict, fix bpm_override submit guard (completed 2026-04-12)
+- [ ] **Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port** - fix bpm_override logic, hex color guards, Dockerfile PORT, dead code cleanup
+- [ ] **Phase 9: Gallery Assets & Deployment Verification** - generate gallery mp4s, effect_preference contract, verify Vercel deployment
 
 ## Phase Details
 
@@ -133,6 +135,36 @@ Plans:
 Plans:
 - [x] 07-01-PLAN.md — Flatten query_styles() return dict, update LLM blender consumers, fix bpm_override guard
 
+### Phase 8: Fix BPM Override, Hex Guards & Dockerfile Port
+**Goal**: Fix bpm_override logic so librosa-detected BPM is used on first audio submit, add hex color empty-string guards to all effects, fix Dockerfile to use Railway's PORT env var, and remove dead code
+**Depends on**: Phase 7
+**Requirements**: AUD-04, DEP-02
+**Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md (2026-04-12)
+**Success Criteria** (what must be TRUE):
+  1. When user uploads audio without changing BPM slider, librosa-detected BPM drives rendering (not slider default 120)
+  2. When user explicitly changes BPM slider with audio attached, the override BPM drives rendering
+  3. All 4 effects handle empty/malformed hex color strings without crashing (return black fallback)
+  4. Dockerfile CMD uses $PORT env var (Railway dynamic port) with fallback to 8000
+  5. Dead code removed: getJobStatus (frontend), GenerateRequest (backend)
+**Plans:** 0/1 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Fix bpm_override guard, hex color guards in 3 effects, Dockerfile PORT, dead code cleanup
+
+### Phase 9: Gallery Assets & Deployment Verification
+**Goal**: Generate gallery example mp4 files so the landing page carousel works, add effect_preference to TypeScript StyleMatch interface, and verify Vercel frontend deployment is live
+**Depends on**: Phase 8
+**Requirements**: FE-01, DEP-01
+**Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md (2026-04-12)
+**Success Criteria** (what must be TRUE):
+  1. frontend/public/examples/ contains at least 4 example .mp4 files (one per effect) that play in the gallery carousel
+  2. TypeScript StyleMatch interface includes effect_preference field matching backend contract
+  3. Frontend loads at a public Vercel URL and gallery displays pre-generated examples
+**Plans:** 0/1 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — Generate gallery mp4s, add effect_preference to StyleMatch, verify Vercel deployment
+
 ## Progress
 
 **Execution Order:**
@@ -148,3 +180,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 5. Deployment & Production | 1/2 | In Progress|  |
 | 6. Fix Integration Bugs | 2/2 | Complete   | 2026-04-07 |
 | 7. Fix Data Contract & BPM Override | 1/1 | Complete   | 2026-04-12 |
+| 8. Fix BPM Override, Hex Guards & Dockerfile Port | 0/1 | Planning   | - |
+| 9. Gallery Assets & Deployment Verification | 0/1 | Planning   | - |
