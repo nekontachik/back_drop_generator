@@ -3,47 +3,77 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { MonoLabel } from "@/components/ui/mono-label";
 
 const navLinks = [
-  { href: "/", label: "Gallery" },
-  { href: "/generate", label: "Generate" },
+  { href: "/", label: "gallery", match: (p: string) => p === "/" },
+  {
+    href: "/generate",
+    label: "generate",
+    match: (p: string) => p.startsWith("/generate"),
+  },
+  {
+    href: "/results",
+    label: "output",
+    match: (p: string) => p.startsWith("/results"),
+  },
 ];
 
 export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="text-accent-amber font-display font-bold text-xl tracking-tight hover:text-accent-amber-light transition-colors"
+    <header
+      className="sticky top-0 z-50 flex items-center justify-between h-12 px-6 border-b border-border backdrop-blur-md"
+      style={{ background: "rgba(10,12,16,0.92)" }}
+    >
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-2 group">
+        <div className="w-5 h-5 border-2 border-primary rounded-[2px] flex items-center justify-center">
+          <span className="font-mono text-[10px] font-bold text-primary leading-none">
+            BV
+          </span>
+        </div>
+        <span
+          className="font-mono text-xs font-semibold text-text"
+          style={{ letterSpacing: "0.04em" }}
         >
-          Beat Visuals
-        </Link>
+          beat_visuals
+        </span>
+      </Link>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-6">
-          {navLinks.map(({ href, label }) => {
-            const isActive =
-              href === "/" ? pathname === "/" : pathname.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "text-sm font-medium transition-colors relative pb-0.5",
-                  isActive
-                    ? "text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent-amber after:rounded-full"
-                    : "text-white/60 hover:text-white"
-                )}
-              >
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
+      {/* Nav */}
+      <nav className="flex gap-0.5">
+        {navLinks.map(({ href, label, match }) => {
+          const isActive = match(pathname);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={cn(
+                "font-mono text-[11px] uppercase px-3.5 py-1.5 rounded-sm border transition-colors",
+                isActive
+                  ? "border-primary bg-primary/15 text-primary"
+                  : "border-border bg-transparent text-text-muted hover:border-border-light hover:text-text"
+              )}
+              style={{ letterSpacing: "0.04em" }}
+            >
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Status */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-green"
+            style={{ boxShadow: "0 0 6px rgba(0,255,136,0.6)" }}
+          />
+          <MonoLabel color="var(--color-text-muted)">api</MonoLabel>
+        </div>
+        <MonoLabel>v0.1.0</MonoLabel>
       </div>
     </header>
   );
