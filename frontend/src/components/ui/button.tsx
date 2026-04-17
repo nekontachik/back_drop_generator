@@ -3,18 +3,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-amber disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center rounded-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-accent-amber text-black hover:bg-accent-amber-light active:bg-accent-amber-dark",
+          "bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted",
         outline:
-          "border border-white/20 bg-transparent text-white hover:bg-white/5 active:bg-white/10",
+          "border border-primary bg-transparent text-primary hover:bg-primary/10 active:bg-primary/20",
         ghost:
-          "bg-transparent text-white hover:bg-white/5 active:bg-white/10",
-        magenta:
-          "bg-accent-magenta text-white hover:bg-accent-magenta-light active:bg-accent-magenta-dark",
+          "bg-transparent text-text-muted hover:bg-primary/10 hover:text-primary active:bg-primary/20",
+        violet:
+          "bg-violet text-white hover:bg-violet-light active:bg-violet-dark",
+        hardware:
+          "font-mono uppercase tracking-wider text-[11px] border border-border bg-transparent text-text-muted hover:border-border-light hover:text-text aria-pressed:border-primary aria-pressed:bg-primary/15 aria-pressed:text-primary data-[active=true]:border-primary data-[active=true]:bg-primary/15 data-[active=true]:text-primary",
       },
       size: {
         sm: "h-8 px-3 text-sm",
