@@ -1,28 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Zap } from "lucide-react";
 import { getStyles } from "@/lib/api";
 import type { StyleMatch } from "@/lib/types";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { MonoLabel } from "@/components/ui/mono-label";
+import { Badge } from "@/components/ui/badge";
+import { ChannelStrip } from "@/components/ui/channel-strip";
 
 interface StylePreviewProps {
   prompt: string;
   genreA?: string;
   genreB?: string;
+  blend?: number;
+  bpm?: number;
 }
 
-function SkeletonCard() {
-  return (
-    <div className="animate-pulse bg-surface-elevated rounded-xl h-32 border border-white/5" />
-  );
-}
-
-export function StylePreview({ prompt, genreA, genreB }: StylePreviewProps) {
+export function StylePreview({
+  prompt,
+  genreA = "Techno",
+  genreB = "Ambient",
+  blend = 70,
+  bpm = 120,
+}: StylePreviewProps) {
   const [styles, setStyles] = useState<StyleMatch[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Build enriched query: prompt + genre context so RAG reflects current settings
   const query = [prompt, genreA, genreB].filter(Boolean).join(" ").trim();
 
   useEffect(() => {
@@ -45,81 +47,109 @@ export function StylePreview({ prompt, genreA, genreB }: StylePreviewProps) {
   }, [query]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Zap className="w-4 h-4 text-accent-amber" />
-        <h2 className="text-lg font-semibold text-white">Matched Styles</h2>
+    <div className="border border-border rounded-sm bg-surface-card p-3 flex flex-col gap-4">
+      <div>
+        <MonoLabel color="var(--color-primary)">preview</MonoLabel>
+        <div
+          className="mt-2 aspect-video border border-border rounded-sm flex items-center justify-center relative overflow-hidden"
+          style={{ background: "var(--color-surface)" }}
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 50%, rgba(0, 170, 255, 0.15), transparent 70%)",
+            }}
+          />
+          <MonoLabel>live_preview</MonoLabel>
+        </div>
       </div>
 
-      {loading && (
-        <div className="space-y-3">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
+      <div>
+        <MonoLabel>parameters</MonoLabel>
+        <dl className="mt-2 font-mono text-[11px] leading-loose text-text-muted">
+          <div>
+            <span className="text-text-dim">genre_a:</span>{" "}
+            <span className="text-primary">{genreA.toLowerCase()}</span>
+          </div>
+          <div>
+            <span className="text-text-dim">genre_b:</span>{" "}
+            <span className="text-violet">{genreB.toLowerCase()}</span>
+          </div>
+          <div>
+            <span className="text-text-dim">blend:</span> {blend}%
+          </div>
+          <div>
+            <span className="text-text-dim">tempo:</span> {bpm} bpm
+          </div>
+          <div>
+            <span className="text-text-dim">resolution:</span> 1080p
+          </div>
+          <div>
+            <span className="text-text-dim">fps:</span> 30
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <MonoLabel>levels</MonoLabel>
+        <div className="flex gap-1 mt-2 justify-center">
+          <ChannelStrip label="bass" value={75} color="#00AAFF" />
+          <ChannelStrip label="mid" value={55} color="#00AAFF" />
+          <ChannelStrip label="high" value={40} color="#8B5CF6" />
+          <ChannelStrip label="fx" value={60} color="#00FF88" />
         </div>
-      )}
+      </div>
 
-      {!loading && (!prompt || prompt.length < 3) && (
-        <p className="text-white/40 text-sm py-8 text-center">
-          Start typing a prompt to see matched styles...
-        </p>
-      )}
-
-      {!loading && styles.length === 0 && prompt.length >= 3 && (
-        <p className="text-white/40 text-sm py-8 text-center">
-          No styles matched. Try a different prompt.
-        </p>
-      )}
-
-      {!loading && styles.length > 0 && (
-        <div className="space-y-3">
-          {styles.map((style) => (
-            <Card key={style.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-lg font-semibold text-white">{style.genre}</h3>
-                  <span className="text-xs text-accent-amber flex-shrink-0">
-                    Match: {Math.round((1 - style.distance) * 100)}%
+      <div>
+        <MonoLabel color="var(--color-primary)">matched_styles</MonoLabel>
+        {loading && (
+          <div className="mt-2 space-y-1">
+            <div className="animate-pulse h-14 bg-surface-elevated rounded-sm" />
+            <div className="animate-pulse h-14 bg-surface-elevated rounded-sm" />
+          </div>
+        )}
+        {!loading && styles.length === 0 && (
+          <p className="mt-2 font-mono text-[11px] text-text-dim">
+            {prompt.length < 3
+              ? "awaiting prompt..."
+              : "no match — refine query"}
+          </p>
+        )}
+        {!loading && styles.length > 0 && (
+          <div className="mt-2 flex flex-col gap-2">
+            {styles.map((style) => (
+              <div
+                key={style.id}
+                className="border border-border rounded-sm p-2"
+                style={{ background: "var(--color-surface)" }}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <Badge>{style.genre.toUpperCase()}</Badge>
+                  <span className="font-mono text-[10px] text-text-dim">
+                    {Math.round((1 - style.distance) * 100)}%
                   </span>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-white/60">{style.description}</p>
-
+                <p className="font-mono text-[11px] text-text-muted leading-relaxed line-clamp-2">
+                  {style.description}
+                </p>
                 {style.colors.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    {style.colors.map((color, i) => (
+                  <div className="flex items-center gap-1 mt-1.5">
+                    {style.colors.slice(0, 5).map((color, i) => (
                       <span
                         key={i}
-                        className="w-5 h-5 rounded-full border border-white/10 flex-shrink-0"
+                        className="w-3 h-3 rounded-sm border border-border flex-shrink-0"
                         style={{ backgroundColor: color }}
                         title={color}
                       />
                     ))}
                   </div>
                 )}
-
-                {style.shapes.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {style.shapes.map((shape) => (
-                      <span
-                        key={shape}
-                        className="px-2 py-0.5 rounded text-xs bg-white/5 border border-white/10 text-white/60"
-                      >
-                        {shape}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {style.movement && (
-                  <p className="text-xs text-white/40 italic">{style.movement}</p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -2,21 +2,31 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ChevronDown, ChevronUp, Music } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { submitGenerate } from "@/lib/api";
 import type { BpmResult } from "@/lib/types";
-import { Button } from "@/components/ui/button";
+import { MonoLabel } from "@/components/ui/mono-label";
 import { AudioUpload } from "./audio-upload";
 import { BpmInput } from "./bpm-input";
 import { BlendControl } from "./blend-control";
+
+const MAX_PROMPT = 500;
 
 interface GenerateFormProps {
   onPromptChange: (prompt: string) => void;
   onGenreAChange?: (genre: string) => void;
   onGenreBChange?: (genre: string) => void;
+  onBlendChange?: (ratio: number) => void;
+  onBpmChange?: (bpm: number) => void;
 }
 
-export function GenerateForm({ onPromptChange, onGenreAChange, onGenreBChange }: GenerateFormProps) {
+export function GenerateForm({
+  onPromptChange,
+  onGenreAChange,
+  onGenreBChange,
+  onBlendChange,
+  onBpmChange,
+}: GenerateFormProps) {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [bpm, setBpm] = useState(120);
@@ -28,11 +38,11 @@ export function GenerateForm({ onPromptChange, onGenreAChange, onGenreBChange }:
   const [bpmTouched, setBpmTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [audioOpen, setAudioOpen] = useState(false);
 
   function handlePromptChange(value: string) {
-    setPrompt(value);
-    onPromptChange(value);
+    const trimmed = value.slice(0, MAX_PROMPT);
+    setPrompt(trimmed);
+    onPromptChange(trimmed);
   }
 
   function handleGenreAChange(g: string) {
@@ -43,6 +53,17 @@ export function GenerateForm({ onPromptChange, onGenreAChange, onGenreBChange }:
   function handleGenreBChange(g: string) {
     setGenreB(g);
     onGenreBChange?.(g);
+  }
+
+  function handleBlendChange(r: number) {
+    setBlendRatio(r);
+    onBlendChange?.(r);
+  }
+
+  function handleBpmChange(v: number) {
+    setBpm(v);
+    setBpmTouched(true);
+    onBpmChange?.(v);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -74,93 +95,73 @@ export function GenerateForm({ onPromptChange, onGenreAChange, onGenreBChange }:
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Prompt */}
-      <div className="space-y-2">
-        <label htmlFor="prompt" className="block text-sm font-medium text-white">
-          Visual Style Prompt
-        </label>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="border border-border rounded-sm bg-surface-card overflow-hidden">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+          <MonoLabel color="var(--color-primary)">visual_prompt</MonoLabel>
+          <MonoLabel>
+            {prompt.length}/{MAX_PROMPT}
+          </MonoLabel>
+        </div>
         <textarea
           id="prompt"
-          rows={3}
+          rows={4}
           value={prompt}
           onChange={(e) => handlePromptChange(e.target.value)}
-          placeholder="Describe the visual style you want... (e.g., 'Neon tunnel pulsing to heavy techno beats')"
-          className="bg-surface-elevated border border-white/10 rounded-lg px-4 py-3 text-white w-full resize-none focus:border-accent-amber focus:ring-1 focus:ring-accent-amber/50 focus:outline-none placeholder:text-white/30"
+          placeholder="> describe your visual style..."
+          className="block w-full bg-transparent border-0 px-3 py-3 text-text font-mono text-[13px] leading-relaxed resize-y focus:outline-none placeholder:text-text-dim"
           required
         />
       </div>
 
-      {/* Style Blend */}
       <BlendControl
         genreA={genreA}
         genreB={genreB}
         ratio={blendRatio}
         onGenreAChange={handleGenreAChange}
         onGenreBChange={handleGenreBChange}
-        onRatioChange={setBlendRatio}
+        onRatioChange={handleBlendChange}
       />
 
-      {/* BPM */}
       <BpmInput
         value={bpm}
-        onChange={(v: number) => { setBpm(v); setBpmTouched(true); }}
+        onChange={handleBpmChange}
         detectedBpm={detectedBpm}
+        audioSlot={
+          <AudioUpload
+            file={audioFile}
+            onFileChange={(f) => {
+              setAudioFile(f);
+              if (!f) {
+                setDetectedBpm(null);
+                setBpmTouched(false);
+              }
+            }}
+          />
+        }
       />
 
-      {/* Audio upload — collapsible */}
-      <div className="border border-white/10 rounded-lg overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setAudioOpen((o) => !o)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors"
-        >
-          <span className="flex items-center gap-2">
-            <Music className="w-4 h-4" />
-            Upload audio for BPM detection
-            <span className="text-xs text-white/30">(optional)</span>
+      <button
+        type="submit"
+        disabled={submitting || !prompt.trim()}
+        className="w-full font-mono uppercase tracking-wider text-[11px] font-bold px-6 py-3 border border-primary rounded-sm bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted disabled:opacity-50 disabled:pointer-events-none transition-colors"
+        style={{ boxShadow: "0 0 18px rgba(0, 170, 255, 0.22)" }}
+      >
+        {submitting ? (
+          <span className="inline-flex items-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            submitting...
           </span>
-          {audioOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </button>
-
-        {audioOpen && (
-          <div className="px-4 pb-4 pt-2 border-t border-white/10">
-            <AudioUpload
-              file={audioFile}
-              onFileChange={(f) => {
-                setAudioFile(f);
-                if (!f) {
-                  setDetectedBpm(null);
-                  setBpmTouched(false);
-                }
-              }}
-            />
-          </div>
+        ) : (
+          "> execute render pipeline"
         )}
-      </div>
+      </button>
 
-      {/* Submit */}
-      <div className="pt-1">
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full"
-          disabled={submitting || !prompt.trim()}
-        >
-          {submitting ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Submitting...
-            </>
-          ) : (
-            "Generate Backdrop"
-          )}
-        </Button>
-
-        {error && (
-          <p className="mt-3 text-sm text-red-400 text-center">{error}</p>
-        )}
-      </div>
+      {error && (
+        <p className="font-mono text-[11px] text-red-400 text-center">
+          ! {error}
+        </p>
+      )}
     </form>
   );
 }

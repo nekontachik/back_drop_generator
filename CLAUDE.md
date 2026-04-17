@@ -152,30 +152,90 @@ A tool that generates animated video backdrops for concerts and parties. Users d
 Conventions not yet established. Will populate as patterns emerge during development.
 <!-- GSD:conventions-end -->
 
+## Current Work: Frontend Redesign (TE × Ableton × Geek)
+
+### Design Direction
+Aesthetic: Teenage Engineering (hardware feel, square corners, knob controls) × Ableton (session grid, channel strips, functional density) × Geek (monospace labels, terminal prompts, data readouts). Cold, futuristic, sci-fi terminal vibe.
+
+### Design Mockup
+Interactive React mockup with exact tokens, components, and all 3 pages: `beat-visuals-redesign.jsx` (project root). Use this as the source of truth for colors, SVG math, layout, and component structure.
+
+### Color Palette
+| Token | Hex | Usage |
+|-------|-----|-------|
+| primary | #00AAFF | Main accent, buttons, active states, labels |
+| primary-bright | #33BBFF | Hover states |
+| primary-muted | #0088CC | Pressed states |
+| violet | #8B5CF6 | AI/creative elements, secondary controls |
+| green | #00FF88 | Success, online indicators, completed states |
+| pink | #FF3399 | Genre highlight (Synthwave) |
+| surface | #0A0C10 | Page background (blue-tinted dark) |
+| surface-card | #12151C | Card/panel background |
+| surface-elevated | #1A1E28 | Elevated elements |
+| border | #252A36 | Default borders |
+| text | #E2E8F0 | Primary text |
+| text-muted | #8892A4 | Secondary text |
+| text-dim | #4A5568 | Tertiary/label text |
+
+### Typography
+- Display/headings: Space Grotesk (existing)
+- Body: Inter (existing)
+- Labels/data/code: JetBrains Mono (NEW — add via next/font/google)
+- All section labels: MonoLabel component (mono, 10px, uppercase, tracking-widest)
+
+### Key Design Patterns
+- Border-radius: 3px everywhere (not rounded-lg)
+- All section labels: monospace, uppercase, 10px (e.g., "module::generate", "visual_prompt")
+- Hardware buttons: mono, uppercase, 11px, bordered, glow on active
+- Knob controls: SVG rotary with value arc and glow
+- Channel strips: vertical meter bars with colored fills
+- Landing hero: canvas-based animated background (beat-synced rings, grid, particles)
+- Examples: Ableton session-table view with carousel toggle option
+- Progress: named pipeline steps (audio_analysis → rag_retrieval → llm_blending → frame_render → encode_mp4)
+
+### Implementation Phases
+Approach: incremental updates, one commit per phase. Prompts in `REDESIGN-PROMPTS.md`.
+
+- [x] Phase 1: Design tokens & globals.css + JetBrains Mono font
+- [x] Phase 2: Shared UI components (Button, Card, MonoLabel, Badge)
+- [x] Phase 3: Hardware components (Knob, ChannelStrip)
+- [x] Phase 4: Header redesign (BV logo mark, hardware nav, status indicators)
+- [x] Phase 5: Landing — animated canvas background
+- [x] Phase 6: Landing — session table + carousel toggle
+- [x] Phase 7: Generate page (terminal form, knobs, channel strips)
+- [ ] Phase 8: Results page (pipeline progress, restyled sidebar)
+- [ ] Phase 9: Polish & responsive
+- [ ] Phase 10: Verify & test
+
+### Rules for This Redesign
+- ALWAYS reference `beat-visuals-redesign.jsx` for exact color values and component structure
+- Keep all existing API integration and state management — only change visual presentation
+- Replace ALL amber (#f59e0b) and magenta (#ec4899) with the new palette
+- Commit after each phase with `feat(design): phase N — description`
+
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 ## Architecture
 
 Architecture not yet mapped. Follow existing patterns found in the codebase.
 <!-- GSD:architecture-end -->
 
-<!-- GSD:workflow-start source:GSD defaults -->
-## GSD Workflow Enforcement
+## Workflow
 
-Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
+<important>
+- Do NOT use GSD workflows — execute prompts directly, no planning overhead
+- Do NOT ask for confirmation before making changes — just do the work
+- Each phase = one focused commit: `feat(design): phase N — description`
+- Reference `beat-visuals-redesign.jsx` for exact token values and component structure
+- Reference `REDESIGN-PROMPTS.md` for detailed per-phase instructions
+- Keep all existing API integration and state management — only change visual presentation
+- After completing a phase, mark it done in the checklist above (`[x]`)
+</important>
 
-Use these entry points:
-- `/gsd:quick` for small fixes, doc updates, and ad-hoc tasks
-- `/gsd:debug` for investigation and bug fixing
-- `/gsd:execute-phase` for planned phase work
+## Gotchas
 
-Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
-<!-- GSD:workflow-end -->
-
-
-
-<!-- GSD:profile-start -->
-## Developer Profile
-
-> Profile not yet configured. Run `/gsd:profile-user` to generate your developer profile.
-> This section is managed by `generate-claude-profile` -- do not edit manually.
-<!-- GSD:profile-end -->
+- Frontend uses Tailwind CSS v4 with inline @theme in globals.css (no tailwind.config file)
+- Next.js 16 with React 19 — App Router, all page components are in `src/app/`
+- Fonts loaded via `next/font/google` in layout.tsx — JetBrains Mono needs to be added there
+- Currently using amber (#f59e0b) and magenta (#ec4899) — ALL must be replaced with new palette
+- The `border-white/5` pattern is used throughout — replace with `border-border` token
+- Canvas animation must be hidden on mobile (`hidden sm:block`) for performance

@@ -1,8 +1,9 @@
 "use client";
 
 import { useDropzone } from "react-dropzone";
-import { Upload, X, FileAudio } from "lucide-react";
+import { X } from "lucide-react";
 import { useCallback } from "react";
+import { MonoLabel } from "@/components/ui/mono-label";
 
 interface AudioUploadProps {
   file: File | null;
@@ -34,21 +35,22 @@ export function AudioUpload({ file, onFileChange }: AudioUploadProps) {
 
   if (file) {
     return (
-      <div className="border-2 border-dashed border-white/20 rounded-xl p-6 flex items-center gap-4">
-        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-accent-amber/10 flex items-center justify-center">
-          <FileAudio className="w-5 h-5 text-accent-amber" />
-        </div>
+      <div className="border border-dashed border-primary/40 rounded-sm p-3 flex items-center gap-3 bg-primary/[0.04]">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white truncate">{file.name}</p>
-          <p className="text-xs text-white/40">{formatBytes(file.size)}</p>
+          <p className="font-mono text-[12px] text-text truncate">
+            {file.name}
+          </p>
+          <p className="font-mono text-[10px] text-text-dim mt-0.5">
+            {formatBytes(file.size)} · loaded
+          </p>
         </div>
         <button
           type="button"
           onClick={() => onFileChange(null)}
-          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+          className="flex-shrink-0 w-7 h-7 rounded-sm flex items-center justify-center text-text-dim hover:text-text hover:bg-border transition-colors"
           aria-label="Remove file"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
     );
@@ -57,22 +59,18 @@ export function AudioUpload({ file, onFileChange }: AudioUploadProps) {
   return (
     <div
       {...getRootProps()}
-      className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+      className={`border border-dashed rounded-sm p-4 text-center cursor-pointer transition-colors ${
         isDragActive
-          ? "border-accent-amber bg-accent-amber/5"
-          : "border-white/20 hover:border-accent-amber/50"
+          ? "border-primary bg-primary/[0.06]"
+          : "border-border hover:border-border-light"
       }`}
     >
       <input {...getInputProps()} />
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-          <Upload className="w-6 h-6 text-white/40" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-white">Drop audio file here</p>
-          <p className="text-xs text-white/40 mt-1">or click to browse</p>
-        </div>
-        <p className="text-xs text-white/30">MP3, WAV, M4A, OGG, FLAC up to 10MB</p>
+      <MonoLabel color="var(--color-text-muted)">
+        drop audio file or click to upload
+      </MonoLabel>
+      <div className="font-mono text-[10px] text-text-dim mt-1">
+        .mp3 .wav .ogg · max 10mb · auto-detects bpm
       </div>
     </div>
   );

@@ -1,16 +1,18 @@
 "use client";
 
+import { MonoLabel } from "@/components/ui/mono-label";
+
 const GENRES = [
   "Techno",
   "Ambient",
   "EDM",
   "Jazz",
-  "Hip Hop",
-  "Classical",
   "Synthwave",
-  "Drum & Bass",
+  "Classical",
+  "DnB",
   "House",
-  "Trance",
+  "Lo-fi",
+  "Metal",
 ];
 
 interface BlendControlProps {
@@ -22,6 +24,27 @@ interface BlendControlProps {
   onRatioChange: (r: number) => void;
 }
 
+function HardwareButton({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      data-active={active}
+      className="font-mono uppercase tracking-wider text-[11px] px-3 py-1.5 border border-border rounded-sm bg-transparent text-text-muted hover:border-border-light hover:text-text data-[active=true]:border-primary data-[active=true]:bg-primary/15 data-[active=true]:text-primary transition-colors"
+    >
+      {children}
+    </button>
+  );
+}
+
 export function BlendControl({
   genreA,
   genreB,
@@ -30,61 +53,71 @@ export function BlendControl({
   onGenreBChange,
   onRatioChange,
 }: BlendControlProps) {
-  const selectClass =
-    "bg-surface-elevated border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-accent-amber focus:outline-none w-full";
-
   return (
-    <div className="space-y-3">
-      <label className="block text-sm font-medium text-white">Style Blend</label>
-      <div className="flex items-center gap-3">
-        <div className="flex-1">
-          <select
-            value={genreA}
-            onChange={(e) => onGenreAChange(e.target.value)}
-            className={selectClass}
-          >
-            {GENRES.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="border border-border rounded-sm bg-surface-card p-4">
+      <div className="flex items-center justify-between mb-3">
+        <MonoLabel color="var(--color-primary)">style_blend</MonoLabel>
+        <MonoLabel>
+          {genreA} × {genreB}
+        </MonoLabel>
+      </div>
 
-        <div className="flex-[2] flex flex-col items-center gap-1">
-          <input
-            type="range"
-            min={0}
-            max={100}
-            step={5}
-            value={ratio}
-            onChange={(e) => onRatioChange(Number(e.target.value))}
-            className="w-full accent-amber h-1.5 rounded-full cursor-pointer"
-            style={{ accentColor: "#f59e0b" }}
+      <MonoLabel className="block mb-1.5">channel_a</MonoLabel>
+      <div className="flex flex-wrap gap-1 mb-4">
+        {GENRES.map((g) => (
+          <HardwareButton
+            key={`a-${g}`}
+            active={genreA === g}
+            onClick={() => onGenreAChange(g)}
+          >
+            {g}
+          </HardwareButton>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-3 my-2">
+        <MonoLabel color="var(--color-primary)">{100 - ratio}%</MonoLabel>
+        <div
+          className="flex-1 h-1.5 bg-surface-elevated rounded-[3px] relative cursor-pointer"
+          onClick={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const pct = Math.round(
+              ((e.clientX - rect.left) / rect.width) * 100
+            );
+            onRatioChange(Math.max(0, Math.min(100, pct)));
+          }}
+        >
+          <div
+            className="absolute left-0 top-0 h-full rounded-[3px]"
+            style={{
+              width: `${ratio}%`,
+              background:
+                "linear-gradient(90deg, var(--color-primary), var(--color-violet))",
+              boxShadow: "0 0 8px rgba(0, 170, 255, 0.2)",
+            }}
           />
-          <div className="flex w-full justify-between text-xs text-white/40">
-            <span>
-              {genreA} {ratio}%
-            </span>
-            <span>
-              {genreB} {100 - ratio}%
-            </span>
-          </div>
+          <div
+            className="absolute top-[-5px] w-4 h-4 bg-surface border-2 border-primary rounded-[2px]"
+            style={{
+              left: `${ratio}%`,
+              transform: "translateX(-50%)",
+            }}
+          />
         </div>
+        <MonoLabel color="var(--color-violet)">{ratio}%</MonoLabel>
+      </div>
 
-        <div className="flex-1">
-          <select
-            value={genreB}
-            onChange={(e) => onGenreBChange(e.target.value)}
-            className={selectClass}
+      <MonoLabel className="block mb-1.5 mt-3">channel_b</MonoLabel>
+      <div className="flex flex-wrap gap-1">
+        {GENRES.map((g) => (
+          <HardwareButton
+            key={`b-${g}`}
+            active={genreB === g}
+            onClick={() => onGenreBChange(g)}
           >
-            {GENRES.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
-        </div>
+            {g}
+          </HardwareButton>
+        ))}
       </div>
     </div>
   );
