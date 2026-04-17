@@ -1,91 +1,80 @@
 "use client";
 
-import Link from "next/link";
-import { Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { MonoLabel } from "@/components/ui/mono-label";
+import { Badge } from "@/components/ui/badge";
 import { BpmChart } from "./bpm-chart";
-import { getDownloadUrl } from "@/lib/api";
 import type { AudioAnalysis, StyleMatch } from "@/lib/types";
 
 interface ResultSidebarProps {
-  jobId: string;
   audioAnalysis: AudioAnalysis | null;
   matchedStyles: StyleMatch[] | null;
   creativeDescription: string | null;
 }
 
-export function ResultSidebar({ jobId, audioAnalysis, matchedStyles, creativeDescription }: ResultSidebarProps) {
+// Cycle through palette accents for multiple matched styles.
+const STYLE_COLORS = ["#00AAFF", "#8B5CF6", "#00FF88", "#33BBFF", "#FF3399"];
+
+export function ResultSidebar({
+  audioAnalysis,
+  matchedStyles,
+  creativeDescription,
+}: ResultSidebarProps) {
   return (
-    <div className="flex flex-col gap-4">
-      {/* Creative Description */}
+    <div className="border border-border rounded-sm bg-surface-card p-3 flex flex-col gap-4 h-fit">
       {creativeDescription && (
-        <Card>
-          <CardHeader>
-            <p className="text-sm font-semibold text-white/80">AI Vision</p>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-white/70 leading-relaxed italic">
-              {creativeDescription}
-            </p>
-          </CardContent>
-        </Card>
+        <div>
+          <MonoLabel color="var(--color-violet)">ai_vision</MonoLabel>
+          <p className="mt-2 font-sans text-[13px] text-text-muted leading-relaxed">
+            {creativeDescription}
+          </p>
+        </div>
       )}
 
-      {/* BPM Chart */}
-      {audioAnalysis && (
-        <BpmChart visualization={audioAnalysis.visualization} />
-      )}
-
-      {/* Genre Matches */}
       {matchedStyles && matchedStyles.length > 0 && (
-        <Card>
-          <CardHeader>
-            <p className="text-sm font-semibold text-white/80">Matched Styles</p>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-              {matchedStyles.map((style) => (
-                <div key={style.id} className="flex flex-col gap-1">
-                  <p className="font-semibold text-white capitalize">{style.genre}</p>
-                  <p className="text-sm text-white/60">{style.description}</p>
-                  {style.colors.length > 0 && (
-                    <div className="flex items-center gap-1 mt-1 flex-wrap">
-                      {style.colors.map((color, idx) => (
-                        <div
-                          key={idx}
-                          className="w-4 h-4 rounded-full border border-white/10"
-                          style={{ backgroundColor: color }}
-                          title={color}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <div>
+          <MonoLabel color="var(--color-primary)">matched_styles</MonoLabel>
+          <div className="flex flex-wrap gap-1 mt-2">
+            {matchedStyles.map((style, i) => (
+              <Badge
+                key={style.id}
+                color={STYLE_COLORS[i % STYLE_COLORS.length]}
+              >
+                {style.genre.toUpperCase()}
+              </Badge>
+            ))}
+          </div>
+        </div>
       )}
 
-      {/* Download */}
-      <Card>
-        <CardContent className="pt-4">
-          <div className="flex flex-col gap-3">
-            <a href={getDownloadUrl(jobId)} download className="w-full">
-              <Button className="w-full" size="lg">
-                <Download className="mr-2 h-4 w-4" />
-                Download MP4
-              </Button>
-            </a>
-            <Link href="/generate" className="w-full">
-              <Button variant="outline" className="w-full" size="lg">
-                Generate Another
-              </Button>
-            </Link>
+      {audioAnalysis?.visualization && (
+        <div>
+          <MonoLabel color="var(--color-primary)">beat_map</MonoLabel>
+          <div className="mt-2">
+            <BpmChart visualization={audioAnalysis.visualization} />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      )}
+
+      <div>
+        <MonoLabel color="var(--color-primary)">render_info</MonoLabel>
+        <dl className="mt-2 font-mono text-[11px] leading-loose text-text-muted">
+          <div>
+            <span className="text-text-dim">resolution:</span> 1920×1080
+          </div>
+          <div>
+            <span className="text-text-dim">fps:</span> 30
+          </div>
+          <div>
+            <span className="text-text-dim">duration:</span> 30s loop
+          </div>
+          <div>
+            <span className="text-text-dim">codec:</span> h264
+          </div>
+          <div>
+            <span className="text-text-dim">size:</span> ~12mb
+          </div>
+        </dl>
+      </div>
     </div>
   );
 }
