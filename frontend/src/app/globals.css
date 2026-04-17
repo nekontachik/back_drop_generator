@@ -7,32 +7,54 @@ html {
 }
 
 @theme inline {
-  /* Club / concert color palette (D-13) */
+  /* NEW: Electric blue / sci-fi terminal palette (TE × Ableton redesign) */
+  --color-primary: #00AAFF;
+  --color-primary-bright: #33BBFF;
+  --color-primary-muted: #0088CC;
+  --color-violet: #8B5CF6;
+  --color-violet-light: #A78BFA;
+  --color-violet-dark: #7C3AED;
+  --color-green: #00FF88;
+  --color-pink: #FF3399;
+
+  /* Surfaces — blue-tinted dark */
+  --color-surface: #0A0C10;
+  --color-surface-card: #12151C;
+  --color-surface-elevated: #1A1E28;
+
+  /* Borders */
+  --color-border: #252A36;
+  --color-border-light: #353B4A;
+
+  /* Text */
+  --color-text: #E2E8F0;
+  --color-text-muted: #8892A4;
+  --color-text-dim: #4A5568;
+
+  /* LEGACY: old amber/magenta tokens — kept during phased migration, remove after Phase 9 */
   --color-accent-amber: #f59e0b;
   --color-accent-amber-light: #fbbf24;
   --color-accent-amber-dark: #d97706;
   --color-accent-magenta: #ec4899;
   --color-accent-magenta-light: #f472b6;
   --color-accent-magenta-dark: #db2777;
-  --color-surface: #0a0a0a;
-  --color-surface-card: #141414;
-  --color-surface-elevated: #1a1a1a;
 
   /* Typography */
   --font-display: var(--font-space-grotesk), system-ui, sans-serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), 'SF Mono', 'Fira Code', monospace;
 }
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #0A0C10;
+  --foreground: #E2E8F0;
 }
 
 body {
-  background-color: #0a0a0a;
-  color: #ededed;
+  background-color: #0A0C10;
+  color: #E2E8F0;
   font-family: var(--font-sans, system-ui, sans-serif);
-  /* Subtle grain texture for concert aesthetic */
+  /* Subtle grain texture — reads as cold noise over blue-tinted background */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 200px 200px;
@@ -43,7 +65,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-color: #0a0a0a;
+  background-color: #0A0C10;
   opacity: 0.97;
   z-index: -1;
   pointer-events: none;
