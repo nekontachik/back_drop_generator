@@ -1,11 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import { HeroVideo } from "@/components/gallery/hero-video";
 import { Carousel } from "@/components/gallery/carousel";
-
-/**
- * Gallery landing page — FE-01.
- * Shows hero video with CTA overlay, then carousel of pre-generated examples.
- * Run backend/scripts/generate_gallery.py to produce the videos in frontend/public/examples/.
- */
+import { SessionTable } from "@/components/gallery/session-table";
+import { MonoLabel } from "@/components/ui/mono-label";
+import { cn } from "@/lib/utils";
 
 const EXAMPLES = [
   {
@@ -58,16 +58,47 @@ const EXAMPLES = [
   },
 ];
 
+type ViewMode = "table" | "cards";
+
 export default function GalleryPage() {
+  const [viewMode, setViewMode] = useState<ViewMode>("table");
+
   return (
     <main className="min-h-screen">
-      {/* Hero video section with CTA overlay */}
-      <HeroVideo
-        src="/examples/particles-edm.mp4"
-      />
+      <HeroVideo src="/examples/particles-edm.mp4" />
 
-      {/* Example carousel */}
-      <Carousel items={EXAMPLES} />
+      <section className="px-6 lg:px-12 py-8">
+        <div className="flex items-baseline justify-between mb-4">
+          <div className="flex items-baseline gap-3">
+            <MonoLabel color="var(--color-primary)">examples</MonoLabel>
+            <MonoLabel>{EXAMPLES.length} clips loaded</MonoLabel>
+          </div>
+          <div className="flex gap-0.5">
+            {(["table", "cards"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setViewMode(mode)}
+                aria-pressed={viewMode === mode}
+                className={cn(
+                  "font-mono text-[11px] uppercase tracking-wider px-3 py-1 rounded-sm border transition-colors",
+                  viewMode === mode
+                    ? "border-primary bg-primary/15 text-primary"
+                    : "border-border bg-transparent text-text-muted hover:border-border-light hover:text-text"
+                )}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {viewMode === "table" ? (
+          <SessionTable items={EXAMPLES} />
+        ) : (
+          <Carousel items={EXAMPLES} />
+        )}
+      </section>
     </main>
   );
 }
