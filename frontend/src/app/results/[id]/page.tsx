@@ -99,7 +99,7 @@ export default function ResultsPage() {
                 <a href={getDownloadUrl(jobId)} download>
                   <button
                     type="button"
-                    className="font-mono uppercase tracking-wider text-[11px] font-bold px-6 py-3 border border-primary rounded-sm bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted transition-colors"
+                    className="font-mono uppercase tracking-wider text-[11px] font-bold px-6 py-3 border border-primary rounded-sm bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     style={{ boxShadow: "0 0 18px rgba(0, 170, 255, 0.22)" }}
                   >
                     {"> "}download .mp4
@@ -108,7 +108,7 @@ export default function ResultsPage() {
                 <Link href="/generate">
                   <button
                     type="button"
-                    className="font-mono uppercase tracking-wider text-[11px] px-6 py-3 border border-border rounded-sm bg-transparent text-text-muted hover:border-border-light hover:text-text transition-colors"
+                    className="font-mono uppercase tracking-wider text-[11px] px-6 py-3 border border-border rounded-sm bg-transparent text-text-muted hover:border-border-light hover:text-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   >
                     new render
                   </button>
@@ -121,7 +121,7 @@ export default function ResultsPage() {
                 <Link href="/generate">
                   <button
                     type="button"
-                    className="font-mono uppercase tracking-wider text-[11px] px-6 py-3 border border-primary rounded-sm bg-transparent text-primary hover:bg-primary/10 transition-colors"
+                    className="font-mono uppercase tracking-wider text-[11px] px-6 py-3 border border-primary rounded-sm bg-transparent text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   >
                     {"> "}try again
                   </button>

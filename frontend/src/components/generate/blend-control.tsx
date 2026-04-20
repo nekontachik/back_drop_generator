@@ -38,7 +38,7 @@ function HardwareButton({
       type="button"
       onClick={onClick}
       data-active={active}
-      className="font-mono uppercase tracking-wider text-[11px] px-3 py-1.5 border border-border rounded-sm bg-transparent text-text-muted hover:border-border-light hover:text-text data-[active=true]:border-primary data-[active=true]:bg-primary/15 data-[active=true]:text-primary transition-colors"
+      className="font-mono uppercase tracking-wider text-[11px] px-3 py-1.5 border border-border rounded-sm bg-transparent text-text-muted hover:border-border-light hover:text-text data-[active=true]:border-primary data-[active=true]:bg-primary/15 data-[active=true]:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
     >
       {children}
     </button>

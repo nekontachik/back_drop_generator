@@ -10,13 +10,16 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 
   // Fade in on first mount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisible(true);
   }, []);
 
-  // Restart animation on route change
+  // Restart animation on route change — syncing visual state to an external
+  // signal (pathname) is what effects are for.
   useEffect(() => {
     if (pathname === prevRef.current) return;
     prevRef.current = pathname;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisible(false);
     const raf = requestAnimationFrame(() => {
       requestAnimationFrame(() => setVisible(true));

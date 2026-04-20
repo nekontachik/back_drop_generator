@@ -51,7 +51,7 @@ export function Header() {
               key={href}
               href={href}
               className={cn(
-                "font-mono text-[11px] uppercase px-3.5 py-1.5 rounded-sm border transition-colors",
+                "font-mono text-[11px] uppercase px-3.5 py-1.5 rounded-sm border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
                 isActive
                   ? "border-primary bg-primary/15 text-primary"
                   : "border-border bg-transparent text-text-muted hover:border-border-light hover:text-text"
@@ -64,8 +64,8 @@ export function Header() {
         })}
       </nav>
 
-      {/* Status */}
-      <div className="flex items-center gap-3">
+      {/* Status — hidden on mobile to keep logo + nav breathing room */}
+      <div className="hidden sm:flex items-center gap-3">
         <div className="flex items-center gap-1">
           <span
             className="w-1.5 h-1.5 rounded-full bg-green"

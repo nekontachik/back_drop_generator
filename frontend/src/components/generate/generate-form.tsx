@@ -96,7 +96,7 @@ export function GenerateForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="border border-border rounded-sm bg-surface-card overflow-hidden">
+      <div className="border border-border rounded-sm bg-surface-card overflow-hidden focus-within:border-primary/50 transition-colors">
         <div className="flex items-center justify-between px-3 py-2 border-b border-border">
           <MonoLabel color="var(--color-primary)">visual_prompt</MonoLabel>
           <MonoLabel>
@@ -144,7 +144,7 @@ export function GenerateForm({
       <button
         type="submit"
         disabled={submitting || !prompt.trim()}
-        className="w-full font-mono uppercase tracking-wider text-[11px] font-bold px-6 py-3 border border-primary rounded-sm bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted disabled:opacity-50 disabled:pointer-events-none transition-colors"
+        className="w-full font-mono uppercase tracking-wider text-[11px] font-bold px-6 py-3 border border-primary rounded-sm bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted disabled:opacity-50 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         style={{ boxShadow: "0 0 18px rgba(0, 170, 255, 0.22)" }}
       >
         {submitting ? (

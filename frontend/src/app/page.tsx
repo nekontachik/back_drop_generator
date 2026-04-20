@@ -81,7 +81,7 @@ export default function GalleryPage() {
                 onClick={() => setViewMode(mode)}
                 aria-pressed={viewMode === mode}
                 className={cn(
-                  "font-mono text-[11px] uppercase tracking-wider px-3 py-1 rounded-sm border transition-colors",
+                  "font-mono text-[11px] uppercase tracking-wider px-3 py-1 rounded-sm border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
                   viewMode === mode
                     ? "border-primary bg-primary/15 text-primary"
                     : "border-border bg-transparent text-text-muted hover:border-border-light hover:text-text"

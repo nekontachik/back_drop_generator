@@ -31,14 +31,6 @@ html {
   --color-text-muted: #8892A4;
   --color-text-dim: #4A5568;
 
-  /* LEGACY: old amber/magenta tokens — kept during phased migration, remove after Phase 9 */
-  --color-accent-amber: #f59e0b;
-  --color-accent-amber-light: #fbbf24;
-  --color-accent-amber-dark: #d97706;
-  --color-accent-magenta: #ec4899;
-  --color-accent-magenta-light: #f472b6;
-  --color-accent-magenta-dark: #db2777;
-
   /* Typography */
   --font-display: var(--font-space-grotesk), system-ui, sans-serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
@@ -71,7 +63,27 @@ body::before {
   pointer-events: none;
 }
 
-/* Scrollbar hide utility */
+/* Custom scrollbar — slim, dim track, primary-glow on hover */
+html {
+  scrollbar-color: #353B4A transparent;
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #353B4A;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00AAFF;
+}
+
+/* Scrollbar hide utility (overrides global rules via class specificity) */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

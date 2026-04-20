@@ -19,7 +19,8 @@ interface SessionTableProps {
   items: SessionItem[];
 }
 
-const GRID_COLS = "40px 1fr 90px 70px 60px 48px";
+const GRID_CLASSES =
+  "grid grid-cols-[30px_1fr_72px_48px] sm:grid-cols-[40px_1fr_90px_70px_60px_48px] gap-px";
 
 export function SessionTable({ items }: SessionTableProps) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -46,16 +47,13 @@ export function SessionTable({ items }: SessionTableProps) {
     <>
       <div className="flex flex-col gap-px">
         {/* Column headers */}
-        <div
-          className="grid gap-px py-1.5 border-b border-border"
-          style={{ gridTemplateColumns: GRID_COLS }}
-        >
+        <div className={`${GRID_CLASSES} py-1.5 border-b border-border`}>
           <MonoLabel className="text-center">#</MonoLabel>
           <MonoLabel>prompt</MonoLabel>
           <MonoLabel>genre</MonoLabel>
-          <MonoLabel>effect</MonoLabel>
+          <MonoLabel className="hidden sm:block">effect</MonoLabel>
           <MonoLabel>bpm</MonoLabel>
-          <MonoLabel className="text-center">▶</MonoLabel>
+          <MonoLabel className="hidden sm:block text-center">▶</MonoLabel>
         </div>
 
         {items.map((ex, i) => {
@@ -67,9 +65,8 @@ export function SessionTable({ items }: SessionTableProps) {
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
               onClick={() => setSelected(ex)}
-              className="grid gap-px py-2.5 border-b border-border cursor-pointer items-center transition-colors"
+              className={`${GRID_CLASSES} py-2.5 border-b border-border cursor-pointer items-center transition-colors`}
               style={{
-                gridTemplateColumns: GRID_COLS,
                 background: isHovered ? `${color}08` : "transparent",
               }}
             >
@@ -87,7 +84,7 @@ export function SessionTable({ items }: SessionTableProps) {
                 {ex.prompt}
               </span>
               <Badge color={color}>{ex.genre}</Badge>
-              <span className="font-mono text-[11px] text-text-dim">
+              <span className="hidden sm:inline font-mono text-[11px] text-text-dim">
                 {ex.effect}
               </span>
               <span
@@ -98,7 +95,7 @@ export function SessionTable({ items }: SessionTableProps) {
               >
                 {ex.bpm}
               </span>
-              <div className="text-center">
+              <div className="hidden sm:block text-center">
                 <span
                   className="inline-block w-6 h-6 rounded-sm border text-[10px] leading-[22px] text-center transition-all"
                   style={{

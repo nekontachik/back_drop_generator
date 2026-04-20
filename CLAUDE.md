@@ -204,7 +204,7 @@ Approach: incremental updates, one commit per phase. Prompts in `REDESIGN-PROMPT
 - [x] Phase 6: Landing — session table + carousel toggle
 - [x] Phase 7: Generate page (terminal form, knobs, channel strips)
 - [x] Phase 8: Results page (pipeline progress, restyled sidebar)
-- [ ] Phase 9: Polish & responsive
+- [x] Phase 9: Polish & responsive
 - [ ] Phase 10: Verify & test
 
 ### Rules for This Redesign

@@ -78,7 +78,7 @@ export function HeroVideo({ src, posterSrc }: HeroVideoProps) {
           </p>
           <Link
             href="/generate"
-            className="inline-flex items-center justify-center font-mono text-[11px] font-bold uppercase tracking-wider px-6 py-3 rounded-sm bg-primary text-[#050810] hover:bg-primary-bright transition-colors"
+            className="inline-flex items-center justify-center font-mono text-[11px] font-bold uppercase tracking-wider px-6 py-3 rounded-sm bg-primary text-[#050810] hover:bg-primary-bright transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             style={{ letterSpacing: "0.06em" }}
           >
             {"> "}initialize generator

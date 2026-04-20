@@ -59,7 +59,7 @@ export function AudioUpload({ file, onFileChange }: AudioUploadProps) {
   return (
     <div
       {...getRootProps()}
-      className={`border border-dashed rounded-sm p-4 text-center cursor-pointer transition-colors ${
+      className={`border border-dashed rounded-sm p-4 text-center cursor-pointer transition-colors focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/50 ${
         isDragActive
           ? "border-primary bg-primary/[0.06]"
           : "border-border hover:border-border-light"
