@@ -1,0 +1,21 @@
+id: "classical-core"
+genre: "classical"
+subgenre: ""
+description: >
+  Classical: elegant, organic forms that breathe with orchestral dynamics.
+  Deep navy backgrounds give way to warm gold and ivory fractals that bloom
+  like opening flowers. Movements are graceful and unhurried — shapes expand
+  on crescendos, contract on diminuendos. Fibonacci spirals, baroque
+  ornamental curves, and candlelit warmth. A concert hall at midnight.
+colors:
+  - "#0a0a1e"
+  - "#d4a54a"
+  - "#f0e6d0"
+shapes:
+  - "fractal"
+  - "spiral"
+  - "bloom"
+movement: "slow_breathe"
+intensity: 0.35
+speed: 0.25
+effect_preference: "fractal"

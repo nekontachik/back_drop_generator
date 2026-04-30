@@ -1,0 +1,21 @@
+id: "edm-core"
+genre: "edm"
+subgenre: ""
+description: >
+  EDM: high-energy festival visuals bursting with saturated color. Electric
+  blue and vivid green explosions against deep black space. Particle systems
+  scatter outward on drops, constellations of light points connect and
+  disconnect, starburst formations radiate from center stage. Maximum
+  impact, stadium-scale energy, hands-in-the-air moments.
+colors:
+  - "#050510"
+  - "#00ccff"
+  - "#00ff44"
+shapes:
+  - "particles"
+  - "starburst"
+  - "explosion"
+movement: "fast_burst"
+intensity: 0.85
+speed: 0.8
+effect_preference: "particles"

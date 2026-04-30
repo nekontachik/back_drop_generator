@@ -47,7 +47,7 @@ def _pick_demo_video(matched_styles: list[dict] | None) -> str:
 
 @router.post("/generate", response_model=GenerateResponse)
 async def generate(
-    prompt: str = Form(...),
+    prompt: str = Form(""),
     bpm: int = Form(120),
     bpm_override: int | None = Form(None),
     width: int = Form(None),

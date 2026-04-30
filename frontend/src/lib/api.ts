@@ -42,6 +42,25 @@ export async function getStyles(prompt: string, nResults = 3): Promise<StyleMatc
 }
 
 /**
+ * Analyze an audio file and get a suggested visual prompt.
+ */
+export async function analyzeAudio(
+  file: File
+): Promise<{ analysis: { bpm: { detected: number; half: number; double: number } }; suggested_prompt: string }> {
+  const formData = new FormData();
+  formData.append("audio", file);
+  const res = await fetch(`${API_URL}/analyze-audio`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || res.statusText);
+  }
+  return res.json();
+}
+
+/**
  * Get the download URL for a completed render job's MP4 file.
  */
 export function getDownloadUrl(jobId: string): string {

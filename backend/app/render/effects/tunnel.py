@@ -79,12 +79,14 @@ class TunnelEffect(BaseEffect):
         # Perspective darkening: fade toward edges
         perspective = np.clip(1.0 - radius, 0.0, 1.0)
 
-        # Color mixing: lerp between bg and primary based on pattern
+        # Color mixing: primary drives the base look, accent only flashes on beat peaks
         frame = np.zeros((height, width, 3), dtype=np.float64)
+        # Sharpen beat: only flash above a threshold, then remap to 0..1
+        flash_raw = np.clip((beat_intensity - 0.5) * 2.0, 0.0, 1.0)
+        flash_strength = flash_raw * flash_raw * intensity * 0.6
         for c in range(3):
             base_color = bg[c] + (primary[c] - bg[c]) * combined * perspective
-            # BPM flash: lerp toward accent on beat
-            flash = base_color + (accent[c] - base_color) * beat_intensity * intensity
-            frame[:, :, c] = flash
+            # BPM flash: accent only appears on strong beats, not constantly
+            frame[:, :, c] = base_color + (accent[c] - base_color) * flash_strength
 
         return np.clip(frame, 0, 255).astype(np.uint8)

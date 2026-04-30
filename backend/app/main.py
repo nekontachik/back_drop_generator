@@ -13,7 +13,7 @@ from collections.abc import AsyncGenerator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import download, generate, health, styles
+from app.api import analyze, download, generate, health, styles
 from app.config import settings
 from app.services.cleanup import start_cleanup_loop
 from app.services.genre_seeder import init_genre_collection
@@ -73,3 +73,4 @@ app.include_router(health.router)
 app.include_router(generate.router)
 app.include_router(download.router)
 app.include_router(styles.router)
+app.include_router(analyze.router)

@@ -30,6 +30,12 @@ export function AnimatedBackground() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Equalizer state: heights update every ~90 frames (~1.5s), render stays static between
+    const EQ_BARS = 20;
+    const EQ_UPDATE_INTERVAL = 90;
+    let eqSegCounts = new Array(EQ_BARS).fill(0);
+    let eqLastUpdate = -EQ_UPDATE_INTERVAL; // force first update
+
     const resize = () => {
       cv.width = cv.offsetWidth * 2;
       cv.height = cv.offsetHeight * 2;
@@ -66,28 +72,36 @@ export function AnimatedBackground() {
         ctx.stroke();
       }
 
-      // Distant LED-style equalizer — segmented bars, no sub-pixel flicker.
-      // Heights snap to whole segments so edges never straddle pixel rows.
-      const eqBars = 20;
+      // Distant LED-style equalizer — heights only change every ~1.5s, no per-frame flicker.
       const segH = 6;
       const segGap = 2;
       const segStep = segH + segGap;
       const maxSegs = Math.floor((h * 0.3) / segStep);
-      const eqBarW = Math.floor(w / eqBars);
-      const eqSlowT = t * 0.12;
+      const eqBarW = Math.floor(w / EQ_BARS);
+      const frame = frameRef.current - 1;
       const colors = [
         "rgba(0,170,255,0.03)",
         "rgba(139,92,246,0.025)",
         "rgba(0,255,136,0.02)",
       ];
-      for (let i = 0; i < eqBars; i++) {
-        const level =
-          Math.sin(eqSlowT + i * 1.1) * 0.35 +
-          Math.sin(eqSlowT * 0.6 + i * 0.7) * 0.15 + 0.5;
-        const segs = Math.round(level * maxSegs);
+
+      // Recalculate bar heights infrequently
+      if (frame - eqLastUpdate >= EQ_UPDATE_INTERVAL) {
+        eqLastUpdate = frame;
+        const eqT = frame * 0.0012 * 0.12;
+        for (let i = 0; i < EQ_BARS; i++) {
+          const level =
+            Math.sin(eqT + i * 1.1) * 0.35 +
+            Math.sin(eqT * 0.6 + i * 0.7) * 0.15 + 0.5;
+          eqSegCounts[i] = Math.round(level * maxSegs);
+        }
+      }
+
+      // Render cached bar heights — identical output every frame until next update
+      for (let i = 0; i < EQ_BARS; i++) {
         const x = i * eqBarW;
         ctx.fillStyle = colors[i % 3];
-        for (let s = 0; s < segs; s++) {
+        for (let s = 0; s < eqSegCounts[i]; s++) {
           const y = h - (s + 1) * segStep;
           ctx.fillRect(x + 3, y, eqBarW - 6, segH);
         }

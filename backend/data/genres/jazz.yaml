@@ -1,0 +1,21 @@
+id: "jazz-core"
+genre: "jazz"
+subgenre: ""
+description: >
+  Jazz: warm, smoky atmospheres with organic fluidity. Deep burgundy and
+  midnight blue backgrounds with warm amber and copper highlights that sway
+  like saxophone melodies. Plasma waves flow with improvised unpredictability,
+  soft color blends dissolve and reform. Intimate club lighting, velvet
+  textures, brass reflections in dim rooms.
+colors:
+  - "#1a0a14"
+  - "#cc7722"
+  - "#4488aa"
+shapes:
+  - "plasma"
+  - "wave"
+  - "soft_blend"
+movement: "slow_sway"
+intensity: 0.45
+speed: 0.35
+effect_preference: "plasma"

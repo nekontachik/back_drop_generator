@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, ChevronDown } from "lucide-react";
-import { submitGenerate } from "@/lib/api";
+import { submitGenerate, analyzeAudio } from "@/lib/api";
 import type { BpmResult } from "@/lib/types";
 import { MonoLabel } from "@/components/ui/mono-label";
 import { AudioUpload } from "./audio-upload";
@@ -78,6 +78,7 @@ export function GenerateForm({
   const [blendRatio, setBlendRatio] = useState(70);
   const [bpmTouched, setBpmTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function handlePromptChange(value: string) {
@@ -149,9 +150,8 @@ export function GenerateForm({
           rows={4}
           value={prompt}
           onChange={(e) => handlePromptChange(e.target.value)}
-          placeholder="> describe your visual style..."
+          placeholder="> describe your visual style or upload audio below..."
           className="block w-full bg-transparent border-0 px-3 py-3 text-text font-mono text-[13px] leading-relaxed resize-y focus:outline-none placeholder:text-text-dim"
-          required
         />
       </div>
 
@@ -182,11 +182,31 @@ export function GenerateForm({
           audioSlot={
             <AudioUpload
               file={audioFile}
-              onFileChange={(f) => {
+              analyzing={analyzing}
+              onFileChange={async (f) => {
                 setAudioFile(f);
                 if (!f) {
                   setDetectedBpm(null);
                   setBpmTouched(false);
+                  return;
+                }
+                // Analyze audio and auto-fill prompt + BPM
+                setAnalyzing(true);
+                setError(null);
+                try {
+                  const result = await analyzeAudio(f);
+                  setDetectedBpm(result.analysis.bpm);
+                  setBpm(result.analysis.bpm.detected);
+                  onBpmChange?.(result.analysis.bpm.detected);
+                  if (!prompt.trim()) {
+                    const suggested = result.suggested_prompt.slice(0, MAX_PROMPT);
+                    setPrompt(suggested);
+                    onPromptChange(suggested);
+                  }
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : "Audio analysis failed");
+                } finally {
+                  setAnalyzing(false);
                 }
               }}
             />
@@ -196,7 +216,7 @@ export function GenerateForm({
 
       <button
         type="submit"
-        disabled={submitting || !prompt.trim()}
+        disabled={submitting || (!prompt.trim() && !audioFile)}
         className="w-full font-mono uppercase tracking-wider text-[11px] font-bold px-6 py-3 border border-primary rounded-sm bg-primary text-[#050810] hover:bg-primary-bright active:bg-primary-muted disabled:opacity-50 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         style={{ boxShadow: "0 0 18px rgba(0, 170, 255, 0.22)" }}
       >

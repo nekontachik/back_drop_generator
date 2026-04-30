@@ -1,12 +1,13 @@
 "use client";
 
 import { useDropzone } from "react-dropzone";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { useCallback } from "react";
 import { MonoLabel } from "@/components/ui/mono-label";
 
 interface AudioUploadProps {
   file: File | null;
+  analyzing?: boolean;
   onFileChange: (file: File | null) => void;
 }
 
@@ -16,7 +17,7 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function AudioUpload({ file, onFileChange }: AudioUploadProps) {
+export function AudioUpload({ file, analyzing, onFileChange }: AudioUploadProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
@@ -41,7 +42,15 @@ export function AudioUpload({ file, onFileChange }: AudioUploadProps) {
             {file.name}
           </p>
           <p className="font-mono text-[10px] text-text-dim mt-0.5">
-            {formatBytes(file.size)} · loaded
+            {formatBytes(file.size)} ·{" "}
+            {analyzing ? (
+              <span className="text-primary inline-flex items-center gap-1">
+                <Loader2 className="w-3 h-3 animate-spin inline" />
+                analyzing...
+              </span>
+            ) : (
+              "analyzed"
+            )}
           </p>
         </div>
         <button
@@ -70,7 +79,7 @@ export function AudioUpload({ file, onFileChange }: AudioUploadProps) {
         drop audio file or click to upload
       </MonoLabel>
       <div className="font-mono text-[10px] text-text-dim mt-1">
-        .mp3 .wav .ogg · max 10mb · auto-detects bpm
+        .mp3 .wav .ogg · max 10mb · auto-generates prompt from audio
       </div>
     </div>
   );

@@ -1,0 +1,21 @@
+id: "synthwave-core"
+genre: "synthwave"
+subgenre: ""
+description: >
+  Synthwave: retro-futuristic neon landscapes inspired by 1980s aesthetics.
+  Hot pink and electric cyan slice through deep purple darkness. Chrome grid
+  lines stretch to a vanishing point horizon, sunset gradients glow behind
+  wireframe mountains, and tunnel perspectives rush forward with VHS
+  scanline artifacts. Outrun vibes, midnight drives on infinite highways.
+colors:
+  - "#1a0030"
+  - "#ff2299"
+  - "#00ffee"
+shapes:
+  - "tunnel"
+  - "grid"
+  - "horizon"
+movement: "fast_forward"
+intensity: 0.7
+speed: 0.6
+effect_preference: "tunnel"
