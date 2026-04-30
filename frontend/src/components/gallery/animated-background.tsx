@@ -30,12 +30,6 @@ export function AnimatedBackground() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Equalizer state: heights update every ~90 frames (~1.5s), render stays static between
-    const EQ_BARS = 20;
-    const EQ_UPDATE_INTERVAL = 90;
-    let eqSegCounts = new Array(EQ_BARS).fill(0);
-    let eqLastUpdate = -EQ_UPDATE_INTERVAL; // force first update
-
     const resize = () => {
       cv.width = cv.offsetWidth * 2;
       cv.height = cv.offsetHeight * 2;
@@ -70,45 +64,6 @@ export function AnimatedBackground() {
         ctx.moveTo(0, y);
         ctx.lineTo(w, y);
         ctx.stroke();
-      }
-
-      // LED-style equalizer — visible bars, heights update every ~1.5s.
-      const segH = 4;
-      const segGap = 2;
-      const segStep = segH + segGap;
-      const maxSegs = Math.floor((h * 0.35) / segStep);
-      const eqBarW = Math.floor(w / EQ_BARS);
-      const frame = frameRef.current - 1;
-
-      // Recalculate bar heights infrequently
-      if (frame - eqLastUpdate >= EQ_UPDATE_INTERVAL) {
-        eqLastUpdate = frame;
-        const eqT = frame * 0.0012 * 0.12;
-        for (let i = 0; i < EQ_BARS; i++) {
-          const level =
-            Math.sin(eqT + i * 1.1) * 0.35 +
-            Math.sin(eqT * 0.6 + i * 0.7) * 0.15 + 0.5;
-          eqSegCounts[i] = Math.round(level * maxSegs);
-        }
-      }
-
-      // Render cached bar heights with visible opacity
-      for (let i = 0; i < EQ_BARS; i++) {
-        const x = i * eqBarW;
-        const segs = eqSegCounts[i];
-        for (let s = 0; s < segs; s++) {
-          const y = h - (s + 1) * segStep;
-          // Fade out toward the top — bottom segments brighter
-          const fade = 1.0 - (s / maxSegs) * 0.6;
-          const a = 0.1 * fade;
-          ctx.fillStyle =
-            i % 3 === 0
-              ? `rgba(0,170,255,${a})`
-              : i % 3 === 1
-                ? `rgba(139,92,246,${a})`
-                : `rgba(0,255,136,${a * 0.8})`;
-          ctx.fillRect(x + 3, y, eqBarW - 6, segH);
-        }
       }
 
       // Extremely slow pulse — one cycle ≈ 10s, oscillates 0.45..0.55.
