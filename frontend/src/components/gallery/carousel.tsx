@@ -89,7 +89,7 @@ export function Carousel({ items }: CarouselProps) {
                       muted
                       loop
                       playsInline
-                      preload="none"
+                      preload="metadata"
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
                       aria-label={item.prompt}

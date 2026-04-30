@@ -356,27 +356,33 @@ def _deterministic_fallback(
         seed=seed,
     )
 
-    # Override colors/intensity/speed from top genre doc when available
+    # Override colors/intensity/speed/effect from top genre doc when available
     if genre_docs:
         top_doc = genre_docs[0]
+        updates: dict = {}
+
+        # Apply effect_preference from RAG if valid
+        effect_pref = top_doc.get("effect_preference", "")
+        if effect_pref and effect_pref in VALID_EFFECTS:
+            updates["effect_name"] = effect_pref
+
         colors = top_doc.get("colors", [])
         if len(colors) >= 3:
-            params = params.model_copy(
-                update={
-                    "bg_color": colors[0],
-                    "primary_color": colors[1],
-                    "accent_color": colors[2],
-                    "intensity": float(top_doc.get("intensity", params.intensity)),
-                    "speed": float(top_doc.get("speed", params.speed)),
-                }
-            )
+            updates.update({
+                "bg_color": colors[0],
+                "primary_color": colors[1],
+                "accent_color": colors[2],
+                "intensity": float(top_doc.get("intensity", params.intensity)),
+                "speed": float(top_doc.get("speed", params.speed)),
+            })
         elif len(colors) == 2:
-            params = params.model_copy(
-                update={
-                    "primary_color": colors[0],
-                    "accent_color": colors[1],
-                }
-            )
+            updates.update({
+                "primary_color": colors[0],
+                "accent_color": colors[1],
+            })
+
+        if updates:
+            params = params.model_copy(update=updates)
 
     return BlendResult(
         params=params,

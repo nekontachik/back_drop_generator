@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { submitGenerate } from "@/lib/api";
 import type { BpmResult } from "@/lib/types";
 import { MonoLabel } from "@/components/ui/mono-label";
@@ -11,6 +11,47 @@ import { BpmInput } from "./bpm-input";
 import { BlendControl } from "./blend-control";
 
 const MAX_PROMPT = 500;
+
+function CollapsibleSection({
+  label,
+  hint,
+  children,
+  defaultOpen = false,
+}: {
+  label: string;
+  hint: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border border-border rounded-sm bg-surface-card overflow-hidden transition-colors">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-elevated transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+      >
+        <div className="flex items-center gap-3">
+          <MonoLabel color={open ? "var(--color-primary)" : undefined}>
+            {open ? "−" : "+"} {label}
+          </MonoLabel>
+          {!open && (
+            <span className="font-mono text-[10px] text-text-dim">
+              {hint}
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          className={`w-3.5 h-3.5 text-text-dim transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      {open && <div className="px-0">{children}</div>}
+    </div>
+  );
+}
 
 interface GenerateFormProps {
   onPromptChange: (prompt: string) => void;
@@ -114,32 +155,44 @@ export function GenerateForm({
         />
       </div>
 
-      <BlendControl
-        genreA={genreA}
-        genreB={genreB}
-        ratio={blendRatio}
-        onGenreAChange={handleGenreAChange}
-        onGenreBChange={handleGenreBChange}
-        onRatioChange={handleBlendChange}
-      />
+      <CollapsibleSection
+        label="style_blend"
+        hint={`${genreA.toLowerCase()} × ${genreB.toLowerCase()} · ${blendRatio}%`}
+      >
+        <BlendControl
+          genreA={genreA}
+          genreB={genreB}
+          ratio={blendRatio}
+          onGenreAChange={handleGenreAChange}
+          onGenreBChange={handleGenreBChange}
+          onRatioChange={handleBlendChange}
+          embedded
+        />
+      </CollapsibleSection>
 
-      <BpmInput
-        value={bpm}
-        onChange={handleBpmChange}
-        detectedBpm={detectedBpm}
-        audioSlot={
-          <AudioUpload
-            file={audioFile}
-            onFileChange={(f) => {
-              setAudioFile(f);
-              if (!f) {
-                setDetectedBpm(null);
-                setBpmTouched(false);
-              }
-            }}
-          />
-        }
-      />
+      <CollapsibleSection
+        label="tempo_&_audio"
+        hint={`${bpm} bpm${audioFile ? " · " + audioFile.name : ""}`}
+      >
+        <BpmInput
+          value={bpm}
+          onChange={handleBpmChange}
+          detectedBpm={detectedBpm}
+          embedded
+          audioSlot={
+            <AudioUpload
+              file={audioFile}
+              onFileChange={(f) => {
+                setAudioFile(f);
+                if (!f) {
+                  setDetectedBpm(null);
+                  setBpmTouched(false);
+                }
+              }}
+            />
+          }
+        />
+      </CollapsibleSection>
 
       <button
         type="submit"

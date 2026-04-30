@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { MonoLabel } from "@/components/ui/mono-label";
-import { Knob } from "@/components/ui/knob";
 import type { BpmResult } from "@/lib/types";
 
 const QUICK_BPMS = [64, 90, 110, 128, 140, 174];
@@ -12,6 +11,7 @@ interface BpmInputProps {
   onChange: (bpm: number) => void;
   detectedBpm?: BpmResult | null;
   audioSlot?: ReactNode;
+  embedded?: boolean;
 }
 
 function HardwareButton({
@@ -40,13 +40,11 @@ export function BpmInput({
   onChange,
   detectedBpm,
   audioSlot,
+  embedded,
 }: BpmInputProps) {
-  const [intensity, setIntensity] = useState(0.65);
-  const [complexity, setComplexity] = useState(0.4);
-
   return (
-    <div className="border border-border rounded-sm bg-surface-card p-4">
-      <MonoLabel color="var(--color-primary)">tempo_config</MonoLabel>
+    <div className={embedded ? "p-4" : "border border-border rounded-sm bg-surface-card p-4"}>
+      {!embedded && <MonoLabel color="var(--color-primary)">tempo_config</MonoLabel>}
 
       <div className="flex flex-wrap items-end gap-6 mt-3">
         <div>
@@ -56,6 +54,8 @@ export function BpmInput({
               fontSize: "48px",
               letterSpacing: "-0.03em",
               textShadow: "0 0 20px rgba(0, 170, 255, 0.3)",
+              fontVariantNumeric: "tabular-nums",
+              minWidth: "3ch",
             }}
           >
             {value}
@@ -75,21 +75,6 @@ export function BpmInput({
           ))}
         </div>
 
-        <div className="flex gap-3 ml-auto">
-          <Knob
-            value={intensity}
-            label="intensity"
-            size={48}
-            onChange={setIntensity}
-          />
-          <Knob
-            value={complexity}
-            label="complexity"
-            size={48}
-            color="#8B5CF6"
-            onChange={setComplexity}
-          />
-        </div>
       </div>
 
       {detectedBpm && (

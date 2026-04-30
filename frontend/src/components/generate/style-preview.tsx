@@ -5,7 +5,6 @@ import { getStyles } from "@/lib/api";
 import type { StyleMatch } from "@/lib/types";
 import { MonoLabel } from "@/components/ui/mono-label";
 import { Badge } from "@/components/ui/badge";
-import { ChannelStrip } from "@/components/ui/channel-strip";
 
 interface StylePreviewProps {
   prompt: string;
@@ -89,16 +88,6 @@ export function StylePreview({
             <span className="text-text-dim">fps:</span> 30
           </div>
         </dl>
-      </div>
-
-      <div>
-        <MonoLabel>levels</MonoLabel>
-        <div className="flex gap-1 mt-2 justify-center">
-          <ChannelStrip label="bass" value={75} color="#00AAFF" />
-          <ChannelStrip label="mid" value={55} color="#00AAFF" />
-          <ChannelStrip label="high" value={40} color="#8B5CF6" />
-          <ChannelStrip label="fx" value={60} color="#00FF88" />
-        </div>
       </div>
 
       <div>

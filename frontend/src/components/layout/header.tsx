@@ -12,11 +12,6 @@ const navLinks = [
     label: "generate",
     match: (p: string) => p.startsWith("/generate"),
   },
-  {
-    href: "/results",
-    label: "output",
-    match: (p: string) => p.startsWith("/results"),
-  },
 ];
 
 export function Header() {

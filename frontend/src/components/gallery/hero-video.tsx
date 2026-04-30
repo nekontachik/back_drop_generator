@@ -105,8 +105,8 @@ export function HeroVideo() {
       {/* Status bar */}
       <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between border-t border-[rgba(37,42,54,.6)] px-6 py-2 font-mono text-[10px] uppercase tracking-[0.1em]">
         <span style={{ color: "#00FF88" }}>● system.online</span>
-        <span className="text-[#4A5568]">librosa + rag + llm + opencv</span>
-        <span className="text-[#4A5568]">1080p · 30fps · mp4</span>
+        <span className="text-[#4A5568]">bpm sync · beat detection · audio reactive</span>
+        <span className="text-[#4A5568]">1080p · 30fps · loop</span>
       </div>
 
       <style jsx>{`

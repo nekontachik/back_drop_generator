@@ -330,3 +330,160 @@ async def test_creative_description_returned():
 
     assert result.source == "llm"
     assert "amber" in result.creative_description.lower() or len(result.creative_description) > 5
+
+
+# ---------------------------------------------------------------------------
+# Test 8: Fallback uses effect_preference from RAG genre doc
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_fallback_uses_effect_preference_from_rag():
+    """Deterministic fallback should use effect_preference from the top RAG
+    genre doc instead of relying solely on keyword matching."""
+    from app.services.llm_blender import blend_style, BlendResult
+
+    # Genre doc says effect_preference = "particles" (ambient)
+    ambient_docs = [
+        {
+            "id": "ambient-drift",
+            "genre": "ambient",
+            "description": "Ambient: soft, floating, dreamy soundscapes.",
+            "colors": ["#0a0a2e", "#4488ff", "#88ccff"],
+            "intensity": 0.3,
+            "speed": 0.2,
+            "effect_preference": "particles",
+        },
+    ]
+
+    with patch("app.services.llm_blender.settings") as mock_settings:
+        mock_settings.anthropic_api_key = None
+        mock_settings.openrouter_api_key = None
+
+        result = await blend_style(
+            prompt="gentle flowing visuals",
+            genre_docs=ambient_docs,
+            mood=None,
+            blend_genres=None,
+            blend_ratio=50,
+            bpm=72,
+        )
+
+    assert isinstance(result, BlendResult)
+    assert result.source == "fallback"
+    assert result.params.effect_name == "particles"
+
+
+# ---------------------------------------------------------------------------
+# Test 9: Each genre doc maps to correct effect in fallback
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "effect_preference,genre",
+    [
+        ("tunnel", "techno"),
+        ("fractal", "psytrance"),
+        ("particles", "ambient"),
+        ("plasma", "house"),
+    ],
+)
+async def test_fallback_effect_per_genre(effect_preference, genre):
+    """Each genre's effect_preference should be applied in fallback mode."""
+    from app.services.llm_blender import blend_style
+
+    docs = [
+        {
+            "id": f"{genre}-test",
+            "genre": genre,
+            "description": f"{genre} style document",
+            "colors": ["#0a0a0a", "#00ff88", "#ff0066"],
+            "intensity": 0.5,
+            "speed": 0.5,
+            "effect_preference": effect_preference,
+        },
+    ]
+
+    with patch("app.services.llm_blender.settings") as mock_settings:
+        mock_settings.anthropic_api_key = None
+        mock_settings.openrouter_api_key = None
+
+        result = await blend_style(
+            prompt="some generic visual prompt",
+            genre_docs=docs,
+            mood=None,
+            blend_genres=None,
+            blend_ratio=50,
+            bpm=120,
+        )
+
+    assert result.params.effect_name == effect_preference, (
+        f"Expected effect '{effect_preference}' for genre '{genre}', "
+        f"got '{result.params.effect_name}'"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Test 10: Invalid effect_preference is ignored
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_fallback_ignores_invalid_effect_preference():
+    """If effect_preference is not in VALID_EFFECTS, fall back to keyword
+    matching instead of using the invalid value."""
+    from app.services.llm_blender import blend_style
+
+    docs = [
+        {
+            "id": "bad-effect",
+            "genre": "techno",
+            "description": "Techno style",
+            "colors": ["#0a0a0a", "#00ff88", "#ff0066"],
+            "intensity": 0.7,
+            "speed": 0.7,
+            "effect_preference": "nonexistent_effect",
+        },
+    ]
+
+    with patch("app.services.llm_blender.settings") as mock_settings:
+        mock_settings.anthropic_api_key = None
+        mock_settings.openrouter_api_key = None
+
+        result = await blend_style(
+            prompt="dark techno warehouse",
+            genre_docs=docs,
+            mood=None,
+            blend_genres=None,
+            blend_ratio=50,
+            bpm=138,
+        )
+
+    # Should NOT be "nonexistent_effect"
+    assert result.params.effect_name in ["tunnel", "fractal", "particles", "plasma"]
+    assert result.params.effect_name != "nonexistent_effect"
+
+
+# ---------------------------------------------------------------------------
+# Test 11: Empty genre_docs falls back to keyword matching
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_fallback_no_genre_docs():
+    """When genre_docs is empty, fall back to keyword matching from prompt."""
+    from app.services.llm_blender import blend_style
+
+    with patch("app.services.llm_blender.settings") as mock_settings:
+        mock_settings.anthropic_api_key = None
+        mock_settings.openrouter_api_key = None
+
+        result = await blend_style(
+            prompt="dark techno warehouse",
+            genre_docs=[],
+            mood=None,
+            blend_genres=None,
+            blend_ratio=50,
+            bpm=138,
+        )
+
+    assert result.source == "fallback"
+    # "techno" keyword should match to tunnel via prompt_mapper
+    assert result.params.effect_name == "tunnel"
