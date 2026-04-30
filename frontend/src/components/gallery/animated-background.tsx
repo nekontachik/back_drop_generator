@@ -72,18 +72,13 @@ export function AnimatedBackground() {
         ctx.stroke();
       }
 
-      // Distant LED-style equalizer — heights only change every ~1.5s, no per-frame flicker.
-      const segH = 6;
+      // LED-style equalizer — visible bars, heights update every ~1.5s.
+      const segH = 4;
       const segGap = 2;
       const segStep = segH + segGap;
-      const maxSegs = Math.floor((h * 0.3) / segStep);
+      const maxSegs = Math.floor((h * 0.35) / segStep);
       const eqBarW = Math.floor(w / EQ_BARS);
       const frame = frameRef.current - 1;
-      const colors = [
-        "rgba(0,170,255,0.03)",
-        "rgba(139,92,246,0.025)",
-        "rgba(0,255,136,0.02)",
-      ];
 
       // Recalculate bar heights infrequently
       if (frame - eqLastUpdate >= EQ_UPDATE_INTERVAL) {
@@ -97,12 +92,21 @@ export function AnimatedBackground() {
         }
       }
 
-      // Render cached bar heights — identical output every frame until next update
+      // Render cached bar heights with visible opacity
       for (let i = 0; i < EQ_BARS; i++) {
         const x = i * eqBarW;
-        ctx.fillStyle = colors[i % 3];
-        for (let s = 0; s < eqSegCounts[i]; s++) {
+        const segs = eqSegCounts[i];
+        for (let s = 0; s < segs; s++) {
           const y = h - (s + 1) * segStep;
+          // Fade out toward the top — bottom segments brighter
+          const fade = 1.0 - (s / maxSegs) * 0.6;
+          const a = 0.1 * fade;
+          ctx.fillStyle =
+            i % 3 === 0
+              ? `rgba(0,170,255,${a})`
+              : i % 3 === 1
+                ? `rgba(139,92,246,${a})`
+                : `rgba(0,255,136,${a * 0.8})`;
           ctx.fillRect(x + 3, y, eqBarW - 6, segH);
         }
       }
