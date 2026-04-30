@@ -7,7 +7,7 @@ const BG = "#0A0C10";
 /**
  * Animated background for the gallery hero.
  *
- * Renders a faint grid, slowly pulsing concentric rings, and a scanline.
+ * Renders slowly pulsing concentric rings and a faint scanline.
  * One full pulse cycle ≈ 10s — barely perceptible, photo-sensitive safe.
  * Honors prefers-reduced-motion: renders one static frame, no rAF loop.
  */
@@ -45,22 +45,6 @@ export function AnimatedBackground() {
       // Background fill
       ctx.fillStyle = BG;
       ctx.fillRect(0, 0, w, h);
-
-      // Faint grid
-      ctx.strokeStyle = "rgba(0,170,255,0.035)";
-      ctx.lineWidth = 0.5;
-      for (let x = 0; x < w; x += 40) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-      for (let y = 0; y < h; y += 40) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
 
       // Extremely slow pulse — one cycle ≈ 10s, oscillates 0.45..0.55.
       const phase = t * 0.35;
