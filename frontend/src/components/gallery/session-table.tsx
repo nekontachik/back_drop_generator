@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { X, Volume2, VolumeX } from "lucide-react";
 import { MonoLabel } from "@/components/ui/mono-label";
 import { Badge } from "@/components/ui/badge";
 import { genreColor } from "@/lib/genre-colors";
@@ -21,6 +21,41 @@ interface SessionTableProps {
 
 const GRID_CLASSES =
   "grid grid-cols-[30px_1fr_72px_48px] sm:grid-cols-[40px_1fr_90px_70px_60px_48px] gap-px";
+
+function ModalVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  function toggleMute() {
+    if (ref.current) {
+      ref.current.muted = !ref.current.muted;
+      setIsMuted(ref.current.muted);
+    }
+  }
+
+  return (
+    <div className="relative aspect-video rounded-sm overflow-hidden bg-black border border-border">
+      <video
+        ref={ref}
+        className="w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        controls
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+      <button
+        onClick={toggleMute}
+        className="absolute top-3 right-3 z-10 w-8 h-8 rounded-sm bg-black/60 border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-colors"
+        aria-label={isMuted ? "Unmute" : "Mute"}
+      >
+        {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+      </button>
+    </div>
+  );
+}
 
 export function SessionTable({ items }: SessionTableProps) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -128,18 +163,7 @@ export function SessionTable({ items }: SessionTableProps) {
             >
               <X className="w-4 h-4" /> close
             </button>
-            <div className="relative aspect-video rounded-sm overflow-hidden bg-black border border-border">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
-              >
-                <source src={selected.src} type="video/mp4" />
-              </video>
-            </div>
+            <ModalVideo src={selected.src} />
             <div className="mt-3 flex items-center justify-between px-1">
               <div className="flex items-center gap-3">
                 <Badge color={genreColor(selected.genre)}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Maximize2, Volume2, VolumeX } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MonoLabel } from "@/components/ui/mono-label";
@@ -18,6 +18,41 @@ interface CarouselItem {
 
 interface CarouselProps {
   items: CarouselItem[];
+}
+
+function CarouselModalVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  function toggleMute() {
+    if (ref.current) {
+      ref.current.muted = !ref.current.muted;
+      setIsMuted(ref.current.muted);
+    }
+  }
+
+  return (
+    <div className="relative aspect-video rounded-sm overflow-hidden bg-black border border-border">
+      <video
+        ref={ref}
+        className="w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        controls
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+      <button
+        onClick={toggleMute}
+        className="absolute top-3 right-3 z-10 w-8 h-8 rounded-sm bg-black/60 border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-colors"
+        aria-label={isMuted ? "Unmute" : "Mute"}
+      >
+        {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+      </button>
+    </div>
+  );
 }
 
 export function Carousel({ items }: CarouselProps) {
@@ -157,18 +192,7 @@ export function Carousel({ items }: CarouselProps) {
             </button>
 
             {/* Video */}
-            <div className="relative aspect-video rounded-sm overflow-hidden bg-black border border-border">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
-              >
-                <source src={selected.src} type="video/mp4" />
-              </video>
-            </div>
+            <CarouselModalVideo src={selected.src} />
 
             {/* Info */}
             <div className="mt-3 flex items-center justify-between px-1">
