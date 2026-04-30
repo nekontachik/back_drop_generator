@@ -65,7 +65,7 @@ export default function GalleryPage() {
 
   return (
     <main className="min-h-screen">
-      <HeroVideo src="/examples/particles-edm.mp4" />
+      <HeroVideo />
 
       <section className="px-6 lg:px-12 py-8">
         <div className="flex items-baseline justify-between mb-4">
