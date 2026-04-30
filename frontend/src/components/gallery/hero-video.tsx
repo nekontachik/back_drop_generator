@@ -34,30 +34,6 @@ export function HeroVideo() {
       {/* Animated canvas */}
       <AnimatedBackground />
 
-      {/* Subtle background video — heavily faded + blurred, hidden under reduced-motion */}
-      <video
-        className="hero-bg-video pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{
-          opacity: 0.18,
-          mixBlendMode: "screen",
-          filter: "blur(8px)",
-        }}
-        src="/examples/particles-edm.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
-
-      {/* Scan-line texture */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px)",
-        }}
-      />
-
       {/* Combined fade: bottom-up gradient + central radial darkening for text legibility */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -109,13 +85,6 @@ export function HeroVideo() {
         <span className="text-[#4A5568]">1080p · 30fps · loop</span>
       </div>
 
-      <style jsx>{`
-        @media (prefers-reduced-motion: reduce) {
-          .hero-bg-video {
-            display: none;
-          }
-        }
-      `}</style>
     </section>
   );
 }
