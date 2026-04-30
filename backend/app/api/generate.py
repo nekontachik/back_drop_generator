@@ -56,6 +56,7 @@ async def generate(
     blend_genre_a: str | None = Form(None),
     blend_genre_b: str | None = Form(None),
     blend_ratio: int = Form(70),
+    effect: str | None = Form(None),
     audio: UploadFile | None = File(None),
 ) -> GenerateResponse:
     """Accept a prompt and optional audio file, start rendering, return job_id.
@@ -132,6 +133,11 @@ async def generate(
         seed=seed,
     )
     render_params = blend_result.params
+
+    # Apply explicit effect override if provided and valid
+    _VALID_EFFECTS = {"tunnel", "fractal", "particles", "plasma"}
+    if effect and effect in _VALID_EFFECTS:
+        render_params = render_params.model_copy(update={"effect_name": effect})
 
     job = create_job(render_params)
 

@@ -47,7 +47,7 @@ def validate_audio(audio_bytes: bytes, filename: str | None = None) -> None:
 def classify_mood(centroid: float, rms: float, onset: float) -> list[str]:
     """Map raw audio features to human-readable mood labels.
 
-    Thresholds based on typical ranges for 22050 Hz sample rate:
+    Thresholds based on typical ranges for 11025 Hz sample rate:
     - spectral_centroid: 1000-4000 Hz (low=dark, high=bright)
     - rms: 0.01-0.3 (low=mellow, high=energetic)
     - onset_strength: 0.5-5.0 (low=sparse, high=dense)
@@ -86,8 +86,9 @@ def analyze_audio(audio_bytes: bytes) -> AudioAnalysis:
     Returns:
         AudioAnalysis with BPM, beat times, mood vector, and visualization data.
     """
-    # Load audio at 22050 Hz (librosa default)
-    y, sr = librosa.load(BytesIO(audio_bytes), sr=22050)
+    # Load first 30 seconds at 11025 Hz — minimal RAM footprint for free-tier hosting
+    # 30s is sufficient for BPM detection and mood classification
+    y, sr = librosa.load(BytesIO(audio_bytes), sr=11025, duration=30.0)
 
     # Beat tracking -- tempo may be ndarray or float depending on librosa version
     tempo_arr, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
