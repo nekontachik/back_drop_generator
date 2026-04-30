@@ -66,23 +66,31 @@ export function AnimatedBackground() {
         ctx.stroke();
       }
 
-      // Distant equalizer bars — very slow, ghostly columns rising from the bottom
-      const barCount = 16;
-      const barWidth = w / barCount;
-      const slowT = t * 0.15;
-      for (let i = 0; i < barCount; i++) {
-        const barPhase =
-          Math.sin(slowT + i * 1.2) * 0.3 +
-          Math.sin(slowT * 0.7 + i * 0.5) * 0.2 + 0.5;
-        const barH = 8 + barPhase * (h * 0.18);
-        const x = i * barWidth;
-        ctx.fillStyle =
-          i % 3 === 0
-            ? "rgba(0,170,255,0.025)"
-            : i % 3 === 1
-              ? "rgba(139,92,246,0.02)"
-              : "rgba(0,255,136,0.015)";
-        ctx.fillRect(x + 2, h - barH, barWidth - 4, barH);
+      // Distant LED-style equalizer — segmented bars, no sub-pixel flicker.
+      // Heights snap to whole segments so edges never straddle pixel rows.
+      const eqBars = 20;
+      const segH = 6;
+      const segGap = 2;
+      const segStep = segH + segGap;
+      const maxSegs = Math.floor((h * 0.3) / segStep);
+      const eqBarW = Math.floor(w / eqBars);
+      const eqSlowT = t * 0.12;
+      const colors = [
+        "rgba(0,170,255,0.03)",
+        "rgba(139,92,246,0.025)",
+        "rgba(0,255,136,0.02)",
+      ];
+      for (let i = 0; i < eqBars; i++) {
+        const level =
+          Math.sin(eqSlowT + i * 1.1) * 0.35 +
+          Math.sin(eqSlowT * 0.6 + i * 0.7) * 0.15 + 0.5;
+        const segs = Math.round(level * maxSegs);
+        const x = i * eqBarW;
+        ctx.fillStyle = colors[i % 3];
+        for (let s = 0; s < segs; s++) {
+          const y = h - (s + 1) * segStep;
+          ctx.fillRect(x + 3, y, eqBarW - 6, segH);
+        }
       }
 
       // Extremely slow pulse — one cycle ≈ 10s, oscillates 0.45..0.55.
