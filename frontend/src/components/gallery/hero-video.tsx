@@ -2,96 +2,120 @@
 
 import Link from "next/link";
 import { AnimatedBackground } from "./animated-background";
-import { MonoLabel } from "@/components/ui/mono-label";
 
-interface HeroVideoProps {
-  src?: string;
-  posterSrc?: string;
-}
-
-export function HeroVideo({ src, posterSrc }: HeroVideoProps) {
+/**
+ * Hero video / landing CTA for the gallery.
+ *
+ * v2 — comfort pass:
+ *  - Removed the bordered "card" container around the headline. The CTA box
+ *    used to read as a separate floating panel; now the headline sits directly
+ *    on the hero with a soft radial darkening built into the fade layer for
+ *    legibility.
+ *  - Background video opacity reduced (0.6 → 0.18) and softly blurred so it
+ *    doesn't introduce flicker behind the text.
+ *  - Hidden entirely under prefers-reduced-motion (CSS rule below).
+ *
+ * NOTE: this assumes a `particles-edm.mp4` exists in /public/examples and a
+ * primary cyan button utility (`bv-primary` here, but you can swap to your
+ * own button component).
+ */
+export function HeroVideo() {
   return (
-    <section className="relative h-[70vh] overflow-hidden bg-surface">
-      {/* Base gradient — subtle blue-tinted radial */}
+    <section className="relative h-[70vh] min-h-[500px] overflow-hidden bg-[#0A0C10]">
+      {/* Soft radial color wash */}
       <div
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at 30% 50%, rgba(0,170,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 60%), #0A0C10",
+            "radial-gradient(ellipse at 30% 50%, rgba(0,170,255,.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(139,92,246,.08) 0%, transparent 60%), #0A0C10",
         }}
-        aria-hidden="true"
       />
 
-      {/* Animated canvas — hidden on mobile for performance */}
-      <AnimatedBackground className="hidden sm:block" />
+      {/* Animated canvas */}
+      <AnimatedBackground />
 
-      {/* Video on top when available (semi-transparent, hidden on mobile) */}
-      {src && (
-        <video
-          className="absolute inset-0 w-full h-full object-cover hidden sm:block opacity-60 mix-blend-screen"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          poster={posterSrc}
-          aria-hidden="true"
-        >
-          <source src={src} type="video/mp4" />
-        </video>
-      )}
+      {/* Subtle background video — heavily faded + blurred, hidden under reduced-motion */}
+      <video
+        className="hero-bg-video pointer-events-none absolute inset-0 h-full w-full object-cover"
+        style={{
+          opacity: 0.18,
+          mixBlendMode: "screen",
+          filter: "blur(8px)",
+        }}
+        src="/examples/particles-edm.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
 
-      {/* Scan lines overlay */}
+      {/* Scan-line texture */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)",
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px)",
         }}
-        aria-hidden="true"
       />
 
-      {/* Bottom fade for CTA legibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent" />
+      {/* Combined fade: bottom-up gradient + central radial darkening for text legibility */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 800px 500px at 50% 55%, rgba(10,12,16,.75) 0%, rgba(10,12,16,.3) 50%, transparent 80%), linear-gradient(to top, #0A0C10 0%, rgba(10,12,16,.6) 40%, transparent 100%)",
+        }}
+      />
 
-      {/* CTA */}
-      <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-16 px-6">
+      {/* CTA — no container chrome, just text on the hero */}
+      <div className="absolute inset-0 flex items-end justify-center px-6 pb-20">
         <div
-          className="rounded-sm border border-border backdrop-blur-md px-8 py-6 text-center max-w-lg w-full"
-          style={{ background: "rgba(10,12,16,0.6)" }}
+          className="w-full max-w-[460px] px-7 py-6 text-center"
+          style={{
+            textShadow:
+              "0 2px 20px rgba(10,12,16,.95), 0 0 40px rgba(10,12,16,.9)",
+          }}
         >
-          <MonoLabel
-            color="var(--color-primary)"
-            className="!text-[11px] block mb-3"
+          <span
+            className="mb-2.5 block font-mono text-[10px] uppercase tracking-[0.1em]"
+            style={{ color: "#00AAFF" }}
           >
             sys.beat_visuals v0.1.0
-          </MonoLabel>
-          <h1 className="font-display font-bold text-3xl sm:text-4xl text-text mb-3 tracking-tight leading-[1.1]">
-            AI-Powered
-            <br />
-            <span className="text-primary">Beat Visuals</span>
+          </span>
+          <h1
+            className="font-display mb-2.5 text-[34px] font-bold leading-[1.1] tracking-[-0.03em] text-[#E2E8F0]"
+          >
+            AI-Powered<br />
+            <span style={{ color: "#00AAFF" }}>Beat Visuals</span>
           </h1>
-          <p className="font-mono text-xs text-text-muted mb-6 leading-relaxed">
-            generate synced video backdrops
-            <br />
+          <p className="mb-4 font-mono text-xs leading-[1.6] text-[#8892A4]">
+            generate synced video backdrops<br />
             for concerts &amp; parties
           </p>
           <Link
             href="/generate"
-            className="inline-flex items-center justify-center font-mono text-[11px] font-bold uppercase tracking-wider px-6 py-3 rounded-sm bg-primary text-[#050810] hover:bg-primary-bright transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-            style={{ letterSpacing: "0.06em" }}
+            className="inline-flex items-center rounded-sm border border-[#00AAFF] bg-[#00AAFF] px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-[#050810] transition-colors hover:bg-[#33BBFF] active:bg-[#0088CC]"
+            style={{ boxShadow: "0 0 18px rgba(0,170,255,.22)" }}
           >
-            {"> "}initialize generator
+            &gt; initialize generator
           </Link>
         </div>
       </div>
 
-      {/* Bottom status bar */}
-      <div className="absolute bottom-0 left-0 right-0 px-6 py-2 hidden sm:flex justify-between items-center border-t border-border/60">
-        <MonoLabel color="var(--color-green)">● system.online</MonoLabel>
-        <MonoLabel>librosa + rag + llm + opencv</MonoLabel>
-        <MonoLabel>1080p · 30fps · mp4</MonoLabel>
+      {/* Status bar */}
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between border-t border-[rgba(37,42,54,.6)] px-6 py-2 font-mono text-[10px] uppercase tracking-[0.1em]">
+        <span style={{ color: "#00FF88" }}>● system.online</span>
+        <span className="text-[#4A5568]">librosa + rag + llm + opencv</span>
+        <span className="text-[#4A5568]">1080p · 30fps · mp4</span>
       </div>
+
+      <style jsx>{`
+        @media (prefers-reduced-motion: reduce) {
+          .hero-bg-video {
+            display: none;
+          }
+        }
+      `}</style>
     </section>
   );
 }
