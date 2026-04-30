@@ -66,6 +66,24 @@ export function AnimatedBackground() {
         ctx.stroke();
       }
 
+      // Distant equalizer bars — subtle columns bouncing in the background
+      const barCount = 32;
+      const barWidth = w / barCount;
+      for (let i = 0; i < barCount; i++) {
+        const freq = 0.4 + i * 0.15;
+        const barPhase = Math.sin(t * freq + i * 0.8) * 0.5 + 0.5;
+        const barH = 10 + barPhase * (h * 0.25);
+        const x = i * barWidth;
+        const a = 0.018 + barPhase * 0.012;
+        ctx.fillStyle =
+          i % 3 === 0
+            ? `rgba(0,170,255,${a})`
+            : i % 3 === 1
+              ? `rgba(139,92,246,${a * 0.8})`
+              : `rgba(0,255,136,${a * 0.6})`;
+        ctx.fillRect(x + 1, h - barH, barWidth - 2, barH);
+      }
+
       // Extremely slow pulse — one cycle ≈ 10s, oscillates 0.45..0.55.
       const phase = t * 0.35;
       const pulse = 0.5 + 0.05 * Math.sin(phase * Math.PI * 2);
