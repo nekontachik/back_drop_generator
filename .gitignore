@@ -1,0 +1,5 @@
+
+.next/
+.claude/
+frontend/.claude/
+backend/data/chroma/
