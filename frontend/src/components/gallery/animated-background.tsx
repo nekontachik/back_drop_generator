@@ -7,13 +7,9 @@ const BG = "#0A0C10";
 /**
  * Animated background for the gallery hero.
  *
- * v2 — accessibility + comfort pass:
- *  - Slowed the animation clock ~7× vs v1 so the pulse is barely perceptible
- *    instead of stroboscopic. One full cycle ≈ 10s.
- *  - Pulse amplitude reduced from 0..1 (sin^4) to 0.45..0.55 (gentle sine).
- *  - Particles use fixed alpha — no flicker.
- *  - Scanline travels ~2.5× slower and is more transparent.
- *  - Honors prefers-reduced-motion: renders one static frame, no rAF loop.
+ * Renders a faint grid, slowly pulsing concentric rings, and a scanline.
+ * One full pulse cycle ≈ 10s — barely perceptible, photo-sensitive safe.
+ * Honors prefers-reduced-motion: renders one static frame, no rAF loop.
  */
 export function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -94,26 +90,6 @@ export function AnimatedBackground() {
             : `rgba(139,92,246,${a * 0.7})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
-      }
-
-      // Particles — constant brightness (no flicker), slow drift only.
-      for (let i = 0; i < 35; i++) {
-        const s = i * 137.508;
-        const px = (Math.sin(s + t * 0.3) * 0.5 + 0.5) * w * 0.8 + w * 0.1;
-        const py = (Math.cos(s * 0.7 + t * 0.2) * 0.5 + 0.5) * h * 0.8 + h * 0.1;
-        const sz = 1.3 + Math.sin(s + t * 0.5) * 0.4;
-        const a = 0.18; // fixed
-        ctx.fillStyle =
-          i % 4 === 0
-            ? `rgba(0,170,255,${a})`
-            : i % 4 === 1
-              ? `rgba(0,255,136,${a * 0.5})`
-              : i % 4 === 2
-                ? `rgba(139,92,246,${a * 0.6})`
-                : `rgba(0,170,255,${a * 0.3})`;
-        ctx.beginPath();
-        ctx.arc(px, py, sz, 0, Math.PI * 2);
-        ctx.fill();
       }
 
       // Slow, faint scanline
