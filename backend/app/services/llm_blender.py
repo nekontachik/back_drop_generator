@@ -12,7 +12,8 @@ import logging
 
 from app.config import settings
 from app.models.audio import MoodVector
-from app.models.params import RenderParams
+from app.models.params import LayerConfig, RenderParams
+from app.render.presets import PRESETS, get_preset
 from app.services.prompt_mapper import map_prompt_to_params
 
 logger = logging.getLogger(__name__)
@@ -133,9 +134,11 @@ def _build_prompt(
     else:
         mood_section = f"\nAudio mood: Not available. BPM: {bpm}\n"
 
-    # JSON schema
+    # JSON schema — supports single-effect OR multi-layer compositing
     schema_section = """
-Output JSON schema (all fields required):
+Output JSON schema. You MUST choose ONE of two formats:
+
+FORMAT A — single effect (simpler visuals):
 {
   "effect_name": "<one of: tunnel, fractal, particles, plasma>",
   "bg_color": "<hex color string, e.g. #0a0a0a>",
@@ -145,6 +148,37 @@ Output JSON schema (all fields required):
   "speed": <float 0.0 to 1.0>,
   "creative_description": "<1-2 sentences describing the visual>"
 }
+
+FORMAT B — multi-layer compositing (richer, more creative visuals — PREFERRED):
+{
+  "bg_color": "<hex color for overall background>",
+  "primary_color": "<hex default primary colour>",
+  "accent_color": "<hex default accent colour>",
+  "intensity": <float 0.0 to 1.0>,
+  "speed": <float 0.0 to 1.0>,
+  "layers": [
+    {
+      "effect_name": "<one of: tunnel, fractal, particles, plasma>",
+      "opacity": <float 0.0 to 1.0>,
+      "beat_response": "<one of: normal, smooth, inverse, double>",
+      "blend_mode": "<one of: alpha, add, screen>",
+      "primary_color": "<optional hex override>",
+      "accent_color": "<optional hex override>",
+      "intensity": <optional float override>,
+      "speed": <optional float override>
+    }
+  ],
+  "creative_description": "<1-2 sentences describing the visual>"
+}
+
+Layer guidelines:
+- Use 2-3 layers maximum (performance).
+- First layer is the background — typically plasma or fractal at opacity 1.0.
+- Upper layers should use add or screen blend mode for glows.
+- beat_response "smooth" for backgrounds, "normal" for foreground action.
+- beat_response "inverse" creates contrast — quiet when beat hits.
+- beat_response "double" for double-time rhythmic feel.
+- Different effects on different layers create the most interesting results.
 """
 
     user_prompt = (
@@ -280,7 +314,10 @@ def _parse_openai_response(
     height: int,
     seed: int | None,
 ) -> BlendResult | None:
-    """Parse an OpenAI-compatible chat completion into a BlendResult."""
+    """Parse an OpenAI-compatible chat completion into a BlendResult.
+
+    Handles both Format A (single effect) and Format B (multi-layer).
+    """
     try:
         text = response.choices[0].message.content.strip()
         if text.startswith("```"):
@@ -294,12 +331,9 @@ def _parse_openai_response(
 
     try:
         creative_description: str = data.pop("creative_description", "")
-        effect_name: str = data.get("effect_name", "tunnel")
-        if effect_name not in VALID_EFFECTS:
-            return None
+        raw_layers = data.get("layers")
 
-        params = RenderParams(
-            effect_name=effect_name,
+        base_kwargs = dict(
             bg_color=data.get("bg_color", "#0a0a0a"),
             primary_color=data.get("primary_color", "#00ff88"),
             accent_color=data.get("accent_color", "#ff0066"),
@@ -310,6 +344,39 @@ def _parse_openai_response(
             height=height,
             **({} if seed is None else {"seed": seed}),
         )
+
+        if raw_layers and isinstance(raw_layers, list) and len(raw_layers) >= 1:
+            # Format B — multi-layer compositing
+            layer_configs: list[LayerConfig] = []
+            for raw_layer in raw_layers[:4]:  # cap at 4 layers
+                ename = raw_layer.get("effect_name", "plasma")
+                if ename not in VALID_EFFECTS:
+                    ename = "plasma"
+                layer_configs.append(
+                    LayerConfig(
+                        effect_name=ename,
+                        opacity=float(raw_layer.get("opacity", 1.0)),
+                        beat_response=raw_layer.get("beat_response", "normal"),
+                        blend_mode=raw_layer.get("blend_mode", "alpha"),
+                        primary_color=raw_layer.get("primary_color"),
+                        accent_color=raw_layer.get("accent_color"),
+                        intensity=raw_layer.get("intensity"),
+                        speed=raw_layer.get("speed"),
+                    )
+                )
+
+            params = RenderParams(
+                **base_kwargs,
+                effect_name=layer_configs[0].effect_name,  # fallback compat
+                layers=layer_configs,
+            )
+        else:
+            # Format A — single effect
+            effect_name: str = data.get("effect_name", "tunnel")
+            if effect_name not in VALID_EFFECTS:
+                return None
+            params = RenderParams(effect_name=effect_name, **base_kwargs)
+
         return BlendResult(
             params=params,
             creative_description=creative_description,
@@ -332,10 +399,13 @@ def _deterministic_fallback(
     height: int,
     seed: int | None,
 ) -> BlendResult:
-    """Produce RenderParams via keyword matching when LLM is unavailable (D-10).
+    """Produce RenderParams from hardcoded presets when LLM is unavailable.
 
-    Uses map_prompt_to_params() as the base, then overrides colors,
-    intensity, and speed from the top genre doc's metadata when available.
+    Priority:
+    1. If genre_docs has a genre that matches a preset → use that preset
+       (multi-layer, deterministic, tested).
+    2. Otherwise fall back to keyword matching via prompt_mapper
+       (single-effect, legacy).
 
     Args:
         prompt: User's text prompt.
@@ -346,8 +416,26 @@ def _deterministic_fallback(
         seed: Random seed.
 
     Returns:
-        BlendResult with source="fallback".
+        BlendResult with source="preset" or "fallback".
     """
+    # Try preset from top genre doc
+    if genre_docs:
+        top_genre = genre_docs[0].get("genre", "")
+        if top_genre in PRESETS:
+            params = get_preset(
+                genre=top_genre,
+                bpm=bpm,
+                width=width,
+                height=height,
+                seed=seed,
+            )
+            return BlendResult(
+                params=params,
+                creative_description=f"Preset composition for {top_genre}",
+                source="preset",
+            )
+
+    # No matching preset — legacy single-effect fallback
     params = map_prompt_to_params(
         prompt=prompt,
         bpm=bpm,
@@ -356,12 +444,11 @@ def _deterministic_fallback(
         seed=seed,
     )
 
-    # Override colors/intensity/speed/effect from top genre doc when available
+    # Still try to apply colors/intensity/speed from RAG docs
     if genre_docs:
         top_doc = genre_docs[0]
         updates: dict = {}
 
-        # Apply effect_preference from RAG if valid
         effect_pref = top_doc.get("effect_preference", "")
         if effect_pref and effect_pref in VALID_EFFECTS:
             updates["effect_name"] = effect_pref
