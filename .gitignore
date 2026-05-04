@@ -3,3 +3,17 @@
 .claude/
 frontend/.claude/
 backend/data/chroma/
+
+# Environment files
+*.env.local
+
+# Internal workflow / AI-assisted development docs
+.planning/
+CLAUDE.md
+AGENTS.md
+frontend/CLAUDE.md
+frontend/AGENTS.md
+REDESIGN-PROMPTS.md
+KNOWN_ISSUES.md
+COMPRESS_VIDEOS_PROMPT.md
+beat-visuals-redesign.jsx
