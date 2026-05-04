@@ -2,54 +2,66 @@
 
 Generate animated video backdrops synced to music. Upload an audio clip or describe a visual style — the system analyzes BPM, retrieves genre-matched styles via RAG, uses an LLM to creatively blend visual parameters, and renders a seamless 1080p 30fps mp4 loop synchronized to the beat.
 
-**Live demo:** [beat-visuals.vercel.app](https://beat-visuals.vercel.app)
+**[Live Demo →](https://beat-visuals.vercel.app)**
+
+![Next.js](https://img.shields.io/badge/Next.js_16-black?logo=next.js) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white) ![Python](https://img.shields.io/badge/Python_3.13-3776AB?logo=python&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 
 ---
 
-## How It Works
+## Architecture
 
 ```
-Audio Upload → librosa BPM/beat detection → ChromaDB genre RAG retrieval
-    → Claude 3.5 Haiku creative parameter blending → NumPy + OpenCV frame rendering → mp4 encode
+┌─────────────────────────────────────────────────────────────────┐
+│  Frontend (Next.js 16 / React 19 / Tailwind v4)                │
+│  ┌──────────┐  ┌──────────────┐  ┌───────────────────────┐     │
+│  │ Gallery  │  │ Generate     │  │ Results               │     │
+│  │ Hero +   │  │ Audio upload │  │ Pipeline progress     │     │
+│  │ Examples │  │ Prompt input │  │ Video player + params │     │
+│  └──────────┘  └──────┬───────┘  └───────────┬───────────┘     │
+└────────────────────────┼─────────────────────┼─────────────────┘
+                         │ POST /generate      │ GET /generate/{id}
+┌────────────────────────┼─────────────────────┼─────────────────┐
+│  Backend (FastAPI)     ▼                     │                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    Pipeline                             │   │
+│  │                                                         │   │
+│  │  ┌─────────┐   ┌──────────┐   ┌──────────┐   ┌──────┐ │   │
+│  │  │ librosa │──▶│ ChromaDB │──▶│ Claude   │──▶│Render│ │   │
+│  │  │ BPM +   │   │ RAG      │   │ 3.5 Haiku│   │Engine│ │   │
+│  │  │ mood    │   │ retrieval│   │ blending │   │      │ │   │
+│  │  └─────────┘   └──────────┘   └──────────┘   └──────┘ │   │
+│  │                                                   │     │   │
+│  │  4 effects: tunnel │ fractal │ particles │ plasma │     │   │
+│  │  Multi-layer compositing with beat breathing      │     │   │
+│  └───────────────────────────────────────────────────┼─────┘   │
+│                                                      ▼         │
+│                                              1080p 30fps mp4   │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-1. **Audio analysis** — librosa extracts BPM, beat positions, onset strength, and spectral features to build a mood vector
-2. **RAG retrieval** — ChromaDB semantic search matches the detected genre against a curated style knowledge base
-3. **LLM blending** — Claude 3.5 Haiku creatively combines RAG results, mood data, and user prompts into render parameters (with deterministic fallback)
-4. **Video rendering** — NumPy array math generates frames (tunnel, fractal, particles, plasma effects) composited via OpenCV, synced to beat timing
-5. **Encoding** — OpenCV VideoWriter produces a seamless looping mp4
+## Key Engineering Decisions
+
+**RAG for style selection, not hardcoded rules.** Genre-to-visual mapping uses ChromaDB semantic search over curated style documents. This means the system can handle prompts like "melancholic ambient with industrial textures" by retrieving and blending multiple relevant style entries, rather than requiring an exact genre match.
+
+**LLM as creative parameter blender with structured output.** Claude 3.5 Haiku receives RAG results + audio mood vectors + user prompt and outputs validated `RenderParams` (Pydantic v2 model with typed layer configs). The LLM doesn't generate code — it fills a parameter schema that the render engine executes. This keeps LLM output deterministic and safe.
+
+**Deterministic fallback path.** Every feature works without an API key. A keyword-based `prompt_mapper` + hand-tuned `presets.py` (12 genre presets with multi-layer compositions) ensure the app always produces output. The LLM path improves creativity; the fallback guarantees reliability.
+
+**Frame-level rendering with NumPy, no GPU required.** Each frame is a pure NumPy array operation — tunnel perspective math, fractal iteration, particle physics, plasma wave functions. OpenCV composites layers and encodes to mp4. Runs on free-tier hosting (Railway/Render) without GPU.
+
+**Beat-synced animation via librosa analysis.** `beat_track()` gives beat positions, `onset_strength()` drives per-frame intensity, `spectral_centroid()` maps to color brightness. Each render layer has its own `BeatResponse` mode (hard, normal, smooth) controlling how aggressively it reacts to beats.
+
+**Multi-layer compositing system.** Each genre preset defines 2-3 visual layers with independent effects, colors, opacities, and blend modes (alpha, screen, additive). Layers have per-layer beat breathing — e.g., ambient uses smooth plasma background + gently pulsing particle foreground.
 
 ## Tech Stack
 
-### Backend (Python)
+### Backend — Python
 
-| Component | Technology |
-|-----------|-----------|
-| API | FastAPI with async endpoints |
-| Audio analysis | librosa — BPM detection, beat tracking, spectral features |
-| Vector store | ChromaDB (embedded) — genre-style document retrieval |
-| LLM | Claude 3.5 Haiku via Anthropic SDK (OpenRouter compatible) |
-| Rendering | NumPy + OpenCV — frame-level math, compositing, video encoding |
-| Validation | Pydantic v2 models throughout |
+FastAPI async API, librosa audio analysis (BPM, beats, spectral features, mood vectors), ChromaDB embedded vector store for genre-style RAG, Claude 3.5 Haiku via Anthropic SDK for creative parameter blending, NumPy + OpenCV headless for frame-level rendering and video encoding, Pydantic v2 for all data validation. Tested with pytest + pytest-asyncio.
 
-### Frontend (TypeScript)
+### Frontend — TypeScript
 
-| Component | Technology |
-|-----------|-----------|
-| Framework | Next.js 16 (App Router, React 19) |
-| Styling | Tailwind CSS v4 |
-| Design | Custom TE × Ableton-inspired UI — knob controls, channel strips, monospace labels |
-
-## Visual Effects
-
-Four procedural effect engines, each driven by beat-synced parameters:
-
-- **Tunnel** — infinite depth tunnel with neon rings and perspective distortion
-- **Fractal** — morphing fractal patterns with color evolution
-- **Particles** — explosive particle systems reacting to beat energy
-- **Plasma** — flowing plasma waves with spectral color mapping
-
-Effects support multi-layer compositing with per-layer beat breathing for dynamic visuals.
+Next.js 16 with App Router and React 19, Tailwind CSS v4, custom hardware-inspired UI (rotary knob controls, channel strip meters, monospace terminal labels). SSE-based progress tracking during renders. Responsive design with canvas-animated hero background.
 
 ## Project Structure
 
@@ -57,42 +69,44 @@ Effects support multi-layer compositing with per-layer beat breathing for dynami
 backend/
 ├── app/
 │   ├── api/            # FastAPI endpoints (analyze, generate, download, health)
-│   ├── models/         # Pydantic models (audio, params, job, API schemas)
+│   ├── models/         # Pydantic v2 models (audio, params, job, API schemas)
 │   ├── render/
-│   │   ├── effects/    # Tunnel, fractal, particles, plasma renderers
-│   │   ├── pipeline.py # Main render pipeline orchestrator
-│   │   ├── encoder.py  # OpenCV video encoding
-│   │   └── presets.py  # Genre-specific multi-layer presets
-│   └── services/       # Audio analyzer, RAG retriever, LLM blender, job manager
-├── data/               # ChromaDB genre-style documents
+│   │   ├── effects/    # 4 effect engines (tunnel, fractal, particles, plasma)
+│   │   ├── pipeline.py # Multi-layer compositing orchestrator
+│   │   ├── encoder.py  # OpenCV video encoding with loop math
+│   │   └── presets.py  # 12 genre presets — tested multi-layer compositions
+│   └── services/
+│       ├── audio_analyzer.py  # librosa BPM + mood vector extraction
+│       ├── rag_retriever.py   # ChromaDB semantic search
+│       ├── llm_blender.py     # Claude parameter blending + fallback
+│       ├── prompt_mapper.py   # Deterministic keyword→params mapping
+│       └── job_manager.py     # Async job lifecycle + progress
+├── data/               # Genre-style documents for ChromaDB
 └── tests/
 
 frontend/
 ├── src/
-│   ├── app/            # Next.js pages (gallery, generate, results)
+│   ├── app/            # Pages: gallery, generate, results/[id]
 │   ├── components/
-│   │   ├── gallery/    # Hero video, carousel, session table
-│   │   ├── generate/   # Terminal-style form, knobs, channel strips
+│   │   ├── gallery/    # Animated hero, carousel, session table
+│   │   ├── generate/   # Terminal form, SVG knobs, channel strips
 │   │   ├── results/    # Pipeline progress, video player, sidebar
-│   │   ├── layout/     # Header, page transitions
-│   │   └── ui/         # Button, Card, Badge, Knob, MonoLabel
-│   └── lib/            # API client, types, utilities
+│   │   └── ui/         # Design system: Button, Card, Knob, MonoLabel
+│   └── lib/            # API client, types, genre color mapping
 ```
 
-## Setup
+## Running Locally
 
 ### Prerequisites
 
-- Python 3.13+
-- Node.js 20+
-- ffmpeg (for audio format conversion)
+Python 3.13+, Node.js 20+, ffmpeg
 
 ### Backend
 
 ```bash
 cd backend
-uv sync                      # install dependencies
-cp .env.example .env         # add your ANTHROPIC_API_KEY
+uv sync
+cp .env.example .env         # add ANTHROPIC_API_KEY (optional — fallback works without it)
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
@@ -105,25 +119,15 @@ cp .env.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:8000
 npm run dev
 ```
 
-### Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes | Claude API key for LLM blending |
-| `OPENROUTER_API_KEY` | No | Alternative LLM provider |
-| `NEXT_PUBLIC_API_URL` | Yes | Backend URL for the frontend |
-
-The system includes a deterministic fallback — if no API key is configured, it uses keyword-based parameter mapping instead of LLM blending.
-
-## API Endpoints
+## API
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/api/analyze` | Upload audio, get BPM + mood analysis |
+| `POST` | `/api/analyze` | Upload audio → BPM + mood analysis |
 | `POST` | `/api/generate` | Start video generation job |
 | `GET` | `/api/generate/{job_id}` | Poll job status + progress |
 | `GET` | `/api/download/{job_id}` | Download rendered mp4 |
-| `GET` | `/api/styles` | List available genre styles from RAG |
+| `GET` | `/api/styles` | List genre styles from RAG store |
 | `GET` | `/api/health` | Health check |
 
 ## License

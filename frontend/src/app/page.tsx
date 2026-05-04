@@ -18,7 +18,7 @@ const EXAMPLES = [
   },
   {
     id: "2",
-    src: "/examples/fractal-ambient.mp4",
+    src: "/examples/preset-ambient.mp4",
     prompt: "Ethereal fractal morphing in soft ambient hues",
     genre: "Ambient",
     effect: "fractal",
@@ -26,7 +26,7 @@ const EXAMPLES = [
   },
   {
     id: "3",
-    src: "/examples/particles-edm.mp4",
+    src: "/examples/preset-edm.mp4",
     prompt: "Explosive particle storm synced to EDM drops",
     genre: "EDM",
     effect: "particles",
@@ -34,7 +34,7 @@ const EXAMPLES = [
   },
   {
     id: "4",
-    src: "/examples/plasma-jazz.mp4",
+    src: "/examples/preset-jazz.mp4",
     prompt: "Smooth plasma waves flowing with jazz rhythms",
     genre: "Jazz",
     effect: "plasma",
@@ -50,7 +50,7 @@ const EXAMPLES = [
   },
   {
     id: "6",
-    src: "/examples/fractal-classical.mp4",
+    src: "/examples/preset-classical.mp4",
     prompt: "Elegant fractal bloom following classical dynamics",
     genre: "Classical",
     effect: "fractal",
