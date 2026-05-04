@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const EXAMPLES = [
   {
     id: "1",
-    src: "/examples/tunnel-techno.mp4",
+    src: "/examples/preset-techno.mp4",
     prompt: "Neon tunnel pulsing to heavy techno beats",
     genre: "Techno",
     effect: "tunnel",
@@ -42,7 +42,7 @@ const EXAMPLES = [
   },
   {
     id: "5",
-    src: "/examples/tunnel-synthwave.mp4",
+    src: "/examples/preset-synthwave.mp4",
     prompt: "Retro synthwave tunnel with neon grids",
     genre: "Synthwave",
     effect: "tunnel",
