@@ -22,11 +22,28 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Beat Visuals",
-  description: "AI-powered backdrop generator for concerts and parties",
+  title: "Beat Visuals — AI Music-Synced Video Generator",
+  description:
+    "AI backdrop generator that turns music into synced animated video. Audio analysis with librosa, RAG over ChromaDB, Claude API for creative blending, custom render engine producing 1080p mp4 loops.",
+  metadataBase: new URL("https://backdropgenerator.vercel.app"),
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Beat Visuals — AI Music-Synced Video Generator",
+    description:
+      "AI backdrop generator that turns music into synced animated video. Audio analysis with librosa, RAG over ChromaDB, Claude API for creative blending, custom render engine producing 1080p mp4 loops.",
+    url: "https://backdropgenerator.vercel.app",
+    siteName: "Beat Visuals",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Beat Visuals — AI Music-Synced Video Generator",
+    description:
+      "AI backdrop generator that turns music into synced animated video loops for concerts and parties.",
   },
 };
 
