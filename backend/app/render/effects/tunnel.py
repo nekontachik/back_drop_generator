@@ -37,7 +37,11 @@ class TunnelEffect(BaseEffect):
         beat_intensity: float,
         rng: np.random.Generator,
     ) -> np.ndarray:
-        """Render a tunnel frame at phase t."""
+        """Render a tunnel frame at phase t.
+
+        Improved: smoother animation, beat-reactive morphing of ring count
+        and twist, thicker ring lines, reduced strobing.
+        """
         two_pi_t = 2.0 * np.pi * t
 
         # Parse colors
@@ -50,6 +54,12 @@ class TunnelEffect(BaseEffect):
         intensity = params.get("intensity", 0.7)
         twist_speed = params.get("twist_speed", 1.0)
         ring_count = params.get("ring_count", 8)
+
+        # Beat-reactive morphing: ring count and twist pulse with beat
+        # Ring count breathes: expands on beat hit
+        ring_morph = ring_count + beat_intensity * intensity * 3.0
+        # Twist intensifies on beat
+        twist_morph = twist_speed * (1.0 + beat_intensity * 0.5)
 
         # Coordinate grid: normalized [-1, 1]
         y_coords, x_coords = np.mgrid[-1:1:complex(0, height), -1:1:complex(0, width)]
@@ -64,29 +74,39 @@ class TunnelEffect(BaseEffect):
         # Depth illusion: 1/radius creates tunnel perspective
         depth = 1.0 / radius_safe
 
-        # Twist: modulate angle over time
-        twisted_angle = angle + twist_speed * np.sin(two_pi_t)
+        # Twist: modulate angle over time (smoother — use cos for variety)
+        twisted_angle = angle + twist_morph * np.sin(two_pi_t) + 0.3 * np.cos(two_pi_t * 2)
 
-        # Ring pattern: concentric rings moving through tunnel
-        ring_pattern = np.sin(ring_count * depth + two_pi_t * speed * 4.0)
+        # Ring pattern: SLOWER movement (reduced from *4.0 to *1.5)
+        # Also use smoothstep-like shape for thicker, less harsh rings
+        ring_raw = np.sin(ring_morph * depth + two_pi_t * speed * 1.5)
+        # Smooth the rings: raise to power for thicker bands
+        ring_pattern = np.abs(ring_raw) ** 0.6 * np.sign(ring_raw)
 
-        # Angular pattern for visual complexity
-        angular_pattern = np.sin(twisted_angle * 3.0 + two_pi_t * speed * 2.0)
+        # Angular pattern: spiral arms (slower, more organic)
+        spiral_arms = 4.0  # number of spiral arms
+        angular_pattern = np.sin(twisted_angle * spiral_arms + depth * 2.0 + two_pi_t * speed)
 
-        # Combine patterns: normalized to [0, 1]
-        combined = (ring_pattern * 0.6 + angular_pattern * 0.4 + 1.0) / 2.0
+        # Combine patterns: ring dominates, angular adds detail
+        combined = (ring_pattern * 0.55 + angular_pattern * 0.3 + 1.0) / 2.0
+        # Add a secondary slower modulation for visual richness
+        slow_pulse = 0.5 + 0.5 * np.sin(two_pi_t * 0.5 + depth * 0.5)
+        combined = combined * (0.7 + 0.3 * slow_pulse)
 
-        # Perspective darkening: fade toward edges
-        perspective = np.clip(1.0 - radius, 0.0, 1.0)
+        # Perspective darkening: smooth falloff toward edges
+        perspective = np.clip(1.0 - radius * 0.8, 0.0, 1.0)
+        # Add depth glow: brighter toward center (tunnel depth)
+        center_glow = np.exp(-radius * 2.0) * 0.3
 
-        # Color mixing: primary drives the base look, accent only flashes on beat peaks
+        # Color mixing
         frame = np.zeros((height, width, 3), dtype=np.float64)
-        # Sharpen beat: only flash above a threshold, then remap to 0..1
-        flash_raw = np.clip((beat_intensity - 0.5) * 2.0, 0.0, 1.0)
-        flash_strength = flash_raw * flash_raw * intensity * 0.6
+        # Beat flash: smooth ramp, not hard threshold
+        flash_strength = (beat_intensity ** 1.5) * intensity * 0.5
         for c in range(3):
             base_color = bg[c] + (primary[c] - bg[c]) * combined * perspective
-            # BPM flash: accent only appears on strong beats, not constantly
+            # Center glow in accent color
+            base_color = base_color + accent[c] * center_glow
+            # BPM flash: accent color pulses on beat
             frame[:, :, c] = base_color + (accent[c] - base_color) * flash_strength
 
         return np.clip(frame, 0, 255).astype(np.uint8)

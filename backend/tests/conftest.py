@@ -71,9 +71,15 @@ def _seed_chroma_for_tests(tmp_path_factory):
 
     Uses autouse + session scope so the collection is available for all tests
     that import the FastAPI app (which registers the styles router).
+    Gracefully skips seeding if chromadb is not installed (render/effect
+    tests don't need it).
     """
-    from app.services.genre_seeder import init_genre_collection
-    from app.services.rag_retriever import set_collection
+    try:
+        from app.services.genre_seeder import init_genre_collection
+        from app.services.rag_retriever import set_collection
+    except (ImportError, ModuleNotFoundError):
+        # chromadb or other RAG deps not installed — render tests don't need it
+        return
 
     chroma_dir = tmp_path_factory.mktemp("chroma_session")
     collection = init_genre_collection(str(chroma_dir))

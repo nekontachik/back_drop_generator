@@ -28,10 +28,14 @@ from app.models.params import (
 from app.render.effects import EFFECT_REGISTRY
 
 # Trigger effect registration
+from app.render.effects import aurora as _a  # noqa: F401
 from app.render.effects import fractal as _f  # noqa: F401
+from app.render.effects import matrix_rain as _mr  # noqa: F401
 from app.render.effects import particles as _p  # noqa: F401
 from app.render.effects import plasma as _pl  # noqa: F401
+from app.render.effects import retro_grid as _rg  # noqa: F401
 from app.render.effects import tunnel as _t  # noqa: F401
+from app.render.effects import waveform as _wf  # noqa: F401
 from app.render.loop_math import build_synthetic_beat_envelope, calculate_loop_params
 from app.render.pipeline import _apply_beat_response, _blend_layers
 from app.render.presets import PRESETS, get_preset, list_presets
@@ -252,7 +256,7 @@ class TestBlendModes:
 class TestAllEffectsRender:
     """Smoke tests — every registered effect produces valid frames."""
 
-    @pytest.mark.parametrize("effect_name", ["tunnel", "fractal", "particles", "plasma"])
+    @pytest.mark.parametrize("effect_name", list(EFFECT_REGISTRY.keys()))
     def test_effect_renders_valid_frame(self, effect_name):
         effect = EFFECT_REGISTRY[effect_name]()
         frame = effect.render_frame(
@@ -267,7 +271,7 @@ class TestAllEffectsRender:
         assert frame.dtype == np.uint8, f"Wrong dtype: {frame.dtype}"
         assert frame.max() > 0, "Frame is completely black"
 
-    @pytest.mark.parametrize("effect_name", ["tunnel", "fractal", "particles", "plasma"])
+    @pytest.mark.parametrize("effect_name", list(EFFECT_REGISTRY.keys()))
     def test_effect_deterministic_with_same_seed(self, effect_name):
         """Same t + same seed → identical frame."""
         effect = EFFECT_REGISTRY[effect_name]()
@@ -276,14 +280,16 @@ class TestAllEffectsRender:
         f2 = effect.render_frame(0.3, W, H, params, 0.5, _make_rng(123))
         np.testing.assert_array_equal(f1, f2)
 
-    @pytest.mark.parametrize("effect_name", ["tunnel", "fractal", "particles", "plasma"])
+    @pytest.mark.parametrize("effect_name", list(EFFECT_REGISTRY.keys()))
     def test_different_t_produces_different_frame(self, effect_name):
         """Different t values should produce visually different frames."""
         effect = EFFECT_REGISTRY[effect_name]()
         params = _base_params()
+        # Use t=0.0 vs t=0.3 (not 0.5) to avoid grid-scroll aliasing where
+        # scroll distance is an exact integer at some grid_density values.
         f1 = effect.render_frame(0.0, W, H, params, 0.5, _make_rng())
-        f2 = effect.render_frame(0.5, W, H, params, 0.5, _make_rng())
-        assert not np.array_equal(f1, f2), "Frames at t=0 and t=0.5 should differ"
+        f2 = effect.render_frame(0.3, W, H, params, 0.5, _make_rng())
+        assert not np.array_equal(f1, f2), "Frames at t=0 and t=0.3 should differ"
 
 
 # ===================================================================

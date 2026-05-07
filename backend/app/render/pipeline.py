@@ -16,11 +16,16 @@ from app.models.params import BeatResponse, BlendMode, LayerConfig, RenderParams
 from app.render.effects import EFFECT_REGISTRY
 
 # Import effect modules to trigger @register decorators
+from app.render.effects import aurora as _aurora  # noqa: F401
 from app.render.effects import fractal as _fractal  # noqa: F401
+from app.render.effects import matrix_rain as _matrix_rain  # noqa: F401
 from app.render.effects import particles as _particles  # noqa: F401
 from app.render.effects import plasma as _plasma  # noqa: F401
+from app.render.effects import retro_grid as _retro_grid  # noqa: F401
 from app.render.effects import tunnel as _tunnel  # noqa: F401
+from app.render.effects import waveform as _waveform  # noqa: F401
 from app.render.encoder import encode_frames
+from app.render.postprocess import PostProcessor
 from app.render.loop_math import (
     build_synthetic_beat_envelope,
     calculate_loop_params,
@@ -151,6 +156,23 @@ def render_video(
     # Create seeded RNG for reproducibility
     rng = np.random.default_rng(params.seed)
 
+    # Build post-processor from params
+    pp_cfg = params.postprocess
+    post_processor = PostProcessor(
+        bloom=pp_cfg.bloom,
+        bloom_radius=pp_cfg.bloom_radius,
+        vignette=pp_cfg.vignette,
+        scanlines=pp_cfg.scanlines,
+        scanline_spacing=pp_cfg.scanline_spacing,
+        chromatic=pp_cfg.chromatic,
+        glitch=pp_cfg.glitch,
+        glitch_threshold=pp_cfg.glitch_threshold,
+    )
+    has_postprocess = (
+        pp_cfg.bloom > 0 or pp_cfg.vignette > 0 or pp_cfg.scanlines > 0
+        or pp_cfg.chromatic > 0 or pp_cfg.glitch
+    )
+
     # Decide mode: multi-layer vs single-effect
     use_layers = bool(params.layers)
 
@@ -184,7 +206,11 @@ def render_video(
                     else:
                         composite = _blend_layers(composite, layer_frame, opacity, blend_mode)
 
-                yield np.clip(composite, 0, 255).astype(np.uint8)
+                out_frame = np.clip(composite, 0, 255).astype(np.uint8)
+                if has_postprocess:
+                    pp_rng = np.random.default_rng(rng.integers(0, 2**32))
+                    out_frame = post_processor.process(out_frame, raw_envelope[i], pp_rng)
+                yield out_frame
 
     else:
         # -- Single-effect mode (backward compatible) ---------------
@@ -210,6 +236,9 @@ def render_video(
                     t, params.width, params.height,
                     effect_params, raw_envelope[i], frame_rng,
                 )
+                if has_postprocess:
+                    pp_rng = np.random.default_rng(rng.integers(0, 2**32))
+                    frame = post_processor.process(frame, raw_envelope[i], pp_rng)
                 yield frame
 
     # Encode frames to mp4

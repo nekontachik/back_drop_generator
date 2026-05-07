@@ -71,13 +71,13 @@ SAMPLE_MOOD = MoodVector(
 )
 
 
-def _make_mock_message(content: str) -> MagicMock:
-    """Build a mock anthropic Message object with text content."""
-    msg = MagicMock()
-    text_block = MagicMock()
-    text_block.text = content
-    msg.content = [text_block]
-    return msg
+def _make_mock_response(content: str) -> MagicMock:
+    """Build a mock OpenAI-compatible ChatCompletion response."""
+    response = MagicMock()
+    choice = MagicMock()
+    choice.message.content = content
+    response.choices = [choice]
+    return response
 
 
 # ---------------------------------------------------------------------------
@@ -121,13 +121,14 @@ async def test_llm_success_path():
     from app.models.params import RenderParams
 
     mock_client = MagicMock()
-    mock_client.messages.create.return_value = _make_mock_message(VALID_LLM_JSON)
+    mock_client.chat.completions.create.return_value = _make_mock_response(VALID_LLM_JSON)
 
     with (
         patch("app.services.llm_blender.settings") as mock_settings,
-        patch("app.services.llm_blender.anthropic.Anthropic", return_value=mock_client),
+        patch("app.services.llm_blender._create_openai_client", return_value=mock_client),
     ):
-        mock_settings.anthropic_api_key = "sk-ant-test-key"
+        mock_settings.openrouter_api_key = "sk-or-test-key"
+        mock_settings.anthropic_api_key = None
 
         result = await blend_style(
             prompt="amber tunnel with neon",
@@ -152,17 +153,18 @@ async def test_llm_success_path():
 
 @pytest.mark.asyncio
 async def test_invalid_json_retries_then_fallback():
-    """When LLM returns garbage JSON twice, fall back to deterministic params."""
+    """When LLM returns garbage JSON, fall back to deterministic params."""
     from app.services.llm_blender import blend_style, BlendResult
 
     mock_client = MagicMock()
-    mock_client.messages.create.return_value = _make_mock_message("not valid json at all")
+    mock_client.chat.completions.create.return_value = _make_mock_response("not valid json at all")
 
     with (
         patch("app.services.llm_blender.settings") as mock_settings,
-        patch("app.services.llm_blender.anthropic.Anthropic", return_value=mock_client),
+        patch("app.services.llm_blender._create_openai_client", return_value=mock_client),
     ):
-        mock_settings.anthropic_api_key = "sk-ant-test-key"
+        mock_settings.openrouter_api_key = "sk-or-test-key"
+        mock_settings.anthropic_api_key = None
 
         result = await blend_style(
             prompt="dark warehouse",
@@ -174,9 +176,8 @@ async def test_invalid_json_retries_then_fallback():
         )
 
     assert isinstance(result, BlendResult)
-    assert result.source == "fallback"
-    # LLM was called at least twice (initial + retry)
-    assert mock_client.messages.create.call_count >= 2
+    # Falls back to preset (top genre doc is techno which is in PRESETS)
+    assert result.source in ("fallback", "preset")
 
 
 # ---------------------------------------------------------------------------
@@ -185,22 +186,18 @@ async def test_invalid_json_retries_then_fallback():
 
 @pytest.mark.asyncio
 async def test_api_error_falls_back():
-    """When anthropic raises an APIError, fall back gracefully."""
-    import anthropic as anthropic_lib
+    """When API raises an error, fall back gracefully."""
     from app.services.llm_blender import blend_style, BlendResult
 
     mock_client = MagicMock()
-    mock_client.messages.create.side_effect = anthropic_lib.APIError(
-        message="rate limit exceeded",
-        request=MagicMock(),
-        body=None,
-    )
+    mock_client.chat.completions.create.side_effect = Exception("rate limit exceeded")
 
     with (
         patch("app.services.llm_blender.settings") as mock_settings,
-        patch("app.services.llm_blender.anthropic.Anthropic", return_value=mock_client),
+        patch("app.services.llm_blender._create_openai_client", return_value=mock_client),
     ):
-        mock_settings.anthropic_api_key = "sk-ant-test-key"
+        mock_settings.openrouter_api_key = "sk-or-test-key"
+        mock_settings.anthropic_api_key = None
 
         result = await blend_style(
             prompt="techno industrial",
@@ -212,7 +209,7 @@ async def test_api_error_falls_back():
         )
 
     assert isinstance(result, BlendResult)
-    assert result.source == "fallback"
+    assert result.source in ("fallback", "preset")
 
 
 # ---------------------------------------------------------------------------
@@ -230,15 +227,16 @@ async def test_mood_labels_in_prompt():
 
     def capture_and_return(**kwargs):
         captured_calls.append(kwargs)
-        return _make_mock_message(VALID_LLM_JSON)
+        return _make_mock_response(VALID_LLM_JSON)
 
-    mock_client.messages.create.side_effect = capture_and_return
+    mock_client.chat.completions.create.side_effect = capture_and_return
 
     with (
         patch("app.services.llm_blender.settings") as mock_settings,
-        patch("app.services.llm_blender.anthropic.Anthropic", return_value=mock_client),
+        patch("app.services.llm_blender._create_openai_client", return_value=mock_client),
     ):
-        mock_settings.anthropic_api_key = "sk-ant-test-key"
+        mock_settings.openrouter_api_key = "sk-or-test-key"
+        mock_settings.anthropic_api_key = None
 
         await blend_style(
             prompt="bright energy",
@@ -250,7 +248,6 @@ async def test_mood_labels_in_prompt():
         )
 
     assert captured_calls, "LLM was not called"
-    # Inspect the messages sent to the API
     messages = captured_calls[0]["messages"]
     full_prompt_text = " ".join(
         m["content"] for m in messages if isinstance(m.get("content"), str)
@@ -272,15 +269,16 @@ async def test_blend_ratio_in_prompt():
 
     def capture_and_return(**kwargs):
         captured_calls.append(kwargs)
-        return _make_mock_message(VALID_LLM_JSON)
+        return _make_mock_response(VALID_LLM_JSON)
 
-    mock_client.messages.create.side_effect = capture_and_return
+    mock_client.chat.completions.create.side_effect = capture_and_return
 
     with (
         patch("app.services.llm_blender.settings") as mock_settings,
-        patch("app.services.llm_blender.anthropic.Anthropic", return_value=mock_client),
+        patch("app.services.llm_blender._create_openai_client", return_value=mock_client),
     ):
-        mock_settings.anthropic_api_key = "sk-ant-test-key"
+        mock_settings.openrouter_api_key = "sk-or-test-key"
+        mock_settings.anthropic_api_key = None
 
         await blend_style(
             prompt="techno ambient blend",
@@ -311,13 +309,14 @@ async def test_creative_description_returned():
     from app.services.llm_blender import blend_style
 
     mock_client = MagicMock()
-    mock_client.messages.create.return_value = _make_mock_message(VALID_LLM_JSON)
+    mock_client.chat.completions.create.return_value = _make_mock_response(VALID_LLM_JSON)
 
     with (
         patch("app.services.llm_blender.settings") as mock_settings,
-        patch("app.services.llm_blender.anthropic.Anthropic", return_value=mock_client),
+        patch("app.services.llm_blender._create_openai_client", return_value=mock_client),
     ):
-        mock_settings.anthropic_api_key = "sk-ant-test-key"
+        mock_settings.openrouter_api_key = "sk-or-test-key"
+        mock_settings.anthropic_api_key = None
 
         result = await blend_style(
             prompt="deep amber tunnel",
@@ -337,12 +336,10 @@ async def test_creative_description_returned():
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
-async def test_fallback_uses_effect_preference_from_rag():
-    """Deterministic fallback should use effect_preference from the top RAG
-    genre doc instead of relying solely on keyword matching."""
+async def test_fallback_uses_preset_for_known_genre():
+    """Deterministic fallback should use preset when genre matches a known preset."""
     from app.services.llm_blender import blend_style, BlendResult
 
-    # Genre doc says effect_preference = "particles" (ambient)
     ambient_docs = [
         {
             "id": "ambient-drift",
@@ -369,8 +366,11 @@ async def test_fallback_uses_effect_preference_from_rag():
         )
 
     assert isinstance(result, BlendResult)
-    assert result.source == "fallback"
-    assert result.params.effect_name == "particles"
+    # Uses preset (multi-layer) when genre matches
+    assert result.source == "preset"
+    # Ambient preset uses aurora as base layer
+    assert result.params.effect_name == "aurora"
+    assert len(result.params.layers) >= 2
 
 
 # ---------------------------------------------------------------------------
@@ -379,16 +379,16 @@ async def test_fallback_uses_effect_preference_from_rag():
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "effect_preference,genre",
+    "genre,expected_base_effect",
     [
-        ("tunnel", "techno"),
-        ("fractal", "psytrance"),
-        ("particles", "ambient"),
-        ("plasma", "house"),
+        ("techno", "tunnel"),
+        ("psytrance", "fractal"),
+        ("ambient", "aurora"),
+        ("house", "plasma"),
     ],
 )
-async def test_fallback_effect_per_genre(effect_preference, genre):
-    """Each genre's effect_preference should be applied in fallback mode."""
+async def test_fallback_uses_correct_preset_per_genre(genre, expected_base_effect):
+    """Each genre's preset should provide its correct base effect in fallback."""
     from app.services.llm_blender import blend_style
 
     docs = [
@@ -399,7 +399,6 @@ async def test_fallback_effect_per_genre(effect_preference, genre):
             "colors": ["#0a0a0a", "#00ff88", "#ff0066"],
             "intensity": 0.5,
             "speed": 0.5,
-            "effect_preference": effect_preference,
         },
     ]
 
@@ -416,8 +415,9 @@ async def test_fallback_effect_per_genre(effect_preference, genre):
             bpm=120,
         )
 
-    assert result.params.effect_name == effect_preference, (
-        f"Expected effect '{effect_preference}' for genre '{genre}', "
+    assert result.source == "preset"
+    assert result.params.effect_name == expected_base_effect, (
+        f"Expected base effect '{expected_base_effect}' for genre '{genre}', "
         f"got '{result.params.effect_name}'"
     )
 

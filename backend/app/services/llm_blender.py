@@ -18,6 +18,13 @@ from app.services.prompt_mapper import map_prompt_to_params
 
 logger = logging.getLogger(__name__)
 
+
+def _create_openai_client(*, api_key: str, base_url: str):
+    """Create an OpenAI-compatible client. Extracted for testability."""
+    from openai import OpenAI
+    return OpenAI(api_key=api_key, base_url=base_url, timeout=_TIMEOUT)
+
+
 # Valid effect names from EFFECT_REGISTRY
 VALID_EFFECTS = ["tunnel", "fractal", "particles", "plasma"]
 
@@ -251,21 +258,17 @@ async def blend_style(
 
     # Use OpenAI-compatible client (works for both OpenRouter and Anthropic via openai SDK)
     try:
-        from openai import OpenAI
-
         if settings.openrouter_api_key:
-            client = OpenAI(
+            client = _create_openai_client(
                 api_key=settings.openrouter_api_key,
                 base_url="https://openrouter.ai/api/v1",
-                timeout=_TIMEOUT,
             )
             model = _OPENROUTER_MODEL
         else:
             # Direct Anthropic via openai-compatible endpoint
-            client = OpenAI(
+            client = _create_openai_client(
                 api_key=settings.anthropic_api_key,
                 base_url="https://api.anthropic.com/v1",
-                timeout=_TIMEOUT,
             )
             model = _ANTHROPIC_MODEL
 

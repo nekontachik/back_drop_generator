@@ -15,14 +15,19 @@ Usage:
 from __future__ import annotations
 
 from app.models.params import (
+    AuroraParams,
     BeatResponse,
     BlendMode,
+    FractalParams,
     LayerConfig,
+    MatrixRainParams,
     ParticleParams,
     PlasmaParams,
+    PostProcessParams,
     RenderParams,
+    RetroGridParams,
     TunnelParams,
-    FractalParams,
+    WaveformParams,
 )
 
 # ---------------------------------------------------------------------------
@@ -34,116 +39,138 @@ from app.models.params import (
 
 PRESETS: dict[str, dict] = {
     # ------------------------------------------------------------------
-    # AMBIENT — plasma clouds + gentle breathing particles
+    # AMBIENT — aurora curtains + soft particles (ethereal, dreamy)
     # ------------------------------------------------------------------
     "ambient": {
-        "bg_color": "#0a0a2e",
+        "bg_color": "#050518",
         "primary_color": "#4488ff",
-        "accent_color": "#88ccff",
+        "accent_color": "#22ddaa",
         "intensity": 0.3,
         "speed": 0.2,
+        "postprocess": PostProcessParams(bloom=0.45, vignette=0.5),
         "layers": [
             LayerConfig(
-                effect_name="plasma",
+                effect_name="aurora",
                 opacity=1.0,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.alpha,
-                primary_color="#223366",
-                accent_color="#4488ff",
-                intensity=0.2,
-                speed=0.15,
-                plasma=PlasmaParams(layer_count=5, wave_freq=2.0),
-            ),
-            LayerConfig(
-                effect_name="particles",
-                opacity=0.6,
-                beat_response=BeatResponse.normal,
-                blend_mode=BlendMode.screen,
+                bg_color="#050518",
                 primary_color="#4488ff",
-                accent_color="#88ccff",
+                accent_color="#22ddaa",
                 intensity=0.3,
                 speed=0.2,
-                particles=ParticleParams(count=150, connection_dist=0.18),
-            ),
-        ],
-    },
-    # ------------------------------------------------------------------
-    # DARK AMBIENT — near-black plasma + sparse dim particles
-    # ------------------------------------------------------------------
-    "dark-ambient": {
-        "bg_color": "#050508",
-        "primary_color": "#223355",
-        "accent_color": "#445566",
-        "intensity": 0.2,
-        "speed": 0.1,
-        "layers": [
-            LayerConfig(
-                effect_name="plasma",
-                opacity=1.0,
-                beat_response=BeatResponse.smooth,
-                blend_mode=BlendMode.alpha,
-                primary_color="#111122",
-                accent_color="#223344",
-                intensity=0.15,
-                speed=0.08,
-                plasma=PlasmaParams(layer_count=3, wave_freq=1.5),
+                aurora=AuroraParams(band_count=6, wave_height=0.35),
             ),
             LayerConfig(
                 effect_name="particles",
-                opacity=0.35,
-                beat_response=BeatResponse.normal,
+                opacity=0.4,
+                beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.screen,
-                primary_color="#223355",
-                accent_color="#445566",
+                primary_color="#88bbff",
+                accent_color="#66eebb",
                 intensity=0.2,
-                speed=0.1,
-                particles=ParticleParams(count=80, connection_dist=0.12),
+                speed=0.15,
+                particles=ParticleParams(count=80, connection_dist=0.2),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # SYNTHWAVE — tunnel + plasma glow overlay
+    # DARK AMBIENT — slow fractal + near-black (minimal, foreboding)
+    # ------------------------------------------------------------------
+    "dark-ambient": {
+        "bg_color": "#020204",
+        "primary_color": "#1a2244",
+        "accent_color": "#334466",
+        "intensity": 0.2,
+        "speed": 0.08,
+        "postprocess": PostProcessParams(bloom=0.2, vignette=0.65),
+        "layers": [
+            LayerConfig(
+                effect_name="fractal",
+                opacity=1.0,
+                beat_response=BeatResponse.smooth,
+                blend_mode=BlendMode.alpha,
+                bg_color="#020204",
+                primary_color="#1a2244",
+                accent_color="#334466",
+                intensity=0.15,
+                speed=0.06,
+                fractal=FractalParams(zoom_rate=0.3),
+            ),
+            LayerConfig(
+                effect_name="particles",
+                opacity=0.2,
+                beat_response=BeatResponse.smooth,
+                blend_mode=BlendMode.screen,
+                primary_color="#223355",
+                accent_color="#445577",
+                intensity=0.15,
+                speed=0.05,
+                particles=ParticleParams(count=40, connection_dist=0.25),
+            ),
+        ],
+    },
+    # ------------------------------------------------------------------
+    # SYNTHWAVE — retro grid + plasma glow (outrun aesthetic)
+    # Completely distinct from techno: warm sunset, perspective grid,
+    # dreamy plasma glow, scanlines, chromatic aberration
     # ------------------------------------------------------------------
     "synthwave": {
-        "bg_color": "#1a0030",
+        "bg_color": "#0a001e",
         "primary_color": "#ff2299",
         "accent_color": "#00ffee",
         "intensity": 0.7,
-        "speed": 0.6,
+        "speed": 0.5,
+        "postprocess": PostProcessParams(
+            bloom=0.35,
+            vignette=0.4,
+            scanlines=0.12,
+            scanline_spacing=3,
+            chromatic=2,
+        ),
         "layers": [
             LayerConfig(
-                effect_name="tunnel",
+                effect_name="retro_grid",
                 opacity=1.0,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.alpha,
+                bg_color="#0a001e",
                 primary_color="#ff2299",
-                accent_color="#00ffee",
+                accent_color="#ffaa00",
                 intensity=0.7,
-                speed=0.6,
-                tunnel=TunnelParams(twist_speed=1.2, ring_count=10),
+                speed=0.5,
+                retro_grid=RetroGridParams(grid_density=12, sun_size=0.2, horizon_pos=0.38),
             ),
             LayerConfig(
                 effect_name="plasma",
-                opacity=0.3,
+                opacity=0.2,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.add,
                 primary_color="#ff2299",
                 accent_color="#00ffee",
-                intensity=0.4,
-                speed=0.3,
-                plasma=PlasmaParams(layer_count=3, wave_freq=2.5),
+                intensity=0.3,
+                speed=0.25,
+                plasma=PlasmaParams(layer_count=3, wave_freq=2.0),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # TECHNO — tunnel base + particles on beat
+    # TECHNO — tunnel + particles + glitch (industrial, aggressive)
+    # Hard geometry, glitch on beats, green/red contrast, bloom glow
     # ------------------------------------------------------------------
     "techno": {
         "bg_color": "#0a0a0a",
         "primary_color": "#00ff88",
         "accent_color": "#ff0066",
         "intensity": 0.8,
-        "speed": 0.7,
+        "speed": 0.6,
+        "postprocess": PostProcessParams(
+            bloom=0.25,
+            vignette=0.35,
+            glitch=True,
+            glitch_threshold=0.65,
+            chromatic=1,
+        ),
         "layers": [
             LayerConfig(
                 effect_name="tunnel",
@@ -153,357 +180,392 @@ PRESETS: dict[str, dict] = {
                 primary_color="#00ff88",
                 accent_color="#ff0066",
                 intensity=0.8,
-                speed=0.7,
-                tunnel=TunnelParams(twist_speed=1.5, ring_count=12),
+                speed=0.5,
+                tunnel=TunnelParams(twist_speed=1.2, ring_count=8),
             ),
             LayerConfig(
                 effect_name="particles",
-                opacity=0.45,
+                opacity=0.5,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.add,
                 primary_color="#00ff88",
                 accent_color="#ff0066",
                 intensity=0.8,
                 speed=0.6,
-                particles=ParticleParams(count=120, connection_dist=0.1),
+                particles=ParticleParams(count=100, connection_dist=0.1),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # DARK TECHNO — fractal + sparse particles
+    # DARK TECHNO — matrix rain + fractal (cyberpunk, dystopian)
     # ------------------------------------------------------------------
     "dark-techno": {
-        "bg_color": "#050505",
-        "primary_color": "#00cc66",
+        "bg_color": "#000000",
+        "primary_color": "#00cc44",
         "accent_color": "#cc0044",
         "intensity": 0.85,
-        "speed": 0.75,
+        "speed": 0.7,
+        "postprocess": PostProcessParams(
+            bloom=0.2, vignette=0.45, glitch=True, glitch_threshold=0.6,
+        ),
         "layers": [
             LayerConfig(
-                effect_name="fractal",
+                effect_name="matrix_rain",
                 opacity=1.0,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.alpha,
-                primary_color="#00cc66",
-                accent_color="#cc0044",
-                intensity=0.85,
-                speed=0.7,
+                bg_color="#000000",
+                primary_color="#00cc44",
+                accent_color="#88ffaa",
+                intensity=0.8,
+                speed=0.65,
+                matrix_rain=MatrixRainParams(column_count=55, drop_length=20),
             ),
             LayerConfig(
-                effect_name="particles",
-                opacity=0.35,
-                beat_response=BeatResponse.double,
-                blend_mode=BlendMode.add,
-                primary_color="#00cc66",
+                effect_name="fractal",
+                opacity=0.25,
+                beat_response=BeatResponse.inverse,
+                blend_mode=BlendMode.screen,
+                primary_color="#00aa33",
                 accent_color="#cc0044",
-                intensity=0.7,
-                speed=0.8,
-                particles=ParticleParams(count=80, connection_dist=0.08),
+                intensity=0.5,
+                speed=0.5,
+                fractal=FractalParams(zoom_rate=0.8),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # MELODIC TECHNO — plasma base + tunnel overlay
+    # MELODIC TECHNO — aurora + tunnel (warm + mechanical = emotion)
     # ------------------------------------------------------------------
     "melodic-techno": {
-        "bg_color": "#0a0a1e",
-        "primary_color": "#6644ff",
+        "bg_color": "#08061a",
+        "primary_color": "#8844ff",
         "accent_color": "#ff4488",
-        "intensity": 0.65,
-        "speed": 0.55,
+        "intensity": 0.6,
+        "speed": 0.45,
+        "postprocess": PostProcessParams(bloom=0.35, vignette=0.4),
         "layers": [
             LayerConfig(
-                effect_name="plasma",
+                effect_name="aurora",
                 opacity=1.0,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.alpha,
-                primary_color="#4422aa",
-                accent_color="#6644ff",
+                bg_color="#08061a",
+                primary_color="#6633cc",
+                accent_color="#ff4488",
                 intensity=0.5,
-                speed=0.4,
-                plasma=PlasmaParams(layer_count=4, wave_freq=2.5),
+                speed=0.35,
+                aurora=AuroraParams(band_count=4, wave_height=0.25),
             ),
             LayerConfig(
                 effect_name="tunnel",
-                opacity=0.5,
+                opacity=0.35,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.screen,
-                primary_color="#6644ff",
+                primary_color="#8844ff",
                 accent_color="#ff4488",
-                intensity=0.65,
-                speed=0.55,
-                tunnel=TunnelParams(twist_speed=0.8, ring_count=8),
+                intensity=0.6,
+                speed=0.45,
+                tunnel=TunnelParams(twist_speed=0.6, ring_count=6),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # HOUSE — warm plasma + bouncy particles
+    # HOUSE — waveform bars + plasma (warm, bouncy, festival)
     # ------------------------------------------------------------------
     "house": {
-        "bg_color": "#1a0a2e",
+        "bg_color": "#0a0510",
         "primary_color": "#ff6600",
         "accent_color": "#ffcc00",
-        "intensity": 0.6,
+        "intensity": 0.65,
         "speed": 0.5,
+        "postprocess": PostProcessParams(bloom=0.3, vignette=0.3),
         "layers": [
             LayerConfig(
                 effect_name="plasma",
                 opacity=1.0,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.alpha,
-                primary_color="#cc4400",
+                bg_color="#0a0510",
+                primary_color="#441800",
                 accent_color="#ff6600",
-                intensity=0.5,
-                speed=0.4,
-                plasma=PlasmaParams(layer_count=4, wave_freq=3.0),
+                intensity=0.3,
+                speed=0.3,
+                plasma=PlasmaParams(layer_count=3, wave_freq=2.0),
             ),
             LayerConfig(
-                effect_name="particles",
-                opacity=0.55,
+                effect_name="waveform",
+                opacity=0.65,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.add,
                 primary_color="#ff6600",
                 accent_color="#ffcc00",
-                intensity=0.6,
+                intensity=0.65,
                 speed=0.5,
-                particles=ParticleParams(count=150, connection_dist=0.14),
+                waveform=WaveformParams(bar_count=40, mirror=True, style="pointed"),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # DEEP HOUSE — plasma only, smooth and warm
+    # DEEP HOUSE — plasma + tunnel (liquid, submerged, hypnotic depth)
+    # Slow morphing plasma backdrop with a gentle tunnel vortex pulling
+    # the viewer deeper — smooth, warm, underwater feel
     # ------------------------------------------------------------------
     "deep-house": {
-        "bg_color": "#0a0a1e",
+        "bg_color": "#060612",
         "primary_color": "#ff4488",
         "accent_color": "#44aaff",
-        "intensity": 0.45,
-        "speed": 0.35,
+        "intensity": 0.4,
+        "speed": 0.3,
+        "postprocess": PostProcessParams(bloom=0.4, vignette=0.5),
         "layers": [
             LayerConfig(
                 effect_name="plasma",
                 opacity=1.0,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.alpha,
+                bg_color="#060612",
                 primary_color="#cc2266",
-                accent_color="#ff4488",
-                intensity=0.4,
-                speed=0.3,
-                plasma=PlasmaParams(layer_count=5, wave_freq=2.0),
+                accent_color="#44aaff",
+                intensity=0.3,
+                speed=0.2,
+                plasma=PlasmaParams(layer_count=5, wave_freq=1.5),
             ),
             LayerConfig(
-                effect_name="particles",
-                opacity=0.4,
-                beat_response=BeatResponse.normal,
+                effect_name="tunnel",
+                opacity=0.35,
+                beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.screen,
                 primary_color="#ff4488",
                 accent_color="#44aaff",
-                intensity=0.45,
-                speed=0.35,
-                particles=ParticleParams(count=100, connection_dist=0.16),
+                intensity=0.3,
+                speed=0.2,
+                tunnel=TunnelParams(twist_speed=0.4, ring_count=5),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # PSYTRANCE — fractal base + plasma glow
+    # PSYTRANCE — fractal + tunnel (psychedelic, trippy, intense)
     # ------------------------------------------------------------------
     "psytrance": {
-        "bg_color": "#0a002e",
+        "bg_color": "#08002e",
         "primary_color": "#ff00ff",
         "accent_color": "#00ffff",
         "intensity": 0.9,
-        "speed": 0.8,
+        "speed": 0.75,
+        "postprocess": PostProcessParams(
+            bloom=0.35, chromatic=3, vignette=0.3,
+        ),
         "layers": [
             LayerConfig(
                 effect_name="fractal",
                 opacity=1.0,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.alpha,
+                bg_color="#08002e",
                 primary_color="#ff00ff",
                 accent_color="#00ffff",
                 intensity=0.9,
-                speed=0.8,
+                speed=0.75,
                 fractal=FractalParams(zoom_rate=1.5),
             ),
             LayerConfig(
-                effect_name="plasma",
-                opacity=0.35,
+                effect_name="tunnel",
+                opacity=0.3,
                 beat_response=BeatResponse.inverse,
                 blend_mode=BlendMode.add,
-                primary_color="#ff00ff",
-                accent_color="#00ffff",
+                primary_color="#cc00cc",
+                accent_color="#00cccc",
                 intensity=0.6,
-                speed=0.5,
-                plasma=PlasmaParams(layer_count=3, wave_freq=4.0),
+                speed=0.6,
+                tunnel=TunnelParams(twist_speed=1.8, ring_count=6),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # DRUM AND BASS — explosive particles + plasma undertow
+    # DRUM AND BASS — waveform + particles (explosive, fast, chaotic)
     # ------------------------------------------------------------------
     "drum-and-bass": {
-        "bg_color": "#0a0a14",
+        "bg_color": "#080404",
         "primary_color": "#ff4400",
         "accent_color": "#00ffaa",
         "intensity": 0.85,
-        "speed": 0.9,
+        "speed": 0.85,
+        "postprocess": PostProcessParams(
+            bloom=0.25, glitch=True, glitch_threshold=0.55,
+        ),
         "layers": [
             LayerConfig(
-                effect_name="plasma",
+                effect_name="waveform",
                 opacity=1.0,
-                beat_response=BeatResponse.smooth,
+                beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.alpha,
-                primary_color="#881100",
-                accent_color="#ff4400",
-                intensity=0.5,
-                speed=0.4,
-                plasma=PlasmaParams(layer_count=3, wave_freq=3.5),
-            ),
-            LayerConfig(
-                effect_name="particles",
-                opacity=0.7,
-                beat_response=BeatResponse.double,
-                blend_mode=BlendMode.add,
+                bg_color="#080404",
                 primary_color="#ff4400",
                 accent_color="#00ffaa",
                 intensity=0.85,
-                speed=0.9,
-                particles=ParticleParams(count=200, connection_dist=0.1),
-            ),
-        ],
-    },
-    # ------------------------------------------------------------------
-    # INDUSTRIAL — tunnel + fractal overlay
-    # ------------------------------------------------------------------
-    "industrial": {
-        "bg_color": "#080808",
-        "primary_color": "#aa4400",
-        "accent_color": "#ff2200",
-        "intensity": 0.8,
-        "speed": 0.65,
-        "layers": [
-            LayerConfig(
-                effect_name="tunnel",
-                opacity=1.0,
-                beat_response=BeatResponse.normal,
-                blend_mode=BlendMode.alpha,
-                primary_color="#aa4400",
-                accent_color="#ff2200",
-                intensity=0.8,
-                speed=0.65,
-                tunnel=TunnelParams(twist_speed=2.0, ring_count=14),
-            ),
-            LayerConfig(
-                effect_name="fractal",
-                opacity=0.3,
-                beat_response=BeatResponse.inverse,
-                blend_mode=BlendMode.screen,
-                primary_color="#aa4400",
-                accent_color="#ff2200",
-                intensity=0.6,
-                speed=0.5,
-            ),
-        ],
-    },
-    # ------------------------------------------------------------------
-    # EDM — plasma + particles, max energy
-    # ------------------------------------------------------------------
-    "edm": {
-        "bg_color": "#0a001e",
-        "primary_color": "#00aaff",
-        "accent_color": "#ff00aa",
-        "intensity": 0.75,
-        "speed": 0.65,
-        "layers": [
-            LayerConfig(
-                effect_name="plasma",
-                opacity=1.0,
-                beat_response=BeatResponse.smooth,
-                blend_mode=BlendMode.alpha,
-                primary_color="#0066cc",
-                accent_color="#00aaff",
-                intensity=0.6,
-                speed=0.5,
-                plasma=PlasmaParams(layer_count=4, wave_freq=3.0),
-            ),
-            LayerConfig(
-                effect_name="particles",
-                opacity=0.6,
-                beat_response=BeatResponse.normal,
-                blend_mode=BlendMode.add,
-                primary_color="#00aaff",
-                accent_color="#ff00aa",
-                intensity=0.75,
-                speed=0.65,
-                particles=ParticleParams(count=180, connection_dist=0.12),
-            ),
-        ],
-    },
-    # ------------------------------------------------------------------
-    # CLASSICAL — gentle fractal + soft particles
-    # ------------------------------------------------------------------
-    "classical": {
-        "bg_color": "#0a0a14",
-        "primary_color": "#ccaa44",
-        "accent_color": "#ffddaa",
-        "intensity": 0.35,
-        "speed": 0.25,
-        "layers": [
-            LayerConfig(
-                effect_name="fractal",
-                opacity=1.0,
-                beat_response=BeatResponse.smooth,
-                blend_mode=BlendMode.alpha,
-                primary_color="#ccaa44",
-                accent_color="#ffddaa",
-                intensity=0.3,
-                speed=0.2,
-                fractal=FractalParams(zoom_rate=0.5),
-            ),
-            LayerConfig(
-                effect_name="particles",
-                opacity=0.35,
-                beat_response=BeatResponse.smooth,
-                blend_mode=BlendMode.screen,
-                primary_color="#ccaa44",
-                accent_color="#ffddaa",
-                intensity=0.3,
-                speed=0.2,
-                particles=ParticleParams(count=80, connection_dist=0.2),
-            ),
-        ],
-    },
-    # ------------------------------------------------------------------
-    # JAZZ — warm plasma + connected particles
-    # ------------------------------------------------------------------
-    "jazz": {
-        "bg_color": "#0a0a0a",
-        "primary_color": "#ff8844",
-        "accent_color": "#44aaff",
-        "intensity": 0.4,
-        "speed": 0.35,
-        "layers": [
-            LayerConfig(
-                effect_name="plasma",
-                opacity=1.0,
-                beat_response=BeatResponse.smooth,
-                blend_mode=BlendMode.alpha,
-                primary_color="#cc6622",
-                accent_color="#ff8844",
-                intensity=0.35,
-                speed=0.3,
-                plasma=PlasmaParams(layer_count=4, wave_freq=2.0),
+                speed=0.85,
+                waveform=WaveformParams(bar_count=64, mirror=True, style="flat"),
             ),
             LayerConfig(
                 effect_name="particles",
                 opacity=0.5,
+                beat_response=BeatResponse.double,
+                blend_mode=BlendMode.add,
+                primary_color="#ff4400",
+                accent_color="#00ffaa",
+                intensity=0.8,
+                speed=0.9,
+                particles=ParticleParams(count=150, connection_dist=0.08),
+            ),
+        ],
+    },
+    # ------------------------------------------------------------------
+    # INDUSTRIAL — matrix rain + tunnel (harsh, mechanical, dystopian)
+    # ------------------------------------------------------------------
+    "industrial": {
+        "bg_color": "#050302",
+        "primary_color": "#cc4400",
+        "accent_color": "#ff2200",
+        "intensity": 0.8,
+        "speed": 0.6,
+        "postprocess": PostProcessParams(
+            bloom=0.15, vignette=0.5, glitch=True, glitch_threshold=0.5,
+            scanlines=0.1, scanline_spacing=4,
+        ),
+        "layers": [
+            LayerConfig(
+                effect_name="matrix_rain",
+                opacity=1.0,
                 beat_response=BeatResponse.normal,
+                blend_mode=BlendMode.alpha,
+                bg_color="#050302",
+                primary_color="#cc4400",
+                accent_color="#ff6600",
+                intensity=0.7,
+                speed=0.55,
+                matrix_rain=MatrixRainParams(column_count=45, drop_length=15),
+            ),
+            LayerConfig(
+                effect_name="tunnel",
+                opacity=0.3,
+                beat_response=BeatResponse.normal,
+                blend_mode=BlendMode.add,
+                primary_color="#aa3300",
+                accent_color="#ff2200",
+                intensity=0.7,
+                speed=0.6,
+                tunnel=TunnelParams(twist_speed=1.8, ring_count=10),
+            ),
+        ],
+    },
+    # ------------------------------------------------------------------
+    # EDM — retro grid + waveform (festival stage, laser grid floor
+    # with bouncing spectrum bars — maximum visual energy)
+    # ------------------------------------------------------------------
+    "edm": {
+        "bg_color": "#06001a",
+        "primary_color": "#00aaff",
+        "accent_color": "#ff00aa",
+        "intensity": 0.8,
+        "speed": 0.65,
+        "postprocess": PostProcessParams(bloom=0.35, chromatic=2),
+        "layers": [
+            LayerConfig(
+                effect_name="retro_grid",
+                opacity=1.0,
+                beat_response=BeatResponse.normal,
+                blend_mode=BlendMode.alpha,
+                bg_color="#06001a",
+                primary_color="#00aaff",
+                accent_color="#ff00aa",
+                intensity=0.7,
+                speed=0.6,
+                retro_grid=RetroGridParams(grid_density=16, sun_size=0.14, horizon_pos=0.35),
+            ),
+            LayerConfig(
+                effect_name="waveform",
+                opacity=0.7,
+                beat_response=BeatResponse.normal,
+                blend_mode=BlendMode.add,
+                primary_color="#00aaff",
+                accent_color="#ff00aa",
+                intensity=0.8,
+                speed=0.65,
+                waveform=WaveformParams(bar_count=56, mirror=True, style="pointed"),
+            ),
+        ],
+    },
+    # ------------------------------------------------------------------
+    # CLASSICAL — aurora + fractal (golden, elegant, orchestral)
+    # ------------------------------------------------------------------
+    "classical": {
+        "bg_color": "#080608",
+        "primary_color": "#ddaa44",
+        "accent_color": "#ffeecc",
+        "intensity": 0.35,
+        "speed": 0.2,
+        "postprocess": PostProcessParams(bloom=0.45, vignette=0.55),
+        "layers": [
+            LayerConfig(
+                effect_name="aurora",
+                opacity=1.0,
+                beat_response=BeatResponse.smooth,
+                blend_mode=BlendMode.alpha,
+                bg_color="#080608",
+                primary_color="#ddaa44",
+                accent_color="#ffeecc",
+                intensity=0.3,
+                speed=0.15,
+                aurora=AuroraParams(band_count=3, wave_height=0.35),
+            ),
+            LayerConfig(
+                effect_name="fractal",
+                opacity=0.25,
+                beat_response=BeatResponse.smooth,
+                blend_mode=BlendMode.screen,
+                primary_color="#ccaa44",
+                accent_color="#ffddaa",
+                intensity=0.25,
+                speed=0.15,
+                fractal=FractalParams(zoom_rate=0.4),
+            ),
+        ],
+    },
+    # ------------------------------------------------------------------
+    # JAZZ — waveform + fractal (smoky lounge — gentle equalizer bars
+    # floating over a slow-breathing fractal, intimate and organic)
+    # ------------------------------------------------------------------
+    "jazz": {
+        "bg_color": "#0a0604",
+        "primary_color": "#ff8844",
+        "accent_color": "#4488cc",
+        "intensity": 0.4,
+        "speed": 0.3,
+        "postprocess": PostProcessParams(bloom=0.4, vignette=0.55),
+        "layers": [
+            LayerConfig(
+                effect_name="fractal",
+                opacity=1.0,
+                beat_response=BeatResponse.smooth,
+                blend_mode=BlendMode.alpha,
+                bg_color="#0a0604",
+                primary_color="#553311",
+                accent_color="#4488cc",
+                intensity=0.25,
+                speed=0.12,
+                fractal=FractalParams(zoom_rate=0.3),
+            ),
+            LayerConfig(
+                effect_name="waveform",
+                opacity=0.55,
+                beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.screen,
                 primary_color="#ff8844",
-                accent_color="#44aaff",
+                accent_color="#4488cc",
                 intensity=0.4,
-                speed=0.35,
-                particles=ParticleParams(count=120, connection_dist=0.18),
+                speed=0.25,
+                waveform=WaveformParams(bar_count=24, mirror=False, style="pointed"),
             ),
         ],
     },
@@ -547,6 +609,10 @@ def get_preset(
     }
     if seed is not None:
         kwargs["seed"] = seed
+
+    # Ensure postprocess is a PostProcessParams instance if present as dict
+    if "postprocess" not in kwargs:
+        kwargs["postprocess"] = PostProcessParams()
 
     # effect_name for backward compat — use first layer's effect
     if "layers" in kwargs and kwargs["layers"]:

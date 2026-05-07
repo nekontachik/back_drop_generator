@@ -41,6 +41,49 @@ class PlasmaParams(BaseModel):
     wave_freq: float = 3.0
 
 
+class RetroGridParams(BaseModel):
+    """Per-effect overrides for retro grid (synthwave) effect."""
+
+    grid_density: int = 12
+    sun_size: float = 0.18
+    horizon_pos: float = 0.4
+
+
+class AuroraParams(BaseModel):
+    """Per-effect overrides for aurora (northern lights) effect."""
+
+    band_count: int = 5
+    wave_height: float = 0.3
+
+
+class WaveformParams(BaseModel):
+    """Per-effect overrides for waveform (spectrum bars) effect."""
+
+    bar_count: int = 48
+    mirror: bool = True
+    style: str = "pointed"  # "pointed" or "flat"
+
+
+class MatrixRainParams(BaseModel):
+    """Per-effect overrides for matrix rain effect."""
+
+    column_count: int = 60
+    drop_length: int = 18
+
+
+class PostProcessParams(BaseModel):
+    """Post-processing configuration for a preset."""
+
+    bloom: float = Field(default=0.0, ge=0.0, le=1.0)
+    bloom_radius: int = 21
+    vignette: float = Field(default=0.0, ge=0.0, le=1.0)
+    scanlines: float = Field(default=0.0, ge=0.0, le=1.0)
+    scanline_spacing: int = 3
+    chromatic: int = Field(default=0, ge=0, le=8)
+    glitch: bool = False
+    glitch_threshold: float = 0.7
+
+
 class BeatResponse(str, Enum):
     """How a layer reacts to the beat envelope.
 
@@ -94,6 +137,12 @@ class LayerConfig(BaseModel):
     fractal: FractalParams = Field(default_factory=FractalParams)
     particles: ParticleParams = Field(default_factory=ParticleParams)
     plasma: PlasmaParams = Field(default_factory=PlasmaParams)
+    retro_grid: RetroGridParams = Field(default_factory=RetroGridParams)
+    aurora: AuroraParams = Field(default_factory=AuroraParams)
+    waveform: WaveformParams = Field(default_factory=WaveformParams)
+    matrix_rain: MatrixRainParams = Field(default_factory=MatrixRainParams)
+
+    model_config = {"arbitrary_types_allowed": True}
 
 
 class RenderParams(BaseModel):
@@ -134,5 +183,12 @@ class RenderParams(BaseModel):
     fractal: FractalParams = Field(default_factory=FractalParams)
     particles: ParticleParams = Field(default_factory=ParticleParams)
     plasma: PlasmaParams = Field(default_factory=PlasmaParams)
+    retro_grid: RetroGridParams = Field(default_factory=RetroGridParams)
+    aurora: AuroraParams = Field(default_factory=AuroraParams)
+    waveform: WaveformParams = Field(default_factory=WaveformParams)
+    matrix_rain: MatrixRainParams = Field(default_factory=MatrixRainParams)
+
+    # Post-processing configuration
+    postprocess: PostProcessParams = Field(default_factory=PostProcessParams)
 
     model_config = {"arbitrary_types_allowed": True}

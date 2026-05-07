@@ -96,8 +96,8 @@ class TestUpsertIdempotency:
         count1 = c1.count()
         c2 = init_genre_collection(chroma_dir)
         count2 = c2.count()
-        assert count1 == 10
-        assert count2 == 10
+        assert count1 == 14
+        assert count2 == 14
 
 
 class TestGetSetCollection:

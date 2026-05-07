@@ -11,13 +11,20 @@ import pytest
 
 # Import all effect modules to trigger @register decorators
 from app.render.effects import EFFECT_REGISTRY
-from app.render.effects import tunnel as _tunnel_mod  # noqa: F401
+from app.render.effects import aurora as _aurora_mod  # noqa: F401
 from app.render.effects import fractal as _fractal_mod  # noqa: F401
+from app.render.effects import matrix_rain as _matrix_rain_mod  # noqa: F401
 from app.render.effects import particles as _particles_mod  # noqa: F401
 from app.render.effects import plasma as _plasma_mod  # noqa: F401
+from app.render.effects import retro_grid as _retro_grid_mod  # noqa: F401
+from app.render.effects import tunnel as _tunnel_mod  # noqa: F401
+from app.render.effects import waveform as _waveform_mod  # noqa: F401
 
 
-EFFECT_NAMES = ["tunnel", "fractal", "particles", "plasma"]
+EFFECT_NAMES = [
+    "tunnel", "fractal", "particles", "plasma",
+    "retro_grid", "aurora", "waveform", "matrix_rain",
+]
 TEST_WIDTH = 480
 TEST_HEIGHT = 270
 
@@ -27,14 +34,32 @@ DEFAULT_PARAMS = {
     "accent_color": "#ff0066",
     "intensity": 0.7,
     "speed": 0.5,
+    # tunnel
     "twist_speed": 1.0,
     "ring_count": 8,
+    # fractal
     "zoom_rate": 1.0,
     "c_param": complex(-0.7, 0.27015),
+    # particles
     "count": 100,
     "connection_dist": 0.15,
+    # plasma
     "layer_count": 4,
     "wave_freq": 3.0,
+    # retro_grid
+    "grid_density": 12,
+    "sun_size": 0.18,
+    "horizon_pos": 0.4,
+    # aurora
+    "band_count": 5,
+    "wave_height": 0.3,
+    # waveform
+    "bar_count": 32,
+    "mirror": True,
+    "style": "pointed",
+    # matrix_rain
+    "column_count": 40,
+    "drop_length": 15,
 }
 
 
@@ -45,8 +70,8 @@ class TestEffectRegistry:
         for name in EFFECT_NAMES:
             assert name in EFFECT_REGISTRY, f"Effect '{name}' not in EFFECT_REGISTRY"
 
-    def test_registry_has_exactly_four(self) -> None:
-        assert len(EFFECT_REGISTRY) == 4
+    def test_registry_has_all_effects(self) -> None:
+        assert len(EFFECT_REGISTRY) == len(EFFECT_NAMES)
 
 
 class TestEffectRendering:

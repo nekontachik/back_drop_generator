@@ -263,10 +263,15 @@ async def test_download_after_render(client: httpx.AsyncClient):
     else:
         pytest.fail("Job did not complete within timeout")
 
-    # Download
+    # Download — don't follow redirects (demo mode returns 307 to external URL
+    # which ASGITransport can't reach; real mode returns 200 with file)
     resp = await client.get(f"/jobs/{job_id}/download")
-    assert resp.status_code == 200
-    assert "video/mp4" in resp.headers.get("content-type", "")
+    assert resp.status_code in (200, 307), f"Expected 200 or 307, got {resp.status_code}"
+    if resp.status_code == 200:
+        assert "video/mp4" in resp.headers.get("content-type", "")
+    else:
+        # Demo mode: redirect to pre-generated example video
+        assert "location" in resp.headers
 
 
 # ---------------------------------------------------------------------------
