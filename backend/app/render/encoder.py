@@ -98,3 +98,67 @@ def encode_frames(
         raise RuntimeError(f"ffmpeg exited with code {proc.returncode}: {stderr}")
 
     return output_path
+
+
+def mux_audio(
+    video_path: str,
+    audio_path: str,
+    output_path: str | None = None,
+) -> str:
+    """Mux an audio track into a video file using ffmpeg.
+
+    Trims or loops the audio to match the video duration. The video
+    stream is copied (no re-encoding). If output_path is None, replaces
+    the original video file in-place.
+
+    Args:
+        video_path: Path to the video-only mp4.
+        audio_path: Path to the audio file (mp3/wav/ogg).
+        output_path: Path for the muxed output. Defaults to replacing
+            the input video.
+
+    Returns:
+        The output path.
+
+    Raises:
+        RuntimeError: If ffmpeg exits with a non-zero return code.
+    """
+    import shutil
+    import tempfile
+
+    replace_in_place = output_path is None
+    if replace_in_place:
+        # Write to temp file, then move back
+        fd, tmp_path = tempfile.mkstemp(suffix=".mp4")
+        import os
+        os.close(fd)
+        dest = tmp_path
+    else:
+        dest = output_path
+
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-i", video_path,
+        "-i", audio_path,
+        "-c:v", "copy",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        "-shortest",
+        "-movflags", "+faststart",
+        "-loglevel", "error",
+        dest,
+    ]
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    if result.returncode != 0:
+        if replace_in_place:
+            os.unlink(tmp_path)
+        raise RuntimeError(f"ffmpeg mux failed: {result.stderr}")
+
+    if replace_in_place:
+        shutil.move(tmp_path, video_path)
+        return video_path
+
+    return dest

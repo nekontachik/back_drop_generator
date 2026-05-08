@@ -27,9 +27,9 @@ const EXAMPLES = [
   {
     id: "3",
     src: "/examples/preset-edm.mp4",
-    prompt: "Explosive particle storm synced to EDM drops",
+    prompt: "Laser tunnel rush with spectrum bars on the drop",
     genre: "EDM",
-    effect: "particles",
+    effect: "tunnel",
     bpm: 128,
   },
   {
@@ -51,9 +51,9 @@ const EXAMPLES = [
   {
     id: "6",
     src: "/examples/preset-classical.mp4",
-    prompt: "Elegant fractal bloom following classical dynamics",
+    prompt: "Cool plasma clouds with silver aurora curtains",
     genre: "Classical",
-    effect: "fractal",
+    effect: "plasma",
     bpm: 90,
   },
 ];

@@ -460,75 +460,82 @@ PRESETS: dict[str, dict] = {
         ],
     },
     # ------------------------------------------------------------------
-    # EDM — retro grid + waveform (festival stage, laser grid floor
-    # with bouncing spectrum bars — maximum visual energy)
+    # EDM — tunnel + waveform (festival laser tunnel with spectrum bars)
+    # Forward-rushing geometric tunnel with mirrored spectrum analyzer —
+    # neon blue/magenta, high energy, glitch on drops. Distinct from
+    # synthwave (no retro grid/sun) and techno (different colors, waveform
+    # overlay instead of particles).
     # ------------------------------------------------------------------
     "edm": {
-        "bg_color": "#06001a",
-        "primary_color": "#00aaff",
-        "accent_color": "#ff00aa",
-        "intensity": 0.8,
-        "speed": 0.65,
-        "postprocess": PostProcessParams(bloom=0.35, chromatic=2),
+        "bg_color": "#04001a",
+        "primary_color": "#00ccff",
+        "accent_color": "#ff00cc",
+        "intensity": 0.85,
+        "speed": 0.7,
+        "postprocess": PostProcessParams(
+            bloom=0.3, chromatic=2, glitch=True, glitch_threshold=0.7,
+        ),
         "layers": [
             LayerConfig(
-                effect_name="retro_grid",
+                effect_name="tunnel",
                 opacity=1.0,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.alpha,
-                bg_color="#06001a",
-                primary_color="#00aaff",
-                accent_color="#ff00aa",
-                intensity=0.7,
-                speed=0.6,
-                retro_grid=RetroGridParams(grid_density=16, sun_size=0.14, horizon_pos=0.35),
+                bg_color="#04001a",
+                primary_color="#00ccff",
+                accent_color="#ff00cc",
+                intensity=0.8,
+                speed=0.65,
+                tunnel=TunnelParams(twist_speed=0.8, ring_count=10),
             ),
             LayerConfig(
                 effect_name="waveform",
-                opacity=0.7,
+                opacity=0.6,
                 beat_response=BeatResponse.normal,
                 blend_mode=BlendMode.add,
-                primary_color="#00aaff",
-                accent_color="#ff00aa",
-                intensity=0.8,
-                speed=0.65,
-                waveform=WaveformParams(bar_count=56, mirror=True, style="pointed"),
+                primary_color="#00ccff",
+                accent_color="#ff00cc",
+                intensity=0.85,
+                speed=0.7,
+                waveform=WaveformParams(bar_count=48, mirror=True, style="pointed"),
             ),
         ],
     },
     # ------------------------------------------------------------------
-    # CLASSICAL — aurora + fractal (golden, elegant, orchestral)
+    # CLASSICAL — plasma + aurora (cool orchestral — slow plasma clouds
+    # with silver aurora curtains, deep blue/violet palette. Completely
+    # distinct from jazz's warm amber fractals + waveform bars.)
     # ------------------------------------------------------------------
     "classical": {
-        "bg_color": "#080608",
-        "primary_color": "#ddaa44",
-        "accent_color": "#ffeecc",
-        "intensity": 0.35,
-        "speed": 0.2,
-        "postprocess": PostProcessParams(bloom=0.45, vignette=0.55),
+        "bg_color": "#0a0a1e",
+        "primary_color": "#8899cc",
+        "accent_color": "#bb99dd",
+        "intensity": 0.3,
+        "speed": 0.15,
+        "postprocess": PostProcessParams(bloom=0.5, vignette=0.6),
         "layers": [
             LayerConfig(
-                effect_name="aurora",
+                effect_name="plasma",
                 opacity=1.0,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.alpha,
-                bg_color="#080608",
-                primary_color="#ddaa44",
-                accent_color="#ffeecc",
-                intensity=0.3,
-                speed=0.15,
-                aurora=AuroraParams(band_count=3, wave_height=0.35),
+                bg_color="#0a0a1e",
+                primary_color="#334488",
+                accent_color="#6644aa",
+                intensity=0.25,
+                speed=0.1,
+                plasma=PlasmaParams(layer_count=5, wave_freq=1.2),
             ),
             LayerConfig(
-                effect_name="fractal",
-                opacity=0.25,
+                effect_name="aurora",
+                opacity=0.4,
                 beat_response=BeatResponse.smooth,
                 blend_mode=BlendMode.screen,
-                primary_color="#ccaa44",
-                accent_color="#ffddaa",
+                primary_color="#8899cc",
+                accent_color="#bb99dd",
                 intensity=0.25,
-                speed=0.15,
-                fractal=FractalParams(zoom_rate=0.4),
+                speed=0.12,
+                aurora=AuroraParams(band_count=4, wave_height=0.4),
             ),
         ],
     },

@@ -27,6 +27,7 @@ from app.render.effects import waveform as _waveform  # noqa: F401
 from app.render.encoder import encode_frames
 from app.render.postprocess import PostProcessor
 from app.render.loop_math import (
+    build_audio_beat_envelope,
     build_synthetic_beat_envelope,
     calculate_loop_params,
     frame_phase,
@@ -122,6 +123,7 @@ def render_video(
     params: RenderParams,
     output_path: str,
     progress_callback: Callable[[float], None] | None = None,
+    beat_times: list[float] | None = None,
 ) -> str:
     """Render a video from parameters to an mp4 file.
 
@@ -137,6 +139,9 @@ def render_video(
         params: Full render parameters including effect/layer selection.
         output_path: Destination path for the mp4 file.
         progress_callback: Optional callable receiving progress [0.0, 1.0].
+        beat_times: Optional real beat positions in seconds (from audio
+            analysis). When provided, the envelope uses actual beat timing
+            instead of synthetic BPM, producing more natural animation.
 
     Returns:
         The output_path string.
@@ -148,10 +153,15 @@ def render_video(
     # Calculate loop timing
     total_frames, loop_duration = calculate_loop_params(params.bpm, params.fps)
 
-    # Build raw beat envelope
-    raw_envelope = build_synthetic_beat_envelope(
-        total_frames, params.bpm, params.fps, loop_duration
-    )
+    # Build raw beat envelope — prefer real audio beats when available
+    if beat_times:
+        raw_envelope = build_audio_beat_envelope(
+            total_frames, beat_times, params.fps, loop_duration
+        )
+    else:
+        raw_envelope = build_synthetic_beat_envelope(
+            total_frames, params.bpm, params.fps, loop_duration
+        )
 
     # Create seeded RNG for reproducibility
     rng = np.random.default_rng(params.seed)

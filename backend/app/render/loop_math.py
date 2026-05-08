@@ -114,3 +114,58 @@ def build_synthetic_beat_envelope(
         envelope = envelope / max_val
 
     return envelope
+
+
+def build_audio_beat_envelope(
+    total_frames: int,
+    beat_times: list[float],
+    fps: int,
+    loop_duration: float,
+    decay: float = 0.85,
+) -> np.ndarray:
+    """Build a beat envelope from real audio-detected beat times.
+
+    Uses actual beat positions from librosa instead of synthetic BPM.
+    Produces more natural, irregular rhythms that look realistic.
+
+    Args:
+        total_frames: Number of frames in the loop.
+        beat_times: Beat positions in seconds (from librosa).
+        fps: Frames per second.
+        loop_duration: Total loop duration in seconds.
+        decay: Exponential decay factor between beats.
+
+    Returns:
+        Array of shape (total_frames,) with values in [0.0, 1.0].
+    """
+    envelope = np.zeros(total_frames, dtype=np.float64)
+
+    # Convert beat times to frame indices, keeping only those within loop
+    beat_frames: list[int] = []
+    for bt in beat_times:
+        if bt < loop_duration:
+            bf = int(bt * fps)
+            if bf < total_frames:
+                beat_frames.append(bf)
+
+    if not beat_frames:
+        # Fallback: flat envelope if no beats detected
+        return np.ones(total_frames, dtype=np.float64) * 0.5
+
+    # Fill envelope with exponential decay from each beat
+    for beat_frame in beat_frames:
+        for f in range(total_frames):
+            dist = min(
+                abs(f - beat_frame),
+                abs(f - beat_frame + total_frames),
+                abs(f - beat_frame - total_frames),
+            )
+            value = decay**dist
+            envelope[f] = max(envelope[f], value)
+
+    # Normalize so max is exactly 1.0
+    max_val = np.max(envelope)
+    if max_val > 0:
+        envelope = envelope / max_val
+
+    return envelope
